@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.bzolyomi.shoppinglist.ui.screens.ItemGroupScreen
 import com.bzolyomi.shoppinglist.ui.screens.ItemsScreen
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
@@ -30,7 +31,8 @@ class MainActivity : ComponentActivity()
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ItemsScreen(sharedViewModel = sharedViewModel)
+//                    ItemsScreen(sharedViewModel = sharedViewModel)
+                    ItemGroupScreen(sharedViewModel = sharedViewModel)
                 }
             }
         }
