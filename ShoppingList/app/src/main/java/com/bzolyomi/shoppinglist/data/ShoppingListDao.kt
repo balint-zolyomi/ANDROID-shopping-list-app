@@ -1,8 +1,6 @@
 package com.bzolyomi.shoppinglist.data
 
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,4 +12,7 @@ interface ShoppingListDao {
     @Transaction
     @Query("SELECT * FROM shopping_group")
     fun getShoppingGroupsWithShoppingLists(): Flow<List<GroupWithLists>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun addGroup(shoppingGroupEntity: ShoppingGroupEntity)
 }

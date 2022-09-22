@@ -76,4 +76,11 @@ dependencies {
 
     // To use Kotlin annotation processing tool (kapt)
     kapt "androidx.room:room-compiler:$room_version"
+
+    // Material
+    implementation("androidx.compose.material:material:1.2.0")
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+    // Theme
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.21.2-beta"
 }

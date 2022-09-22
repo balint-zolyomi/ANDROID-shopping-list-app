@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.bzolyomi.shoppinglist.ui.screens.AddGroupScreen
 import com.bzolyomi.shoppinglist.ui.screens.ItemGroupScreen
 import com.bzolyomi.shoppinglist.ui.screens.ItemsScreen
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
@@ -32,7 +33,8 @@ class MainActivity : ComponentActivity()
                     color = MaterialTheme.colors.background
                 ) {
 //                    ItemsScreen(sharedViewModel = sharedViewModel)
-                    ItemGroupScreen(sharedViewModel = sharedViewModel)
+//                    ItemGroupScreen(sharedViewModel = sharedViewModel)
+                    AddGroupScreen(sharedViewModel = sharedViewModel)
                 }
             }
         }

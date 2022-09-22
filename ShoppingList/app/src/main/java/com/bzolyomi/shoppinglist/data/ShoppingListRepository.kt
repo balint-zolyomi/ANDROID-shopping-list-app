@@ -11,4 +11,8 @@ class ShoppingListRepository @Inject constructor(
     val allShoppingListItems: Flow<List<ShoppingListEntity>> = dao.getAllShoppingListItems()
 
     val allGroupWithLists: Flow<List<GroupWithLists>> = dao.getShoppingGroupsWithShoppingLists()
+
+    suspend fun addGroup(shoppingGroupEntity: ShoppingGroupEntity) {
+        dao.addGroup(shoppingGroupEntity = shoppingGroupEntity)
+    }
 }
