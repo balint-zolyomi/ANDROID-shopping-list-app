@@ -8,5 +8,7 @@ import javax.inject.Inject
 class ShoppingListRepository @Inject constructor(
     private val dao: ShoppingListDao) {
 
-    val allShoppingLists: Flow<List<ShoppingListEntity>> = dao.getAll()
+    val allShoppingListItems: Flow<List<ShoppingListEntity>> = dao.getAllShoppingListItems()
+
+    val allGroupWithLists: Flow<List<GroupWithLists>> = dao.getShoppingGroupsWithShoppingLists()
 }

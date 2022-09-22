@@ -10,5 +10,5 @@ data class GroupWithLists(
         parentColumn = "group_id",
         entityColumn = "parent_id"
     )
-    val shoppingLists: List<ShoppingListEntity>
+    val shoppingList: List<ShoppingListEntity>
 )

@@ -11,7 +11,7 @@ fun ItemsScreen(
     sharedViewModel: SharedViewModel
 ) {
     var showData by rememberSaveable { mutableStateOf(false) }
-    val shoppingList by sharedViewModel.shoppingList.collectAsState()
+    val shoppingList by sharedViewModel.shoppingListItems.collectAsState()
 
     if (!showData) {
         ShowItemsButton { showData = true }

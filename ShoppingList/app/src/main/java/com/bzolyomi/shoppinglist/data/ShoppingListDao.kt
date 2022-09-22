@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface ShoppingListDao {
 
     @Query("SELECT * FROM shopping_list")
-    fun getAll(): Flow<List<ShoppingListEntity>>
+    fun getAllShoppingListItems(): Flow<List<ShoppingListEntity>>
 
     @Transaction
     @Query("SELECT * FROM shopping_group")
