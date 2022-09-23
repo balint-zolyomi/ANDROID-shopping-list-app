@@ -24,16 +24,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.bzolyomi.shoppinglist.data.ShoppingListEntity
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun ItemGroupScreen(
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    onNavigateToAddAllScreen: () -> Unit
 ) {
     val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
 
     val scaffoldState = rememberScaffoldState()
+
+//    var showAddAllScreen by remember { mutableStateOf(false) }
 
     Scaffold(scaffoldState = scaffoldState,
         topBar = {},
@@ -48,7 +53,9 @@ fun ItemGroupScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
+            FloatingActionButton(
+                onClick = onNavigateToAddAllScreen
+            ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "",

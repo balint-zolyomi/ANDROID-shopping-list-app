@@ -1,23 +1,34 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
-fun AddAllScreen(sharedViewModel: SharedViewModel) {
+fun AddAllScreen(
+    sharedViewModel: SharedViewModel
+) {
     val groupName: String = sharedViewModel.groupName
     val itemName: String = sharedViewModel.itemName
     val itemQuantity: String = sharedViewModel.itemQuantity
     val itemUnit: String = sharedViewModel.itemUnit
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp)
+    ) {
         GroupInput(
             groupName = groupName,
             onGroupNameChange = { sharedViewModel.groupName = it }
@@ -30,12 +41,15 @@ fun AddAllScreen(sharedViewModel: SharedViewModel) {
             onItemQuantityChange = { sharedViewModel.itemQuantity = it },
             onItemUnitChange = { sharedViewModel.itemUnit = it }
         )
-        SubmitButton(onSubmitButtonClicked = {
-            sharedViewModel.createGroupAndItems()
-        })
-        PlusItemButton(onPlusItemButtonClicked = {
-            sharedViewModel.addToItemList()
-        })
+        Row(modifier = Modifier.padding(12.dp)) {
+            PlusItemButton(onPlusItemButtonClicked = {
+                sharedViewModel.addToItemList()
+            })
+            Spacer(Modifier.weight(1f))
+            SubmitButton(onSubmitButtonClicked = {
+                sharedViewModel.createGroupAndItems()
+            })
+        }
     }
 }
 
@@ -112,13 +126,13 @@ fun ItemUnitInput(itemUnit: String, onItemUnitChange: (String) -> Unit) {
 @Composable
 fun SubmitButton(onSubmitButtonClicked: () -> Unit) {
     Button(onClick = onSubmitButtonClicked) {
-        Text(text = "ADD")
+        Text(text = "DONE")
     }
 }
 
 @Composable
 fun PlusItemButton(onPlusItemButtonClicked: () -> Unit) {
     Button(onClick = onPlusItemButtonClicked) {
-        Text(text = "+")
+        Text(text = "+ ITEM")
     }
 }

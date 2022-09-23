@@ -7,12 +7,10 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.bzolyomi.shoppinglist.ui.screens.AddAllScreen
 import com.bzolyomi.shoppinglist.ui.screens.ItemGroupScreen
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
+import com.bzolyomi.shoppinglist.util.NavigationController
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,9 +29,7 @@ class MainActivity : ComponentActivity()
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-//                    ItemsScreen(sharedViewModel = sharedViewModel)
-//                    ItemGroupScreen(sharedViewModel = sharedViewModel)
-                    AddAllScreen(sharedViewModel = sharedViewModel)
+                    NavigationController(sharedViewModel = sharedViewModel)
                 }
             }
         }
