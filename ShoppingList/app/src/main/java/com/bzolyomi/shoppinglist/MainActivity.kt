@@ -10,9 +10,8 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.bzolyomi.shoppinglist.ui.screens.AddGroupScreen
+import com.bzolyomi.shoppinglist.ui.screens.AddAllScreen
 import com.bzolyomi.shoppinglist.ui.screens.ItemGroupScreen
-import com.bzolyomi.shoppinglist.ui.screens.ItemsScreen
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,17 +33,9 @@ class MainActivity : ComponentActivity()
                 ) {
 //                    ItemsScreen(sharedViewModel = sharedViewModel)
 //                    ItemGroupScreen(sharedViewModel = sharedViewModel)
-                    AddGroupScreen(sharedViewModel = sharedViewModel)
+                    AddAllScreen(sharedViewModel = sharedViewModel)
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ShoppingListTheme {
-
     }
 }

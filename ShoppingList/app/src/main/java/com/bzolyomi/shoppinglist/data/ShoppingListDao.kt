@@ -6,13 +6,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ShoppingListDao {
 
-    @Query("SELECT * FROM shopping_list")
-    fun getAllShoppingListItems(): Flow<List<ShoppingListEntity>>
-
     @Transaction
     @Query("SELECT * FROM shopping_group")
     fun getShoppingGroupsWithShoppingLists(): Flow<List<GroupWithLists>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addGroup(shoppingGroupEntity: ShoppingGroupEntity)
+    suspend fun createGroup(group: ShoppingGroupEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun createItem(item: ShoppingListEntity)
+
+    @Query("SELECT SG.group_id FROM shopping_group SG WHERE SG.group_name=:groupName")
+    fun getGroupId(groupName: String): Flow<Long>
 }

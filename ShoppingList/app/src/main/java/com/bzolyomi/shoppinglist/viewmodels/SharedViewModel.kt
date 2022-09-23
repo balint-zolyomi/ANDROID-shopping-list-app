@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 // Warning: ViewModels are not part of the Composition. Therefore, you should not hold state
@@ -28,22 +29,22 @@ class SharedViewModel @Inject constructor(
         get() = _shoppingListItems
 
     private val _shoppingGroupsWithLists = MutableStateFlow<List<GroupWithLists>>(emptyList())
-    val shoppingGroupsWithLists: StateFlow<List<GroupWithLists>> = _shoppingGroupsWithLists
+    val shoppingGroupsWithLists: StateFlow<List<GroupWithLists>>
+        get() = _shoppingGroupsWithLists
 
-    var groupId by mutableStateOf("")
+//    private var groupId: String? by mutableStateOf(null)
+    private var retrievedGroupId: Long? by mutableStateOf(null)
     var groupName by mutableStateOf("")
 
-    init {
-        getAllShoppingListItems()
-        getAll()
-    }
+//    private var itemId: String? by mutableStateOf(null)
+    var itemName by mutableStateOf("")
+    var itemQuantity by mutableStateOf("")
+    var itemUnit by mutableStateOf("")
 
-    private fun getAllShoppingListItems() {
-        viewModelScope.launch {
-            repo.allShoppingListItems.collect {
-                _shoppingListItems.value = it
-            }
-        }
+    private var items: MutableList<ShoppingListEntity> = mutableListOf()
+
+    init {
+        getAll()
     }
 
     private fun getAll() {
@@ -54,11 +55,57 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun createGroup() {
+    private fun deleteItemCache() {
+//        itemId = null
+        itemName = ""
+        itemQuantity = ""
+        itemUnit = ""
+    }
+
+    fun addToItemList() {
+        items.add(
+            ShoppingListEntity(
+                id = null,
+                groupId = null,
+                itemName = itemName,
+                itemQuantity = itemQuantity.toFloat(),
+                itemUnit = itemUnit
+            )
+        )
+        deleteItemCache()
+    }
+
+    private fun deleteGroupCache() {
+//        groupId = null
+        groupName = ""
+    }
+
+    fun createGroupAndItems() {
+        val group = ShoppingGroupEntity(
+            id = null,
+            groupName = groupName
+        )
+
         viewModelScope.launch(Dispatchers.IO) {
-            val _groupId = groupId.toLong()
-            val group = ShoppingGroupEntity(id = _groupId, groupName = groupName)
-            repo.addGroup(shoppingGroupEntity = group)
+            repo.createGroup(group = group)
+            repo.getGroupId(groupName = groupName).collect {
+                retrievedGroupId = it
+                withContext(Dispatchers.Main) {
+                    createItems()
+                    deleteGroupCache()
+                }
+            }
         }
+    }
+
+    private fun createItems() {
+        if (itemName.isNotBlank()) addToItemList()
+        for (item in items) {
+            item.groupId = retrievedGroupId
+            viewModelScope.launch(Dispatchers.IO) {
+                repo.createItem(item = item)
+            }
+        }
+        items.clear()
     }
 }

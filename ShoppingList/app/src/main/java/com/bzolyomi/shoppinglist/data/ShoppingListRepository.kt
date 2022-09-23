@@ -8,11 +8,17 @@ import javax.inject.Inject
 class ShoppingListRepository @Inject constructor(
     private val dao: ShoppingListDao) {
 
-    val allShoppingListItems: Flow<List<ShoppingListEntity>> = dao.getAllShoppingListItems()
-
     val allGroupWithLists: Flow<List<GroupWithLists>> = dao.getShoppingGroupsWithShoppingLists()
 
-    suspend fun addGroup(shoppingGroupEntity: ShoppingGroupEntity) {
-        dao.addGroup(shoppingGroupEntity = shoppingGroupEntity)
+    suspend fun createGroup(group: ShoppingGroupEntity) {
+        dao.createGroup(group = group)
+    }
+
+    suspend fun createItem(item: ShoppingListEntity) {
+        dao.createItem(item = item)
+    }
+
+    fun getGroupId(groupName: String): Flow<Long> {
+        return dao.getGroupId(groupName = groupName)
     }
 }
