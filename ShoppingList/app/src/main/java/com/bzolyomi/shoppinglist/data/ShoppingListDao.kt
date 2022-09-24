@@ -18,4 +18,8 @@ interface ShoppingListDao {
 
     @Query("SELECT SG.group_id FROM shopping_group SG WHERE SG.group_name=:groupName")
     fun getGroupId(groupName: String): Flow<Long>
+
+    @Transaction
+    @Query("SELECT * FROM shopping_group SG WHERE SG.group_id=:groupId")
+    fun getGroupWithList(groupId: Long?): Flow<GroupWithLists>
 }

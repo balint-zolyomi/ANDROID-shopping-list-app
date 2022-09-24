@@ -21,4 +21,8 @@ class ShoppingListRepository @Inject constructor(
     fun getGroupId(groupName: String): Flow<Long> {
         return dao.getGroupId(groupName = groupName)
     }
+
+    fun getGroupWithList(groupId: Long?): Flow<GroupWithLists> {
+        return dao.getGroupWithList(groupId)
+    }
 }

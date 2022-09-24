@@ -29,7 +29,7 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 fun AllGroupsScreen(
     sharedViewModel: SharedViewModel,
     onNavigateToAddAllScreen: () -> Unit,
-    onNavigateToItemsOfGroupScreen: () -> Unit
+    onNavigateToItemsOfGroupScreen: (groupId: Long?) -> Unit
 ) {
     val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
 
@@ -42,9 +42,8 @@ fun AllGroupsScreen(
                 items(items = shoppingGroupsWithLists) { shoppingGroupWithList ->
                     GroupCard(
                         title = shoppingGroupWithList.group.groupName,
-                        shoppingList = shoppingGroupWithList.shoppingList,
-                        onNavigateToItemsOfGroupScreen
-                    )
+                        shoppingList = shoppingGroupWithList.shoppingList
+                    ) { onNavigateToItemsOfGroupScreen(shoppingGroupWithList.group.id) }
                 }
             }
         },

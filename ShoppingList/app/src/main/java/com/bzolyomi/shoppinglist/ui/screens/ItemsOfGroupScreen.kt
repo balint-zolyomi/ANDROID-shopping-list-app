@@ -18,22 +18,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bzolyomi.shoppinglist.data.GroupWithLists
 import com.bzolyomi.shoppinglist.data.ShoppingListEntity
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun ItemsOfGroupScreen(
+    selectedGroupWithList: GroupWithLists,
     sharedViewModel: SharedViewModel
 ) {
-    val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
+//    val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
 
     Column {
         Text(
-            text = shoppingGroupsWithLists[0].group.groupName.uppercase(),
+            text = selectedGroupWithList.group.groupName.uppercase(),
             style = MaterialTheme.typography.h4,
             modifier = Modifier.padding(12.dp)
         )
-        AllItems(shoppingListItems = shoppingGroupsWithLists[0].shoppingList)
+        AllItems(shoppingListItems = selectedGroupWithList.shoppingList)
     }
 }
 

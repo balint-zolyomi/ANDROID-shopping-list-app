@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,6 +43,15 @@ class SharedViewModel @Inject constructor(
     var itemUnit by mutableStateOf("")
 
     private var items: MutableList<ShoppingListEntity> = mutableListOf()
+
+    private var _selectedGroupWithList = MutableStateFlow(
+        GroupWithLists(
+            ShoppingGroupEntity(null, ""),
+            emptyList()
+        )
+    )
+    val selectedGroupWithList: StateFlow<GroupWithLists>
+        get() = _selectedGroupWithList
 
     init {
         getAll()
@@ -109,5 +119,14 @@ class SharedViewModel @Inject constructor(
             }
         }
         items.clear()
+    }
+
+    fun getSelectedGroupWithList(groupId: String?) {
+        val id = groupId?.toLong()
+        viewModelScope.launch {
+            repo.getGroupWithList(groupId = id).collect {
+                _selectedGroupWithList.value = it
+            }
+        }
     }
 }
