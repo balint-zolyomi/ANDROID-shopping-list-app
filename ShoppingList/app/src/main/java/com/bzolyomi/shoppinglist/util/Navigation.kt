@@ -36,7 +36,9 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 sharedViewModel = sharedViewModel,
                 onNavigateToItemGroupScreen = {
                     sharedViewModel.createGroupAndItems()
-                    navController.navigate("home")
+                    navController.navigate("home") {
+                        popUpTo("home") { inclusive = true }
+                    }
                 }
             )
         }
@@ -48,16 +50,22 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         ) { navBackStackEntry ->
             val groupId = navBackStackEntry.arguments!!.getString("groupId")
 
+            Log.d("balint-debug", "groupId: $groupId")
+
             LaunchedEffect(key1 = groupId) {
                 sharedViewModel.getSelectedGroupWithList(groupId = groupId)
             }
-
             val selectedGroupWithList by sharedViewModel.selectedGroupWithList.collectAsState()
 
             ItemsOfGroupScreen(
                 selectedGroupWithList = selectedGroupWithList,
                 onDeleteItemClicked = {
                     sharedViewModel.deleteItem(itemId = it)
+                },
+                onDeleteGroupClicked = { groupId, shoppingList ->
+                    sharedViewModel.deleteGroup(groupId = groupId)
+                    sharedViewModel.deleteItems(shoppingList)
+                    navController.navigate("home")
                 }
             )
         }

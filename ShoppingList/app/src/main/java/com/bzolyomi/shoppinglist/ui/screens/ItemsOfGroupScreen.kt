@@ -10,35 +10,43 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bzolyomi.shoppinglist.data.GroupWithLists
 import com.bzolyomi.shoppinglist.data.ShoppingListEntity
-import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun ItemsOfGroupScreen(
-    selectedGroupWithList: GroupWithLists,
-    onDeleteItemClicked: (itemId: Long?) -> Unit
+    selectedGroupWithList: GroupWithLists?,
+    onDeleteItemClicked: (itemId: Long?) -> Unit,
+    onDeleteGroupClicked: (groupId: Long?, shoppingList: List<ShoppingListEntity>) -> Unit
 ) {
-//    val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
-
-    Column {
-        Text(
-            text = selectedGroupWithList.group.groupName.uppercase(),
-            style = MaterialTheme.typography.h4,
-            modifier = Modifier.padding(12.dp)
-        )
-        AllItems(
-            shoppingListItems = selectedGroupWithList.shoppingList,
-            onDeleteItemClicked = onDeleteItemClicked
-        )
+    if (selectedGroupWithList != null) {
+        Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = selectedGroupWithList.group.groupName.uppercase(),
+                    style = MaterialTheme.typography.h4,
+                    modifier = Modifier.padding(start = 12.dp, top = 12.dp, bottom = 12.dp)
+                )
+                IconButton(onClick = {
+                    onDeleteGroupClicked(
+                        selectedGroupWithList.group.id,
+                        selectedGroupWithList.shoppingList
+                    )
+                }) {
+                    Icon(Icons.Filled.Delete, contentDescription = "Delete group")
+                }
+            }
+            AllItems(
+                shoppingListItems = selectedGroupWithList.shoppingList,
+                onDeleteItemClicked = onDeleteItemClicked
+            )
+        }
     }
 }
 

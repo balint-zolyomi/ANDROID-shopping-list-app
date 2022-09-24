@@ -17,7 +17,7 @@ interface ShoppingListDao {
     suspend fun createItem(item: ShoppingListEntity)
 
     @Query("SELECT SG.group_id FROM shopping_group SG WHERE SG.group_name=:groupName")
-    fun getGroupId(groupName: String): Flow<Long>
+    fun getGroupId(groupName: String): Flow<Long?>
 
     @Transaction
     @Query("SELECT * FROM shopping_group SG WHERE SG.group_id=:groupId")
@@ -25,4 +25,7 @@ interface ShoppingListDao {
 
     @Query("DELETE FROM shopping_list WHERE item_id=:itemId")
     suspend fun deleteItem(itemId: Long?)
+
+    @Query("DELETE FROM shopping_group WHERE group_id=:groupId")
+    suspend fun deleteGroup(groupId: Long?)
 }

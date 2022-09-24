@@ -102,7 +102,7 @@ class SharedViewModel @Inject constructor(
             repo.createGroup(group = group)
             repo.getGroupId(groupName = groupName).collect {
                 retrievedGroupId = it
-                withContext(Dispatchers.Main) {
+                withContext(Dispatchers.IO) {
                     createItems()
                     deleteGroupCache()
                 }
@@ -123,7 +123,7 @@ class SharedViewModel @Inject constructor(
 
     fun getSelectedGroupWithList(groupId: String?) {
         val id = groupId?.toLong()
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repo.getGroupWithList(groupId = id).collect {
                 _selectedGroupWithList.value = it
             }
@@ -133,6 +133,20 @@ class SharedViewModel @Inject constructor(
     fun deleteItem(itemId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteItem(itemId = itemId)
+        }
+    }
+
+    fun deleteGroup(groupId: Long?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteGroup(groupId = groupId)
+        }
+    }
+
+    fun deleteItems(shoppingList: List<ShoppingListEntity>) {
+        for (item in shoppingList) {
+            viewModelScope.launch(Dispatchers.IO) {
+                repo.deleteItem(itemId = item.id)
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ class ShoppingListRepository @Inject constructor(
         dao.createItem(item = item)
     }
 
-    fun getGroupId(groupName: String): Flow<Long> {
+    fun getGroupId(groupName: String): Flow<Long?> {
         return dao.getGroupId(groupName = groupName)
     }
 
@@ -28,5 +28,9 @@ class ShoppingListRepository @Inject constructor(
 
     suspend fun deleteItem(itemId: Long?) {
         dao.deleteItem(itemId = itemId)
+    }
+
+    suspend fun deleteGroup(groupId: Long?) {
+        dao.deleteGroup(groupId = groupId)
     }
 }
