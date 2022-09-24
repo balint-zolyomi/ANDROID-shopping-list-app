@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.bzolyomi.shoppinglist.ui.screens.ItemGroupScreen
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
 import com.bzolyomi.shoppinglist.util.NavigationController
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel

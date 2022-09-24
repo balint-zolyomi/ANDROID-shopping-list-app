@@ -6,7 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bzolyomi.shoppinglist.ui.screens.AddAllScreen
-import com.bzolyomi.shoppinglist.ui.screens.ItemGroupScreen
+import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
+import com.bzolyomi.shoppinglist.ui.screens.ItemsOfGroupScreen
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
@@ -16,15 +17,23 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
-            ItemGroupScreen(
+            AllGroupsScreen(
                 sharedViewModel = sharedViewModel,
-                onNavigateToAddAllScreen = { navController.navigate("add") }
+                onNavigateToAddAllScreen = { navController.navigate("add") },
+                onNavigateToItemsOfGroupScreen = { navController.navigate("group")}
             )
         }
         composable("add") {
             AddAllScreen(
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedViewModel,
+                onNavigateToItemGroupScreen = {
+                    sharedViewModel.createGroupAndItems()
+                    navController.navigate("home")
+                }
             )
+        }
+        composable("group") {
+            ItemsOfGroupScreen(sharedViewModel = sharedViewModel)
         }
     }
 }

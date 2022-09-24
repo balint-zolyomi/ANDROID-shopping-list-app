@@ -17,7 +17,8 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun AddAllScreen(
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    onNavigateToItemGroupScreen: () -> Unit
 ) {
     val groupName: String = sharedViewModel.groupName
     val itemName: String = sharedViewModel.itemName
@@ -46,9 +47,7 @@ fun AddAllScreen(
                 sharedViewModel.addToItemList()
             })
             Spacer(Modifier.weight(1f))
-            SubmitButton(onSubmitButtonClicked = {
-                sharedViewModel.createGroupAndItems()
-            })
+            SubmitButton(onSubmitButtonClicked = onNavigateToItemGroupScreen)
         }
     }
 }

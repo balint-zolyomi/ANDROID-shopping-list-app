@@ -24,19 +24,19 @@ class SharedViewModel @Inject constructor(
     private val repo: ShoppingListRepository
 ) : ViewModel() {
 
-    private val _shoppingListItems = MutableStateFlow<List<ShoppingListEntity>>(emptyList())
-    val shoppingListItems: StateFlow<List<ShoppingListEntity>>
-        get() = _shoppingListItems
+//    private val _shoppingListItems = MutableStateFlow<List<ShoppingListEntity>>(emptyList())
+//    val shoppingListItems: StateFlow<List<ShoppingListEntity>>
+//        get() = _shoppingListItems
 
     private val _shoppingGroupsWithLists = MutableStateFlow<List<GroupWithLists>>(emptyList())
     val shoppingGroupsWithLists: StateFlow<List<GroupWithLists>>
         get() = _shoppingGroupsWithLists
 
-//    private var groupId: String? by mutableStateOf(null)
+    //    private var groupId: String? by mutableStateOf(null)
     private var retrievedGroupId: Long? by mutableStateOf(null)
     var groupName by mutableStateOf("")
 
-//    private var itemId: String? by mutableStateOf(null)
+    //    private var itemId: String? by mutableStateOf(null)
     var itemName by mutableStateOf("")
     var itemQuantity by mutableStateOf("")
     var itemUnit by mutableStateOf("")
@@ -63,16 +63,18 @@ class SharedViewModel @Inject constructor(
     }
 
     fun addToItemList() {
-        items.add(
-            ShoppingListEntity(
-                id = null,
-                groupId = null,
-                itemName = itemName,
-                itemQuantity = itemQuantity.toFloat(),
-                itemUnit = itemUnit
+        if (itemName.isNotBlank()) {
+            items.add(
+                ShoppingListEntity(
+                    id = null,
+                    groupId = null,
+                    itemName = itemName,
+                    itemQuantity = itemQuantity.toFloat(),
+                    itemUnit = itemUnit
+                )
             )
-        )
-        deleteItemCache()
+            deleteItemCache()
+        }
     }
 
     private fun deleteGroupCache() {

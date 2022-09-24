@@ -3,10 +3,7 @@ package com.bzolyomi.shoppinglist.ui.screens
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -24,21 +22,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.bzolyomi.shoppinglist.data.ShoppingListEntity
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
-fun ItemGroupScreen(
+fun AllGroupsScreen(
     sharedViewModel: SharedViewModel,
-    onNavigateToAddAllScreen: () -> Unit
+    onNavigateToAddAllScreen: () -> Unit,
+    onNavigateToItemsOfGroupScreen: () -> Unit
 ) {
     val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
 
     val scaffoldState = rememberScaffoldState()
-
-//    var showAddAllScreen by remember { mutableStateOf(false) }
 
     Scaffold(scaffoldState = scaffoldState,
         topBar = {},
@@ -47,7 +42,8 @@ fun ItemGroupScreen(
                 items(items = shoppingGroupsWithLists) { shoppingGroupWithList ->
                     GroupCard(
                         title = shoppingGroupWithList.group.groupName,
-                        shoppingList = shoppingGroupWithList.shoppingList
+                        shoppingList = shoppingGroupWithList.shoppingList,
+                        onNavigateToItemsOfGroupScreen
                     )
                 }
             }
@@ -66,7 +62,11 @@ fun ItemGroupScreen(
 }
 
 @Composable // TODO: stateless possible? 
-fun GroupCard(title: String, shoppingList: List<ShoppingListEntity>) {
+fun GroupCard(
+    title: String,
+    shoppingList: List<ShoppingListEntity>,
+    onNavigateToItemsOfGroupScreen: () -> Unit
+) {
 
     var expanded by rememberSaveable { mutableStateOf(false) }
     val categoryBottomDp by animateDpAsState(
@@ -104,7 +104,6 @@ fun GroupCard(title: String, shoppingList: List<ShoppingListEntity>) {
                             Icon(
                                 imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
                                 contentDescription = "",
-//                                modifier = Modifier.background(MaterialTheme.colors.secondary),
                                 tint = MaterialTheme.colors.secondary
                             )
                         }
@@ -113,6 +112,7 @@ fun GroupCard(title: String, shoppingList: List<ShoppingListEntity>) {
             }
             AnimatedVisibility(
                 visible = expanded,
+//                visible = true,
                 enter = expandVertically(
                     expandFrom = Alignment.Top
                 ) + fadeIn(
@@ -127,12 +127,24 @@ fun GroupCard(title: String, shoppingList: List<ShoppingListEntity>) {
                         top = 0.dp,
                         end = 24.dp,
                         bottom = 24.dp
-                    )
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
                         for (item in shoppingList) {
-                            Text(text = item.itemName, style = MaterialTheme.typography.subtitle1)
+                            Text(
+                                text = item.itemName + " -- " + item.itemQuantity + " " + item.itemUnit,
+                                style = MaterialTheme.typography.subtitle1
+                            )
                         }
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(onClick = onNavigateToItemsOfGroupScreen) {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.secondary
+                        )
                     }
                 }
             }
@@ -143,5 +155,9 @@ fun GroupCard(title: String, shoppingList: List<ShoppingListEntity>) {
 @Preview
 @Composable
 fun preview() {
-    GroupCard(title = "Spar", shoppingList = listOf(ShoppingListEntity(1, 1, "", 1.0f, "")))
+    GroupCard(
+        title = "Spar",
+        shoppingList = listOf(ShoppingListEntity(1, 1, "", 1.0f, "")),
+        onNavigateToItemsOfGroupScreen = {}
+    )
 }
