@@ -25,4 +25,8 @@ class ShoppingListRepository @Inject constructor(
     fun getGroupWithList(groupId: Long?): Flow<GroupWithLists> {
         return dao.getGroupWithList(groupId)
     }
+
+    suspend fun deleteItem(itemId: Long?) {
+        dao.deleteItem(itemId = itemId)
+    }
 }

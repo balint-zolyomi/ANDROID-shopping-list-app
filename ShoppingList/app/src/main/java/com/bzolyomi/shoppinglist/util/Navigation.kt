@@ -56,7 +56,9 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
 
             ItemsOfGroupScreen(
                 selectedGroupWithList = selectedGroupWithList,
-                sharedViewModel = sharedViewModel
+                onDeleteItemClicked = {
+                    sharedViewModel.deleteItem(itemId = it)
+                }
             )
         }
     }

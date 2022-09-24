@@ -129,4 +129,10 @@ class SharedViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteItem(itemId: Long?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteItem(itemId = itemId)
+        }
+    }
 }

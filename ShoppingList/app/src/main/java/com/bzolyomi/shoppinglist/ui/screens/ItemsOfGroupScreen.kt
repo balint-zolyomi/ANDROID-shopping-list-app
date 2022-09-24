@@ -25,7 +25,7 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 @Composable
 fun ItemsOfGroupScreen(
     selectedGroupWithList: GroupWithLists,
-    sharedViewModel: SharedViewModel
+    onDeleteItemClicked: (itemId: Long?) -> Unit
 ) {
 //    val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
 
@@ -35,13 +35,17 @@ fun ItemsOfGroupScreen(
             style = MaterialTheme.typography.h4,
             modifier = Modifier.padding(12.dp)
         )
-        AllItems(shoppingListItems = selectedGroupWithList.shoppingList)
+        AllItems(
+            shoppingListItems = selectedGroupWithList.shoppingList,
+            onDeleteItemClicked = onDeleteItemClicked
+        )
     }
 }
 
 @Composable
 fun AllItems(
-    shoppingListItems: List<ShoppingListEntity>
+    shoppingListItems: List<ShoppingListEntity>,
+    onDeleteItemClicked: (itemId: Long?) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -52,7 +56,7 @@ fun AllItems(
         LazyColumn(state = LazyListState(), modifier = Modifier.padding(12.dp)) {
             items(items = shoppingListItems) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(checked = false, onCheckedChange = {})
+                    Checkbox(checked = false, onCheckedChange = { /*TODO*/ })
                     Text(
                         text = it.itemName,
 //                      However sometimes you need to deviate slightly from the selection of colors
@@ -61,8 +65,8 @@ fun AllItems(
 //                      For this, you can modify a predefined style by using the copy function.
                         style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold)
                     )
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Filled.Close, contentDescription = "Close")
+                    IconButton(onClick = { onDeleteItemClicked(it.id) }) {
+                        Icon(Icons.Filled.Close, contentDescription = "Delete item")
                     }
                 }
             }
