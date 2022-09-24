@@ -34,7 +34,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         composable("add") {
             AddAllScreen(
                 sharedViewModel = sharedViewModel,
-                onNavigateToItemGroupScreen = {
+                onNavigateToAllGroupsScreen = {
                     sharedViewModel.createGroupAndItems()
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }
@@ -50,8 +50,6 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         ) { navBackStackEntry ->
             val groupId = navBackStackEntry.arguments!!.getString("groupId")
 
-            Log.d("balint-debug", "groupId: $groupId")
-
             LaunchedEffect(key1 = groupId) {
                 sharedViewModel.getSelectedGroupWithList(groupId = groupId)
             }
@@ -66,6 +64,15 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                     sharedViewModel.deleteGroup(groupId = groupId)
                     sharedViewModel.deleteItems(shoppingList)
                     navController.navigate("home")
+                },
+                itemName = sharedViewModel.itemName,
+                itemQuantity = sharedViewModel.itemQuantity,
+                itemUnit = sharedViewModel.itemUnit,
+                onItemNameChange = { sharedViewModel.itemName = it },
+                onItemQuantityChange = { sharedViewModel.itemQuantity = it },
+                onItemUnitChange = { sharedViewModel.itemUnit = it },
+                onSubmitButtonClicked = {
+                    sharedViewModel.createItems(groupId = it)
                 }
             )
         }

@@ -35,7 +35,8 @@ fun AllGroupsScreen(
 
     val scaffoldState = rememberScaffoldState()
 
-    Scaffold(scaffoldState = scaffoldState,
+    Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {},
         content = {
             LazyColumn(modifier = Modifier.padding(vertical = 4.dp)) {

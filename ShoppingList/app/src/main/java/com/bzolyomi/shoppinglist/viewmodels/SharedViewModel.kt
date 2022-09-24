@@ -110,10 +110,10 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    private fun createItems() {
+    fun createItems(groupId: Long? = retrievedGroupId) {
         if (itemName.isNotBlank()) addToItemList()
         for (item in items) {
-            item.groupId = retrievedGroupId
+            item.groupId = groupId
             viewModelScope.launch(Dispatchers.IO) {
                 repo.createItem(item = item)
             }
