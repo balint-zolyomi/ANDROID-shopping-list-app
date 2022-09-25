@@ -33,4 +33,8 @@ class ShoppingListRepository @Inject constructor(
     suspend fun deleteGroup(groupId: Long?) {
         dao.deleteGroup(groupId = groupId)
     }
+
+    suspend fun updateItem(shoppingListItem: ShoppingListEntity) {
+        dao.updateItem(shoppingListItem = shoppingListItem)
+    }
 }

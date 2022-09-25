@@ -68,12 +68,14 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 itemName = sharedViewModel.itemName,
                 itemQuantity = sharedViewModel.itemQuantity,
                 itemUnit = sharedViewModel.itemUnit,
+                isItemChecked = sharedViewModel.isItemChecked,
                 onItemNameChange = { sharedViewModel.itemName = it },
                 onItemQuantityChange = { sharedViewModel.itemQuantity = it },
                 onItemUnitChange = { sharedViewModel.itemUnit = it },
                 onSubmitButtonClicked = {
                     sharedViewModel.createItems(groupId = it)
-                }
+                },
+                onCheckboxClicked = { sharedViewModel.updateItemChecked(it) }
             )
         }
     }

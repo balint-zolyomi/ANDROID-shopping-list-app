@@ -11,5 +11,6 @@ data class ShoppingListEntity(
     @ColumnInfo(name = "parent_id") var groupId: Long?,
     @ColumnInfo(name = "item_name") val itemName: String,
     @ColumnInfo(name = "item_quantity") val itemQuantity: Float,
-    @ColumnInfo(name = "item_unit") val itemUnit: String
+    @ColumnInfo(name = "item_unit") val itemUnit: String,
+    @ColumnInfo(name = "checked") var isChecked: Boolean
 )

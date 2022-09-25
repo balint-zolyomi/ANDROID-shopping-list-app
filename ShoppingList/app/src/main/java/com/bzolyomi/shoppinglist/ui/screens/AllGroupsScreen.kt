@@ -102,7 +102,9 @@ fun GroupCard(
                     ) {
                         Surface(shape = CircleShape, modifier = Modifier.size(25.dp)) {
                             Icon(
-                                imageVector = if (expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                                imageVector = if (expanded) {
+                                    Icons.Filled.ExpandLess
+                                } else Icons.Filled.ExpandMore,
                                 contentDescription = "",
                                 tint = MaterialTheme.colors.secondary
                             )
@@ -157,7 +159,14 @@ fun GroupCard(
 fun preview() {
     GroupCard(
         title = "Spar",
-        shoppingList = listOf(ShoppingListEntity(1, 1, "", 1.0f, "")),
+        shoppingList = listOf(ShoppingListEntity(
+            1,
+            1,
+            "",
+            1.0f,
+            "",
+            false
+        )),
         onNavigateToItemsOfGroupScreen = {}
     )
 }

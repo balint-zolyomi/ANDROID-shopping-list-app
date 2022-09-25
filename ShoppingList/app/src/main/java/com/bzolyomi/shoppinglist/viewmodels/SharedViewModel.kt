@@ -41,6 +41,7 @@ class SharedViewModel @Inject constructor(
     var itemName by mutableStateOf("")
     var itemQuantity by mutableStateOf("")
     var itemUnit by mutableStateOf("")
+    var isItemChecked by mutableStateOf(false)
 
     private var items: MutableList<ShoppingListEntity> = mutableListOf()
 
@@ -80,7 +81,8 @@ class SharedViewModel @Inject constructor(
                     groupId = null,
                     itemName = itemName,
                     itemQuantity = itemQuantity.toFloat(),
-                    itemUnit = itemUnit
+                    itemUnit = itemUnit,
+                    isChecked = false
                 )
             )
             deleteItemCache()
@@ -147,6 +149,21 @@ class SharedViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 repo.deleteItem(itemId = item.id)
             }
+        }
+    }
+
+    fun updateItem(shoppingListItem: ShoppingListEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.updateItem(shoppingListItem = shoppingListItem)
+        }
+    }
+
+    fun updateItemChecked(shoppingListItem: ShoppingListEntity) {
+        shoppingListItem.isChecked = !shoppingListItem.isChecked
+        isItemChecked = shoppingListItem.isChecked
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.updateItem(shoppingListItem = shoppingListItem)
         }
     }
 }

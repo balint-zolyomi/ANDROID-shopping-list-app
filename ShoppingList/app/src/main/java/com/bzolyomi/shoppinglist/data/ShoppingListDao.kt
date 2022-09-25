@@ -28,4 +28,7 @@ interface ShoppingListDao {
 
     @Query("DELETE FROM shopping_group WHERE group_id=:groupId")
     suspend fun deleteGroup(groupId: Long?)
+
+    @Update
+    suspend fun updateItem(shoppingListItem: ShoppingListEntity)
 }
