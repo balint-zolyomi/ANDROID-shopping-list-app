@@ -75,7 +75,11 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 onSubmitButtonClicked = {
                     sharedViewModel.createItems(groupId = it)
                 },
-                onCheckboxClicked = { sharedViewModel.updateItemChecked(it) }
+                onCheckboxClicked = { sharedViewModel.updateItemChecked(it) },
+                sharedViewModel = sharedViewModel,
+                onItemsRearrangedOnGUI = {
+                    sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)
+                }
             )
         }
     }

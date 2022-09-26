@@ -1,12 +1,11 @@
 package com.bzolyomi.shoppinglist.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bzolyomi.shoppinglist.data.GroupWithLists
+import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
 import com.bzolyomi.shoppinglist.data.ShoppingListEntity
 import com.bzolyomi.shoppinglist.data.ShoppingListRepository
@@ -29,8 +28,8 @@ class SharedViewModel @Inject constructor(
 //    val shoppingListItems: StateFlow<List<ShoppingListEntity>>
 //        get() = _shoppingListItems
 
-    private val _shoppingGroupsWithLists = MutableStateFlow<List<GroupWithLists>>(emptyList())
-    val shoppingGroupsWithLists: StateFlow<List<GroupWithLists>>
+    private val _shoppingGroupsWithLists = MutableStateFlow<List<GroupWithList>>(emptyList())
+    val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
         get() = _shoppingGroupsWithLists
 
     //    private var groupId: String? by mutableStateOf(null)
@@ -46,13 +45,16 @@ class SharedViewModel @Inject constructor(
     private var items: MutableList<ShoppingListEntity> = mutableListOf()
 
     private var _selectedGroupWithList = MutableStateFlow(
-        GroupWithLists(
+        GroupWithList(
             ShoppingGroupEntity(null, ""),
             emptyList()
         )
     )
-    val selectedGroupWithList: StateFlow<GroupWithLists>
+    val selectedGroupWithList: StateFlow<GroupWithList>
         get() = _selectedGroupWithList
+
+    val yPositionOfItems: StateFlow<MutableMap<Int, Float>> = MutableStateFlow(mutableMapOf())
+    var isRearranging by mutableStateOf(false)
 
     init {
         getAll()
@@ -165,5 +167,55 @@ class SharedViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repo.updateItem(shoppingListItem = shoppingListItem)
         }
+    }
+
+    fun rearrangeItems(
+        shoppingListItems: List<ShoppingListEntity>,
+        yPositionOfItems: MutableMap<Int, Float>
+    ) {
+        var rearrangedMutableList: MutableList<ShoppingListEntity> = mutableListOf()
+        for (item in shoppingListItems) {
+            rearrangedMutableList.add(item)
+        }
+
+        for (itemIndex in 0..shoppingListItems.size - 2) {
+            if (yPositionOfItems[itemIndex]!! > yPositionOfItems[itemIndex + 1]!!) {
+                isRearranging = true
+                /*
+                // Create new, rearranged list (switch items)
+                rearrangedMutableList[itemIndex + 1] = shoppingListItems[itemIndex]
+                rearrangedMutableList[itemIndex] = shoppingListItems[itemIndex + 1]
+
+                // Convert back to list
+                val rearrangedList: List<ShoppingListEntity> = rearrangedMutableList
+
+                // Don't forget groupId
+                retrievedGroupId = rearrangedList[0].groupId
+
+                // Delete all previous items of list in database
+                deleteItems(shoppingListItems)
+
+                // Create all items of new list
+                items.clear()
+                items = rearrangedMutableList
+                createItems()
+                */
+
+                // Save item
+                val savedItem: ShoppingListEntity = shoppingListItems[itemIndex]
+                retrievedGroupId = savedItem.groupId
+
+                // Delete item
+                deleteItem(shoppingListItems[itemIndex].id)
+
+                // Add item
+                items.clear()
+                itemName = savedItem.itemName
+                itemQuantity = savedItem.itemQuantity.toString()
+                itemUnit = savedItem.itemUnit
+                createItems()
+            }
+        }
+
     }
 }

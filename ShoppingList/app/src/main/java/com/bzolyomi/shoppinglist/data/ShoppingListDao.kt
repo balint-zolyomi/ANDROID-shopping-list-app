@@ -8,7 +8,7 @@ interface ShoppingListDao {
 
     @Transaction
     @Query("SELECT * FROM shopping_group")
-    fun getShoppingGroupsWithShoppingLists(): Flow<List<GroupWithLists>>
+    fun getShoppingGroupsWithShoppingLists(): Flow<List<GroupWithList>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun createGroup(group: ShoppingGroupEntity)
@@ -21,7 +21,7 @@ interface ShoppingListDao {
 
     @Transaction
     @Query("SELECT * FROM shopping_group SG WHERE SG.group_id=:groupId")
-    fun getGroupWithList(groupId: Long?): Flow<GroupWithLists>
+    fun getGroupWithList(groupId: Long?): Flow<GroupWithList>
 
     @Query("DELETE FROM shopping_list WHERE item_id=:itemId")
     suspend fun deleteItem(itemId: Long?)

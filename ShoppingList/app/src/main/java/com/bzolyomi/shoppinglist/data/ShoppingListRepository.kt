@@ -8,7 +8,7 @@ import javax.inject.Inject
 class ShoppingListRepository @Inject constructor(
     private val dao: ShoppingListDao) {
 
-    val allGroupWithLists: Flow<List<GroupWithLists>> = dao.getShoppingGroupsWithShoppingLists()
+    val allGroupWithLists: Flow<List<GroupWithList>> = dao.getShoppingGroupsWithShoppingLists()
 
     suspend fun createGroup(group: ShoppingGroupEntity) {
         dao.createGroup(group = group)
@@ -22,7 +22,7 @@ class ShoppingListRepository @Inject constructor(
         return dao.getGroupId(groupName = groupName)
     }
 
-    fun getGroupWithList(groupId: Long?): Flow<GroupWithLists> {
+    fun getGroupWithList(groupId: Long?): Flow<GroupWithList> {
         return dao.getGroupWithList(groupId)
     }
 

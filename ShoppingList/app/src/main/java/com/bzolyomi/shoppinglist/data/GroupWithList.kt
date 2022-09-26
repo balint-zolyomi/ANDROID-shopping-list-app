@@ -1,10 +1,9 @@
 package com.bzolyomi.shoppinglist.data
 
 import androidx.room.Embedded
-import androidx.room.Entity
 import androidx.room.Relation
 
-data class GroupWithLists(
+data class GroupWithList(
     @Embedded val group: ShoppingGroupEntity,
     @Relation(
         parentColumn = "group_id",
