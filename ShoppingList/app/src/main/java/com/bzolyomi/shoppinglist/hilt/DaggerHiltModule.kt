@@ -2,7 +2,7 @@ package com.bzolyomi.shoppinglist.hilt
 
 import android.content.Context
 import androidx.room.Room
-import com.bzolyomi.shoppinglist.data.Database
+import com.bzolyomi.shoppinglist.data.LocalDatabase
 import com.bzolyomi.shoppinglist.util.Constants.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
@@ -17,10 +17,10 @@ object DaggerHiltModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context) =
-        Room.databaseBuilder(context, Database::class.java, DATABASE_NAME).build()
+    fun provideLocalDatabase(@ApplicationContext context: Context) =
+        Room.databaseBuilder(context, LocalDatabase::class.java, DATABASE_NAME).build()
 
     @Singleton
     @Provides
-    fun provideDao(database: Database) = database.shoppingListDao()
+    fun provideLocalDatabaseDao(localDatabase: LocalDatabase) = localDatabase.localDatabaseDao()
 }

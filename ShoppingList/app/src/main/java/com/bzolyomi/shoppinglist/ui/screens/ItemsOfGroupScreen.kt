@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -23,7 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.bzolyomi.shoppinglist.data.GroupWithList
-import com.bzolyomi.shoppinglist.data.ShoppingListEntity
+import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
+import com.bzolyomi.shoppinglist.ui.components.ItemNameInput
+import com.bzolyomi.shoppinglist.ui.components.ItemQuantityInput
+import com.bzolyomi.shoppinglist.ui.components.ItemUnitInput
+import com.bzolyomi.shoppinglist.ui.components.SubmitButton
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import kotlin.math.roundToInt
 
@@ -31,7 +34,7 @@ import kotlin.math.roundToInt
 fun ItemsOfGroupScreen(
     selectedGroupWithList: GroupWithList?,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
-    onDeleteGroupClicked: (groupId: Long?, shoppingList: List<ShoppingListEntity>) -> Unit,
+    onDeleteGroupClicked: (groupId: Long?, shoppingList: List<ShoppingItemEntity>) -> Unit,
     itemName: String,
     itemQuantity: String,
     itemUnit: String,
@@ -40,7 +43,7 @@ fun ItemsOfGroupScreen(
     onItemQuantityChange: (String) -> Unit,
     onItemUnitChange: (String) -> Unit,
     onSubmitButtonClicked: (Long?) -> Unit,
-    onCheckboxClicked: (ShoppingListEntity) -> Unit,
+    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     sharedViewModel: SharedViewModel,
     onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
@@ -69,7 +72,7 @@ fun ItemsOfGroupScreen(
                     Row(modifier = Modifier.padding(horizontal = 12.dp)) {
                         SubmitButton(onSubmitButtonClicked = {
                             onSubmitButtonClicked(
-                                selectedGroupWithList.group.id
+                                selectedGroupWithList.group.groupId
                             )
                             addItem = false
                         })
@@ -90,9 +93,9 @@ fun ItemsOfGroupScreen(
 fun ContentWithoutInput(
     selectedGroupWithList: GroupWithList,
     isItemChecked: Boolean,
-    onDeleteGroupClicked: (groupId: Long?, shoppingList: List<ShoppingListEntity>) -> Unit,
+    onDeleteGroupClicked: (groupId: Long?, shoppingList: List<ShoppingItemEntity>) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
-    onCheckboxClicked: (ShoppingListEntity) -> Unit,
+    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     sharedViewModel: SharedViewModel,
     onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
@@ -104,7 +107,7 @@ fun ContentWithoutInput(
         )
         IconButton(onClick = {
             onDeleteGroupClicked(
-                selectedGroupWithList.group.id,
+                selectedGroupWithList.group.groupId,
                 selectedGroupWithList.shoppingList
             )
         }) {
@@ -130,10 +133,10 @@ fun CancelButton(onCancelButtonClicked: () -> Unit) {
 
 @Composable
 fun AllItems(
-    shoppingListItems: List<ShoppingListEntity>,
+    shoppingListItems: List<ShoppingItemEntity>,
     isItemChecked: Boolean,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
-    onCheckboxClicked: (ShoppingListEntity) -> Unit,
+    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     sharedViewModel: SharedViewModel,
     onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
@@ -179,7 +182,7 @@ fun AllItems(
                     )
                 ) {
 
-                    var itemsThatCrossed: List<ShoppingListEntity> = emptyList()
+                    var itemsThatCrossed: List<ShoppingItemEntity> = emptyList()
                     var globalY: Float = remember { 0f }
 //                    isRearranging = sharedViewModel.isRearranging
 
@@ -257,7 +260,7 @@ fun AllItems(
                         style = MaterialTheme
                             .typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold)
                     )
-                    IconButton(onClick = { onDeleteItemClicked(item.id) }) {
+                    IconButton(onClick = { onDeleteItemClicked(item.itemId) }) {
                         Icon(imageVector = Icons.Filled.Close, contentDescription = "Delete item")
                     }
                 }

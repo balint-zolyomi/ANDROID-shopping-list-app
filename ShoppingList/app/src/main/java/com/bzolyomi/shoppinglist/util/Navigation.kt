@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.util
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,21 +19,30 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 fun NavigationController(sharedViewModel: SharedViewModel) {
 
     val navController: NavHostController = rememberNavController()
+    val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             AllGroupsScreen(
-                sharedViewModel = sharedViewModel,
-                onNavigateToAddAllScreen = { navController.navigate("add") },
-                onNavigateToItemsOfGroupScreen = { groupId ->
+                shoppingGroupsWithLists = shoppingGroupsWithLists,
+                onAddAllFABClicked = { navController.navigate("add") },
+                onOpenGroupIconClicked = { groupId ->
                     navController.navigate("group/$groupId")
                 }
             )
         }
         composable("add") {
             AddAllScreen(
-                sharedViewModel = sharedViewModel,
-                onNavigateToAllGroupsScreen = {
+                groupName = sharedViewModel.groupName,
+                itemName = sharedViewModel.itemName,
+                itemQuantity = sharedViewModel.itemQuantity,
+                itemUnit = sharedViewModel.itemUnit,
+                onGroupNameChange = { sharedViewModel.groupName = it },
+                onItemNameChange = { sharedViewModel.itemName = it },
+                onItemQuantityChange = { sharedViewModel.itemQuantity = it },
+                onItemUnitChange = { sharedViewModel.itemUnit = it },
+                onAddItemButtonClicked = { sharedViewModel.addToItemList() },
+                onSubmitButtonClicked = {
                     sharedViewModel.createGroupAndItems()
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }

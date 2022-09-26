@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
-import com.bzolyomi.shoppinglist.data.ShoppingListEntity
-import com.bzolyomi.shoppinglist.data.ShoppingListRepository
+import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
+import com.bzolyomi.shoppinglist.data.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ import javax.inject.Inject
 // created in composables (for example, a remembered value) because this could cause memory leaks.
 @HiltViewModel
 class SharedViewModel @Inject constructor(
-    private val repo: ShoppingListRepository
+    private val repo: Repository
 ) : ViewModel() {
 
 //    private val _shoppingListItems = MutableStateFlow<List<ShoppingListEntity>>(emptyList())
@@ -42,7 +42,7 @@ class SharedViewModel @Inject constructor(
     var itemUnit by mutableStateOf("")
     var isItemChecked by mutableStateOf(false)
 
-    private var items: MutableList<ShoppingListEntity> = mutableListOf()
+    private var items: MutableList<ShoppingItemEntity> = mutableListOf()
 
     private var _selectedGroupWithList = MutableStateFlow(
         GroupWithList(
@@ -62,7 +62,7 @@ class SharedViewModel @Inject constructor(
 
     private fun getAll() {
         viewModelScope.launch {
-            repo.allGroupWithLists.collect {
+            repo.allGroupsWithLists.collect {
                 _shoppingGroupsWithLists.value = it
             }
         }
@@ -78,13 +78,13 @@ class SharedViewModel @Inject constructor(
     fun addToItemList() {
         if (itemName.isNotBlank()) {
             items.add(
-                ShoppingListEntity(
-                    id = null,
-                    groupId = null,
+                ShoppingItemEntity(
+                    itemId = null,
+                    itemParentId = null,
                     itemName = itemName,
                     itemQuantity = itemQuantity.toFloat(),
                     itemUnit = itemUnit,
-                    isChecked = false
+                    isItemChecked = false
                 )
             )
             deleteItemCache()
@@ -98,7 +98,7 @@ class SharedViewModel @Inject constructor(
 
     fun createGroupAndItems() {
         val group = ShoppingGroupEntity(
-            id = null,
+            groupId = null,
             groupName = groupName
         )
 
@@ -117,7 +117,7 @@ class SharedViewModel @Inject constructor(
     fun createItems(groupId: Long? = retrievedGroupId) {
         if (itemName.isNotBlank()) addToItemList()
         for (item in items) {
-            item.groupId = groupId
+            item.itemParentId = groupId
             viewModelScope.launch(Dispatchers.IO) {
                 repo.createItem(item = item)
             }
@@ -146,34 +146,34 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun deleteItems(shoppingList: List<ShoppingListEntity>) {
+    fun deleteItems(shoppingList: List<ShoppingItemEntity>) {
         for (item in shoppingList) {
             viewModelScope.launch(Dispatchers.IO) {
-                repo.deleteItem(itemId = item.id)
+                repo.deleteItem(itemId = item.itemId)
             }
         }
     }
 
-    fun updateItem(shoppingListItem: ShoppingListEntity) {
+    fun updateItem(shoppingListItem: ShoppingItemEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.updateItem(shoppingListItem = shoppingListItem)
+            repo.updateItem(item = shoppingListItem)
         }
     }
 
-    fun updateItemChecked(shoppingListItem: ShoppingListEntity) {
-        shoppingListItem.isChecked = !shoppingListItem.isChecked
-        isItemChecked = shoppingListItem.isChecked
+    fun updateItemChecked(shoppingListItem: ShoppingItemEntity) {
+        shoppingListItem.isItemChecked = !shoppingListItem.isItemChecked
+        isItemChecked = shoppingListItem.isItemChecked
 
         viewModelScope.launch(Dispatchers.IO) {
-            repo.updateItem(shoppingListItem = shoppingListItem)
+            repo.updateItem(item = shoppingListItem)
         }
     }
 
     fun rearrangeItems(
-        shoppingListItems: List<ShoppingListEntity>,
+        shoppingListItems: List<ShoppingItemEntity>,
         yPositionOfItems: MutableMap<Int, Float>
     ) {
-        var rearrangedMutableList: MutableList<ShoppingListEntity> = mutableListOf()
+        var rearrangedMutableList: MutableList<ShoppingItemEntity> = mutableListOf()
         for (item in shoppingListItems) {
             rearrangedMutableList.add(item)
         }
@@ -202,11 +202,11 @@ class SharedViewModel @Inject constructor(
                 */
 
                 // Save item
-                val savedItem: ShoppingListEntity = shoppingListItems[itemIndex]
-                retrievedGroupId = savedItem.groupId
+                val savedItem: ShoppingItemEntity = shoppingListItems[itemIndex]
+                retrievedGroupId = savedItem.itemParentId
 
                 // Delete item
-                deleteItem(shoppingListItems[itemIndex].id)
+                deleteItem(shoppingListItems[itemIndex].itemId)
 
                 // Add item
                 items.clear()
