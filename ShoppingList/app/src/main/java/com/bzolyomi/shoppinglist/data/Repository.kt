@@ -26,10 +26,6 @@ class Repository @Inject constructor(
 
         // Special
     suspend fun getGroupId(groupName: String): Long? {
-            Log.d( // TODO DONE
-                "balint-debug", "__________\n" +
-                        "\ngroupName REPO: $groupName"
-            )
         return dao.getGroupId(groupName = groupName)
     }
 

@@ -15,6 +15,7 @@ import com.bzolyomi.shoppinglist.ui.screens.AddAllScreen
 import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
 import com.bzolyomi.shoppinglist.ui.screens.ItemsOfGroupScreen
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun NavigationController(sharedViewModel: SharedViewModel) {
@@ -46,68 +47,68 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 onItemNameChange = { sharedViewModel.itemName = it },
                 onItemQuantityChange = { sharedViewModel.itemQuantity = it },
                 onItemUnitChange = { sharedViewModel.itemUnit = it },
-//                onAddItemButtonClicked = { sharedViewModel.addToItemList() },
-                onAddItemButtonClicked = {
+                onAddItemButtonClicked = { sharedViewModel.addItemFromGUIToItemList() },
+                onSubmitAddAllButtonClicked = {
+                    sharedViewModel.createWithCoroutines()
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }
                     }
-                },
-                onSubmitAddAllButtonClicked = {
-                    sharedViewModel.createWithCoroutines()
                 }
             )
         }
 
-//        composable(
-//            route = "group/{groupId}",
-//            arguments = listOf(navArgument("groupId") {
-//                type = NavType.StringType
-//            })
-//        ) { navBackStackEntry ->
-//            val groupId = navBackStackEntry.arguments!!.getString("groupId")
-////            var selectedGroupWithList: GroupWithList = GroupWithList(
-////                ShoppingGroupEntity(
-////                    0, ""
-////                ),
-////                shoppingList = emptyList()
-////            )
-//
-//            LaunchedEffect(key1 = groupId) {
-//                sharedViewModel.getSelectedGroupWithList(groupId = groupId)
-////                withContext(this.coroutineContext) {
-////                    sharedViewModel.selectedGroupWithList.collect {
-////                        selectedGroupWithList = it
-////                    }
-////                }
-//            }
-//            val selectedGroupWithList by sharedViewModel.selectedGroupWithList.collectAsState()
-//
-//            ItemsOfGroupScreen(
-//                selectedGroupWithList = selectedGroupWithList,
-//                onDeleteItemClicked = {
-//                    sharedViewModel.deleteItem(itemId = it)
-//                },
-//                onDeleteGroupClicked = { groupId, shoppingList ->
-//                    sharedViewModel.deleteGroupCache(groupId = groupId)
-//                    sharedViewModel.deleteItems(shoppingList)
-//                    navController.navigate("home")
-//                },
-//                itemName = sharedViewModel.itemName,
-//                itemQuantity = sharedViewModel.itemQuantity,
-//                itemUnit = sharedViewModel.itemUnit,
-//                isItemChecked = sharedViewModel.isItemChecked,
-//                onItemNameChange = { sharedViewModel.itemName = it },
-//                onItemQuantityChange = { sharedViewModel.itemQuantity = it },
-//                onItemUnitChange = { sharedViewModel.itemUnit = it },
-//                onSubmitAddItemButtonClicked = {
-////                    sharedViewModel.createItemsAndClearCaches()
-//                },
-//                onCheckboxClicked = { sharedViewModel.updateItemChecked(it) },
+        composable(
+            route = "group/{groupId}",
+            arguments = listOf(navArgument("groupId") {
+                type = NavType.StringType
+            })
+        ) { navBackStackEntry ->
+            val groupId = navBackStackEntry.arguments!!.getString("groupId")
+//            var selectedGroupWithList: GroupWithList = GroupWithList(
+//                ShoppingGroupEntity(
+//                    0, ""
+//                ),
+//                shoppingList = emptyList()
+//            )
+
+            LaunchedEffect(key1 = groupId) {
+                sharedViewModel.getSelectedGroupWithList(groupId = groupId)
+//                withContext(this.coroutineContext) {
+//                    sharedViewModel.selectedGroupWithList.collect {
+//                        selectedGroupWithList = it
+//                    }
+//                }
+            }
+            val selectedGroupWithList by sharedViewModel.selectedGroupWithList.collectAsState()
+
+            ItemsOfGroupScreen(
+                selectedGroupWithList = selectedGroupWithList,
+                onDeleteItemClicked = {
+                    sharedViewModel.deleteItem(itemId = it)
+                },
+                onDeleteGroupClicked = { groupIdToDelete, shoppingListToDelete ->
+                    sharedViewModel.setCurrentGroupID(groupId = null)
+                    sharedViewModel.deleteGroup(groupId = groupIdToDelete)
+                    sharedViewModel.deleteItems(shoppingListToDelete)
+                    navController.navigate("home")
+                },
+                itemName = sharedViewModel.itemName,
+                itemQuantity = sharedViewModel.itemQuantity,
+                itemUnit = sharedViewModel.itemUnit,
+                onItemNameChange = { sharedViewModel.itemName = it },
+                onItemQuantityChange = { sharedViewModel.itemQuantity = it },
+                onItemUnitChange = { sharedViewModel.itemUnit = it },
+                onSubmitAddItemButtonClicked = {
+                    runBlocking { sharedViewModel.createItems(groupId = it) }
+                },
+                onCheckboxClicked = {
+                    sharedViewModel.updateItemChecked(it)
+                },
 //                sharedViewModel = sharedViewModel,
 //                onItemsRearrangedOnGUI = {
-////                    sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)
+//                    sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)
 //                }
-//            )
-//        }
+            )
+        }
     }
 }

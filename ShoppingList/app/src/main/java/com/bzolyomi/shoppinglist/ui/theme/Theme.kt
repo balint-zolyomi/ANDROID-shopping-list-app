@@ -31,7 +31,7 @@ private val LightColorPalette = lightColors(
     onSecondary = TextIcons,
     onBackground = TextIcons,
     onSurface = TextIcons,
-    onError = Thrash
+    onError = Thrash,
 )
 
 @Composable

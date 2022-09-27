@@ -2,8 +2,12 @@ package com.bzolyomi.shoppinglist.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
@@ -43,5 +47,12 @@ fun AddAllScreen(
             Spacer(Modifier.weight(1f))
             SubmitAddAllButton(onSubmitAddAllButtonClicked = onSubmitAddAllButtonClicked)
         }
+    }
+}
+
+@Composable
+fun AddItemButton(onAddItemButtonClicked: () -> Unit) {
+    Button(onClick = onAddItemButtonClicked) {
+        Text(text = stringResource(R.string.add_item_button_text))
     }
 }

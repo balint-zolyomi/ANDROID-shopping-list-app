@@ -6,4 +6,7 @@
     <string name="input_label_item_quantity">Item quantity</string>
     <string name="input_label_item_unit">Item Unit</string>
     <string name="input_label_group_name">Group name</string>
+    <string name="add_item_button">ADD ITEM</string>
+    <string name="cancel_button">CANCEL</string>
+    <string name="delete_item_icon">Delete item</string>
 </resources>

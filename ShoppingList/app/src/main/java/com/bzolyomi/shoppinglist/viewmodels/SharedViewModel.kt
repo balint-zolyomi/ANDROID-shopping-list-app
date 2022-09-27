@@ -23,27 +23,14 @@ class SharedViewModel @Inject constructor(
     private val repo: Repository
 ) : ViewModel() {
 
-//    private val _shoppingListItems = MutableStateFlow<List<ShoppingListEntity>>(emptyList())
-//    val shoppingListItems: StateFlow<List<ShoppingListEntity>>
-//        get() = _shoppingListItems
-
-    private val _shoppingGroupsWithLists = MutableStateFlow<List<GroupWithList>>(emptyList())
-    val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
-        get() = _shoppingGroupsWithLists
-
-    //    private var groupId: String? by mutableStateOf(null)
-//    private var currentGroupId: Long? by mutableStateOf(null)
-
-    //    private var itemId: String? by mutableStateOf(null)
     var groupName by mutableStateOf("")
     var itemName by mutableStateOf("")
     var itemQuantity by mutableStateOf("")
     var itemUnit by mutableStateOf("")
-    var isItemChecked by mutableStateOf(false)
 
-    private var _groupId: Long? = null
-
-    private var items: MutableList<ShoppingItemEntity> = mutableListOf()
+    private val _shoppingGroupsWithLists = MutableStateFlow<List<GroupWithList>>(emptyList())
+    val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
+        get() = _shoppingGroupsWithLists
 
     private var _selectedGroupWithList = MutableStateFlow(
         GroupWithList(
@@ -53,6 +40,10 @@ class SharedViewModel @Inject constructor(
     )
     val selectedGroupWithList: StateFlow<GroupWithList>
         get() = _selectedGroupWithList
+
+    private var _groupId: Long? = null
+
+    private var items: MutableList<ShoppingItemEntity> = mutableListOf()
 
     val yPositionOfItems: StateFlow<MutableMap<Int, Float>> = MutableStateFlow(mutableMapOf())
     var isRearranging by mutableStateOf(false)
@@ -69,96 +60,6 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun deleteGroupCache() {
-//        currentGroupId = null
-        groupName = ""
-    }
-
-    fun resetItemGUIInput() {
-        itemName = ""
-        itemQuantity = ""
-        itemUnit = ""
-        isItemChecked = false
-    }
-
-    fun addFromGUIToItemList() {
-        items.add(
-            ShoppingItemEntity(
-                itemId = null,
-                itemParentId = null,
-                itemName = itemName,
-                itemQuantity = if (itemQuantity == "") 0f else itemQuantity.toFloat(),
-                itemUnit = itemUnit,
-                isItemChecked = false
-            )
-        )
-    }
-
-    fun createWithCoroutines() = runBlocking {
-        var groupId = getGroupIdCoroutine()
-        Log.d("balint-debug", " \nresult: $groupId")
-
-        if (groupId == null) {
-            Log.d("balint-debug", " \nresult: NULL")
-            createGroupCoroutine()
-            groupId = getGroupIdCoroutine()
-            createItems(groupId = groupId)
-        } else {
-            Log.d("balint-debug", " \nresult: NOT NULL")
-            createItems(groupId = groupId)
-        }
-
-        flushGUI()
-    }
-
-    fun flushGUI() {
-        groupName = ""
-        itemName = ""
-        itemQuantity = ""
-        itemUnit = ""
-        items.clear()
-    }
-
-    suspend fun createItems(groupId: Long?) = coroutineScope {
-        if (itemName.isNotBlank()) {
-            items.add(ShoppingItemEntity(
-                itemId = null,
-                itemParentId = groupId,
-                itemName = itemName,
-                itemQuantity = if (itemQuantity.isBlank()) 0f else itemQuantity.toFloat(),
-                itemUnit = itemUnit,
-                isItemChecked = false
-            ))
-        }
-        for (item in items) {
-            item.itemParentId = groupId
-            repo.createItem(item = item)
-        }
-    }
-
-    suspend fun createGroupCoroutine() = coroutineScope {
-        val createGroup = async { createGroup() }
-        createGroup.await()
-    }
-
-    suspend fun createGroup() {
-        repo.createGroup(ShoppingGroupEntity(groupId = null, groupName = groupName))
-    }
-
-    suspend fun getGroupIdCoroutine(): Long? = coroutineScope {
-        val groupId = async { getGroupId() }
-        groupId.await()
-    }
-
-    suspend fun getGroupId(): Long? {
-        return repo.getGroupId(groupName = groupName)
-    }
-
-
-    fun setCurrentGroupID(groupId: Long?) {
-
-    }
-
     fun getSelectedGroupWithList(groupId: String?) {
         val id = groupId?.toLong()
         viewModelScope.launch(Dispatchers.IO) {
@@ -168,15 +69,106 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun deleteItem(itemId: Long?) {
+//    fun resetItemGUIInput() {
+//        itemName = ""
+//        itemQuantity = ""
+//        itemUnit = ""
+//        isItemChecked = false
+//    }
+//
+//    fun addFromGUIToItemList() {
+//        items.add(
+//            ShoppingItemEntity(
+//                itemId = null,
+//                itemParentId = null,
+//                itemName = itemName,
+//                itemQuantity = if (itemQuantity == "") 0f else itemQuantity.toFloat(),
+//                itemUnit = itemUnit,
+//                isItemChecked = false
+//            )
+//        )
+//    }
+
+    private fun flushItemGUI() {
+        itemName = ""
+        itemQuantity = ""
+        itemUnit = ""
+    }
+
+    // COROUTINES and their functions
+    fun createWithCoroutines() = runBlocking {
+        var groupId = getGroupIdCoroutine()
+
+        if (groupId == null) {
+            createGroupCoroutine()
+            groupId = getGroupIdCoroutine()
+            createItems(groupId = groupId)
+        } else {
+            createItems(groupId = groupId)
+        }
+
+        groupName = ""
+    }
+
+    suspend fun createItems(groupId: Long?) = coroutineScope {
+        addItemFromGUIToItemList()
+        for (item in items) {
+            item.itemParentId = groupId
+            repo.createItem(item = item)
+        }
+        flushItemGUI()
+        items.clear()
+    }
+
+    private suspend fun createGroupCoroutine() = coroutineScope {
+        val createGroup = async { createGroup() }
+        createGroup.await()
+    }
+
+    private suspend fun createGroup() {
+        repo.createGroup(ShoppingGroupEntity(groupId = null, groupName = groupName))
+    }
+
+    private suspend fun getGroupIdCoroutine(): Long? = coroutineScope {
+        val groupId = async { getGroupId() }
+        groupId.await()
+    }
+
+    private suspend fun getGroupId(): Long? {
+        return repo.getGroupId(groupName = groupName)
+    }
+
+    fun addItemFromGUIToItemList() {
+        if (itemName.isNotBlank()) {
+            items.add(
+                ShoppingItemEntity(
+                    itemId = null,
+                    itemParentId = null,
+                    itemName = itemName,
+                    itemQuantity = if (itemQuantity.isBlank()) 0f else itemQuantity.toFloat(),
+                    itemUnit = itemUnit,
+                    isItemChecked = false
+                )
+            )
+        }
+        flushItemGUI()
+    }
+
+    // OTHER
+    fun setCurrentGroupID(groupId: Long?) {
+        _groupId = groupId
+    }
+
+    // DELETE
+    fun deleteGroup(groupId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteItem(itemId = itemId)
+            repo.deleteGroup(groupId = groupId)
         }
     }
 
-    fun deleteGroupCache(groupId: Long?) {
+    fun deleteItem(itemId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteGroup(groupId = groupId)
+            repo.deleteItem(itemId = itemId)
         }
     }
 
@@ -188,22 +180,22 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun updateItem(shoppingListItem: ShoppingItemEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.updateItem(item = shoppingListItem)
-        }
-    }
-
+    // UPDATE
     fun updateItemChecked(shoppingListItem: ShoppingItemEntity) {
         shoppingListItem.isItemChecked = !shoppingListItem.isItemChecked
-        isItemChecked = shoppingListItem.isItemChecked
 
         viewModelScope.launch(Dispatchers.IO) {
             repo.updateItem(item = shoppingListItem)
         }
     }
+
+//    fun updateItem(shoppingListItem: ShoppingItemEntity) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repo.updateItem(item = shoppingListItem)
+//        }
+//    }
 }
-/*
+/* --- TODO: REARRANGE
     fun rearrangeItems(
         shoppingListItems: List<ShoppingItemEntity>,
         yPositionOfItems: MutableMap<Int, Float>
