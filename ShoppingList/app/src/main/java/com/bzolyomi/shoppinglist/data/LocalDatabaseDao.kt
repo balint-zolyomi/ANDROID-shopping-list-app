@@ -24,7 +24,7 @@ interface LocalDatabaseDao {
 
         // Special
     @Query("SELECT SG.group_id FROM shopping_group SG WHERE SG.group_name=:groupName")
-    fun getGroupId(groupName: String): Flow<Long?>
+    suspend fun getGroupId(groupName: String): Long?
 
     // UPDATE
     @Update

@@ -34,8 +34,15 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_MEDIUM
 
 @Composable
-fun SubmitButton(onSubmitButtonClicked: () -> Unit) {
-    Button(onClick = onSubmitButtonClicked) {
+fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
+    Button(onClick = onSubmitAddAllButtonClicked) {
+        Text(text = stringResource(R.string.submit_button_text))
+    }
+}
+
+@Composable
+fun SubmitAddItemButton(onSubmitAddItemButtonClicked: () -> Unit) {
+    Button(onClick = onSubmitAddItemButtonClicked) {
         Text(text = stringResource(R.string.submit_button_text))
     }
 }

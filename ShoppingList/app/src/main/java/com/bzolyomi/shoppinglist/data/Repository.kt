@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.data
 
+import android.util.Log
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -24,7 +25,11 @@ class Repository @Inject constructor(
     }
 
         // Special
-    fun getGroupId(groupName: String): Flow<Long?> {
+    suspend fun getGroupId(groupName: String): Long? {
+            Log.d( // TODO DONE
+                "balint-debug", "__________\n" +
+                        "\ngroupName REPO: $groupName"
+            )
         return dao.getGroupId(groupName = groupName)
     }
 

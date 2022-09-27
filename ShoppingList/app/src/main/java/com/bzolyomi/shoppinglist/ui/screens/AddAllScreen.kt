@@ -1,14 +1,12 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.bzolyomi.shoppinglist.ui.components.AddItemButton
-import com.bzolyomi.shoppinglist.ui.components.GroupInput
-import com.bzolyomi.shoppinglist.ui.components.ItemInput
-import com.bzolyomi.shoppinglist.ui.components.SubmitButton
+import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
+import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun AddAllScreen(
@@ -21,7 +19,7 @@ fun AddAllScreen(
     onItemQuantityChange: (String) -> Unit,
     onItemUnitChange: (String) -> Unit,
     onAddItemButtonClicked: () -> Unit,
-    onSubmitButtonClicked: () -> Unit
+    onSubmitAddAllButtonClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -30,20 +28,20 @@ fun AddAllScreen(
     ) {
         GroupInput(
             groupName = groupName,
-            onGroupNameChange = onGroupNameChange
+            onGroupNameChange = { onGroupNameChange(it) }
         )
         ItemInput(
             itemName = itemName,
             itemQuantity = itemQuantity,
             itemUnit = itemUnit,
-            onItemNameChange = onItemNameChange,
-            onItemQuantityChange = onItemQuantityChange,
-            onItemUnitChange = onItemUnitChange
+            onItemNameChange = { onItemNameChange(it) },
+            onItemQuantityChange = { onItemQuantityChange(it) },
+            onItemUnitChange = { onItemUnitChange(it) }
         )
         Row(modifier = Modifier.padding(PADDING_MEDIUM)) {
             AddItemButton(onAddItemButtonClicked = onAddItemButtonClicked)
             Spacer(Modifier.weight(1f))
-            SubmitButton(onSubmitButtonClicked = onSubmitButtonClicked)
+            SubmitAddAllButton(onSubmitAddAllButtonClicked = onSubmitAddAllButtonClicked)
         }
     }
 }

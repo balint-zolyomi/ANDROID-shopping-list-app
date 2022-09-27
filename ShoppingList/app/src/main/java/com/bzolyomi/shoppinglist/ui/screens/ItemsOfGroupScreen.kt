@@ -23,10 +23,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
-import com.bzolyomi.shoppinglist.ui.components.ItemNameInput
-import com.bzolyomi.shoppinglist.ui.components.ItemQuantityInput
-import com.bzolyomi.shoppinglist.ui.components.ItemUnitInput
-import com.bzolyomi.shoppinglist.ui.components.SubmitButton
+import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import kotlin.math.roundToInt
 
@@ -42,7 +39,7 @@ fun ItemsOfGroupScreen(
     onItemNameChange: (String) -> Unit,
     onItemQuantityChange: (String) -> Unit,
     onItemUnitChange: (String) -> Unit,
-    onSubmitButtonClicked: (Long?) -> Unit,
+    onSubmitAddItemButtonClicked: (Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     sharedViewModel: SharedViewModel,
     onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
@@ -70,8 +67,8 @@ fun ItemsOfGroupScreen(
                         onItemQuantityChange = { onItemQuantityChange(it) })
                     ItemUnitInput(itemUnit, onItemUnitChange = { onItemUnitChange(it) })
                     Row(modifier = Modifier.padding(horizontal = 12.dp)) {
-                        SubmitButton(onSubmitButtonClicked = {
-                            onSubmitButtonClicked(
+                        SubmitAddItemButton(onSubmitAddItemButtonClicked = {
+                            onSubmitAddItemButtonClicked(
                                 selectedGroupWithList.group.groupId
                             )
                             addItem = false

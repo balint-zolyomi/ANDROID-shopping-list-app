@@ -17,7 +17,7 @@ fun GroupInput(
     Column(modifier = Modifier.fillMaxWidth()) {
         GroupNameInput(
             groupName = groupName,
-            onGroupNameChange = onGroupNameChange
+            onGroupNameChange = { onGroupNameChange(it) }
         )
     }
 }
