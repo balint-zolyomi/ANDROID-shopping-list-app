@@ -95,27 +95,59 @@ class SharedViewModel @Inject constructor(
     }
 
     fun createWithCoroutines() = runBlocking {
-        val groupId = doStructuredConcurrency()
+        var groupId = getGroupIdCoroutine()
         Log.d("balint-debug", " \nresult: $groupId")
 
         if (groupId == null) {
             Log.d("balint-debug", " \nresult: NULL")
-
+            createGroupCoroutine()
+            groupId = getGroupIdCoroutine()
+            createItems(groupId = groupId)
         } else {
             Log.d("balint-debug", " \nresult: NOT NULL")
+            createItems(groupId = groupId)
+        }
 
+        flushGUI()
+    }
+
+    fun flushGUI() {
+        groupName = ""
+        itemName = ""
+        itemQuantity = ""
+        itemUnit = ""
+        items.clear()
+    }
+
+    suspend fun createItems(groupId: Long?) = coroutineScope {
+        if (itemName.isNotBlank()) {
+            items.add(ShoppingItemEntity(
+                itemId = null,
+                itemParentId = groupId,
+                itemName = itemName,
+                itemQuantity = if (itemQuantity.isBlank()) 0f else itemQuantity.toFloat(),
+                itemUnit = itemUnit,
+                isItemChecked = false
+            ))
+        }
+        for (item in items) {
+            item.itemParentId = groupId
+            repo.createItem(item = item)
         }
     }
 
-    suspend fun doStructuredConcurrency(): Long? = coroutineScope {
+    suspend fun createGroupCoroutine() = coroutineScope {
+        val createGroup = async { createGroup() }
+        createGroup.await()
+    }
+
+    suspend fun createGroup() {
+        repo.createGroup(ShoppingGroupEntity(groupId = null, groupName = groupName))
+    }
+
+    suspend fun getGroupIdCoroutine(): Long? = coroutineScope {
         val groupId = async { getGroupId() }
         groupId.await()
-
-//        if (isGroupExisting) {
-//            groupId = async { createGroupAndGetId() }
-//            groupId.await()
-//        }
-//        val addItemsToGroup = async { addItemsToGroup() }
     }
 
     suspend fun getGroupId(): Long? {
