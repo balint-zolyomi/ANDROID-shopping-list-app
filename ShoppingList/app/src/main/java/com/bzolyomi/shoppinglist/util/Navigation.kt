@@ -115,6 +115,9 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 },
                 onEraseItemUnitInputButtonClicked = {
                     sharedViewModel.itemUnit = ""
+                },
+                onCancelAddItemButtonClicked = {
+                    sharedViewModel.flushItemGUI()
                 }
 //                sharedViewModel = sharedViewModel,
 //                onItemsRearrangedOnGUI = {

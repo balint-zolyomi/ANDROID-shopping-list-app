@@ -236,7 +236,7 @@ fun ItemCards(
                     )
                     DeleteItemIconButton(
                         item = item,
-                        onDeleteItemClicked,
+                        onDeleteItemClicked = onDeleteItemClicked,
                         modifier = modifier.padding(end = PADDING_X_SMALL)
                     )
                 }

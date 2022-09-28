@@ -88,7 +88,7 @@ class SharedViewModel @Inject constructor(
 //        )
 //    }
 
-    private fun flushItemGUI() {
+    fun flushItemGUI() {
         itemName = ""
         itemQuantity = ""
         itemUnit = ""

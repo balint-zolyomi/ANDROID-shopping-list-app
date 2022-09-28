@@ -28,7 +28,8 @@ fun ItemsOfGroupScreen(
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onEraseItemNameInputButtonClicked: () -> Unit,
     onEraseItemQuantityInputButtonClicked: () -> Unit,
-    onEraseItemUnitInputButtonClicked: () -> Unit
+    onEraseItemUnitInputButtonClicked: () -> Unit,
+    onCancelAddItemButtonClicked: () -> Unit
 //    sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
@@ -58,6 +59,7 @@ fun ItemsOfGroupScreen(
                         addItem = false
                     },
                     onCancelButtonClicked = {
+                        onCancelAddItemButtonClicked()
                         addItem = false
                     },
                     onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
