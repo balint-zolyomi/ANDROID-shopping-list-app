@@ -1,29 +1,17 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckBox
-import androidx.compose.material.icons.filled.CheckBoxOutlineBlank
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
-import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
-import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
 
 @Composable
 fun ItemsOfGroupScreen(
@@ -38,6 +26,9 @@ fun ItemsOfGroupScreen(
     onItemUnitChange: (String) -> Unit,
     onSubmitAddItemButtonClicked: (Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
+    onEraseItemNameInputButtonClicked: () -> Unit,
+    onEraseItemQuantityInputButtonClicked: () -> Unit,
+    onEraseItemUnitInputButtonClicked: () -> Unit
 //    sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
@@ -68,7 +59,10 @@ fun ItemsOfGroupScreen(
                     },
                     onCancelButtonClicked = {
                         addItem = false
-                    }
+                    },
+                    onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
+                    onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
+                    onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked
                 )
             } else {
                 Button(
@@ -96,18 +90,26 @@ fun ItemInputFields(
     onItemQuantityChange: (String) -> Unit,
     onItemUnitChange: (String) -> Unit,
     onSubmitAddItemButtonClicked: () -> Unit,
-    onCancelButtonClicked: () -> Unit
+    onCancelButtonClicked: () -> Unit,
+    onEraseItemNameInputButtonClicked: () -> Unit,
+    onEraseItemQuantityInputButtonClicked: () -> Unit,
+    onEraseItemUnitInputButtonClicked: () -> Unit
 ) {
     Column(modifier = Modifier.padding(PADDING_MEDIUM)) {
         ItemNameInput(
             itemName = itemName,
-            onItemNameChange = { onItemNameChange(it) })
+            onItemNameChange = { onItemNameChange(it) },
+            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
+        )
         ItemQuantityInput(
             itemQuantity,
-            onItemQuantityChange = { onItemQuantityChange(it) })
+            onItemQuantityChange = { onItemQuantityChange(it) },
+            onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked
+        )
         ItemUnitInput(
             itemUnit,
-            onItemUnitChange = { onItemUnitChange(it) }
+            onItemUnitChange = { onItemUnitChange(it) },
+            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked
         )
         Row(modifier = Modifier.padding(horizontal = PADDING_MEDIUM)) {
             SubmitAddItemButton(onSubmitAddItemButtonClicked = onSubmitAddItemButtonClicked)

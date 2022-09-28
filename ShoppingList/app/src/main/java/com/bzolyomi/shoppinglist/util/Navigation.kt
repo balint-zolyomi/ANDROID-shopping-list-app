@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.util
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -53,7 +52,11 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }
                     }
-                }
+                },
+                onEraseGroupNameInputButtonClicked = { sharedViewModel.groupName = "" },
+                onEraseItemNameInputButtonClicked = { sharedViewModel.itemName = "" },
+                onEraseItemQuantityInputButtonClicked = { sharedViewModel.itemQuantity = "" },
+                onEraseItemUnitInputButtonClicked = { sharedViewModel.itemUnit = "" }
             )
         }
 
@@ -104,6 +107,15 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 onCheckboxClicked = {
                     sharedViewModel.updateItemChecked(it)
                 },
+                onEraseItemNameInputButtonClicked = {
+                    sharedViewModel.itemName = ""
+                },
+                onEraseItemQuantityInputButtonClicked = {
+                    sharedViewModel.itemQuantity = ""
+                },
+                onEraseItemUnitInputButtonClicked = {
+                    sharedViewModel.itemUnit = ""
+                }
 //                sharedViewModel = sharedViewModel,
 //                onItemsRearrangedOnGUI = {
 //                    sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)

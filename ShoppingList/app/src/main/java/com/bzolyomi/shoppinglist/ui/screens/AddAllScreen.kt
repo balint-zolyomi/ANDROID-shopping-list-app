@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -8,9 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
-import com.bzolyomi.shoppinglist.ui.components.*
+import com.bzolyomi.shoppinglist.ui.components.GroupInput
+import com.bzolyomi.shoppinglist.ui.components.ItemInput
+import com.bzolyomi.shoppinglist.ui.components.SubmitAddAllButton
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
-import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun AddAllScreen(
@@ -23,7 +23,11 @@ fun AddAllScreen(
     onItemQuantityChange: (String) -> Unit,
     onItemUnitChange: (String) -> Unit,
     onAddItemButtonClicked: () -> Unit,
-    onSubmitAddAllButtonClicked: () -> Unit
+    onSubmitAddAllButtonClicked: () -> Unit,
+    onEraseGroupNameInputButtonClicked: () -> Unit,
+    onEraseItemNameInputButtonClicked: () -> Unit,
+    onEraseItemQuantityInputButtonClicked: () -> Unit,
+    onEraseItemUnitInputButtonClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -32,7 +36,8 @@ fun AddAllScreen(
     ) {
         GroupInput(
             groupName = groupName,
-            onGroupNameChange = { onGroupNameChange(it) }
+            onGroupNameChange = { onGroupNameChange(it) },
+            onEraseGroupNameInputButtonClicked = onEraseGroupNameInputButtonClicked
         )
         ItemInput(
             itemName = itemName,
@@ -40,7 +45,10 @@ fun AddAllScreen(
             itemUnit = itemUnit,
             onItemNameChange = { onItemNameChange(it) },
             onItemQuantityChange = { onItemQuantityChange(it) },
-            onItemUnitChange = { onItemUnitChange(it) }
+            onItemUnitChange = { onItemUnitChange(it) },
+            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
+            onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
+            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked
         )
         Row(modifier = Modifier.padding(PADDING_MEDIUM)) {
             AddItemButton(onAddItemButtonClicked = onAddItemButtonClicked)

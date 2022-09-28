@@ -17,12 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
-import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_FADE_IN_DURATION
@@ -34,6 +32,7 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
+import com.bzolyomi.shoppinglist.util.Constants.SIZE_ICONS_OFFICIAL
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_MEDIUM
 
 @Composable
@@ -69,11 +68,11 @@ fun GroupAndItemsCard(
         Column {
             Row(
                 modifier = modifier.padding(
-                        start = PADDING_SMALL,
-                        top = PADDING_MEDIUM,
-                        end = PADDING_MEDIUM,
-                        bottom = titleBottomPaddingDp
-                    ), verticalAlignment = Alignment.CenterVertically
+                    start = PADDING_SMALL,
+                    top = PADDING_MEDIUM,
+                    end = PADDING_MEDIUM,
+                    bottom = titleBottomPaddingDp
+                ), verticalAlignment = Alignment.CenterVertically
             ) {
                 ExpandIcon(
                     isExpanded = isExpanded,
@@ -127,7 +126,10 @@ private fun ColumnScope.CardContent(
             Column {
                 for (item in shoppingList) {
                     Text(
-                        text = item.itemName + " -- " + item.itemQuantity + " " + item.itemUnit,
+                        text = item.itemName + " -- "
+                                + item.itemQuantity.toString()
+                            .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
+                                + item.itemUnit,
                         style = MaterialTheme.typography.subtitle1,
                         modifier = modifier.padding(vertical = PADDING_X_SMALL)
                     )
@@ -184,7 +186,7 @@ fun ItemCards(
     LazyColumn(
         state = LazyListState()
     ) {
-        itemsIndexed(shoppingListItems) { index, item ->
+        itemsIndexed(shoppingListItems) { _, item ->
 
 //                var offsetX by remember { mutableStateOf(0f) }
 //                var offsetY by remember { mutableStateOf(0f) }
@@ -222,17 +224,20 @@ fun ItemCards(
                             onCheckboxClicked(item)
                             isItemChecked = !isItemChecked
                         },
-                        modifier = modifier.padding(start = PADDING_SMALL)
+                        modifier = modifier.padding(start = PADDING_X_SMALL)
                     )
                     Text(
-                        text = item.itemName + " -- " + item.itemQuantity + " " + item.itemUnit,
+                        text = item.itemName + " -- "
+                                + item.itemQuantity.toString()
+                            .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
+                                + item.itemUnit,
                         style = MaterialTheme.typography.subtitle1,
                         modifier = modifier.padding(PADDING_X_SMALL)
                     )
                     DeleteItemIconButton(
                         item = item,
                         onDeleteItemClicked,
-                        modifier = modifier.padding(end = PADDING_SMALL)
+                        modifier = modifier.padding(end = PADDING_X_SMALL)
                     )
                 }
 //                }
@@ -251,7 +256,7 @@ private fun DeleteItemIconButton(
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
         IconButton(
             onClick = { onDeleteItemClicked(item.itemId) },
-            modifier = modifier
+            modifier = modifier.size(SIZE_ICONS_OFFICIAL)
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
@@ -269,7 +274,7 @@ private fun ItemCheckboxIconButton(
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
         IconButton(
             onClick = onCheckboxClicked, modifier = modifier
-                .size(24.dp)
+                .size(SIZE_ICONS_OFFICIAL)
         ) {
             if (isItemChecked) {
                 Icon(
@@ -322,6 +327,17 @@ private fun CardTitle(
             text = titleGroupName, style = MaterialTheme.typography.h5.copy(
                 fontWeight = FontWeight.Bold
             )
+        )
+    }
+}
+
+@Composable
+fun TrailingIconForErase(callback: () -> Unit) {
+    IconButton(onClick = callback) {
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = "",
+            tint = MaterialTheme.colors.primary
         )
     }
 }

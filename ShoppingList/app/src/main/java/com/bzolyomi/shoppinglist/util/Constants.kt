@@ -34,6 +34,7 @@ object Constants {
 
         // Size
     val SIZE_MEDIUM = 25.dp
+    val SIZE_ICONS_OFFICIAL = 48.dp
 
         // Animation
     const val GROUP_CARD_FADE_IN_INITIAL_ALPHA = 0.0f
