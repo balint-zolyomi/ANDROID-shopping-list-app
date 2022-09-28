@@ -13,9 +13,11 @@ import androidx.compose.ui.graphics.Color.Companion.Transparent
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
-    primary = Primary,
+    primary = Accent,
     primaryVariant = Purple700,
     secondary = Accent,
+    onPrimary = Color.White,
+    onSecondary = Color.White
 
 )
 

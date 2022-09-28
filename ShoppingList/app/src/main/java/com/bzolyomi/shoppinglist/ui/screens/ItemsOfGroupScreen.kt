@@ -13,17 +13,17 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
-import com.bzolyomi.shoppinglist.ui.components.ItemNameInput
-import com.bzolyomi.shoppinglist.ui.components.ItemQuantityInput
-import com.bzolyomi.shoppinglist.ui.components.ItemUnitInput
-import com.bzolyomi.shoppinglist.ui.components.SubmitAddItemButton
+import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
 
 @Composable
 fun ItemsOfGroupScreen(
@@ -50,6 +50,7 @@ fun ItemsOfGroupScreen(
                 onDeleteGroupClicked,
                 onDeleteItemClicked,
                 onCheckboxClicked,
+                modifier = Modifier
 //                sharedViewModel,
 //                onItemsRearrangedOnGUI
             )
@@ -72,7 +73,12 @@ fun ItemsOfGroupScreen(
             } else {
                 Button(
                     onClick = { addItem = true },
-                    modifier = Modifier.padding(PADDING_MEDIUM)
+                    modifier = Modifier.padding(
+                        start = PADDING_X_LARGE,
+                        top = PADDING_MEDIUM,
+                        end = PADDING_MEDIUM,
+                        bottom = PADDING_MEDIUM
+                    )
                 ) {
                     Text(text = stringResource(R.string.add_item_button))
                 }
@@ -124,32 +130,30 @@ fun ContentWithoutInput(
     onDeleteGroupClicked: (groupId: Long?, shoppingList: List<ShoppingItemEntity>) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
+    modifier: Modifier
 //    sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = selectedGroupWithList.group.groupName.uppercase(),
-            style = MaterialTheme.typography.h4,
-            modifier = Modifier
-                .padding(start = PADDING_MEDIUM, top = PADDING_MEDIUM, bottom = PADDING_MEDIUM)
+    Column {
+        GroupCard(
+            titleGroupName = selectedGroupWithList.group.groupName,
+            onDeleteGroupClicked = {
+                onDeleteGroupClicked(
+                    selectedGroupWithList.group.groupId,
+                    selectedGroupWithList.shoppingList
+                )
+            },
+            modifier = modifier
         )
-        IconButton(onClick = {
-            onDeleteGroupClicked(
-                selectedGroupWithList.group.groupId,
-                selectedGroupWithList.shoppingList
-            )
-        }) {
-            Icon(Icons.Filled.Delete, contentDescription = "")
-        }
-    }
-    ItemsList(
-        shoppingListItems = selectedGroupWithList.shoppingList,
-        onDeleteItemClicked = onDeleteItemClicked,
-        onCheckboxClicked = onCheckboxClicked,
+        ItemsList(
+            shoppingListItems = selectedGroupWithList.shoppingList,
+            onDeleteItemClicked = onDeleteItemClicked,
+            onCheckboxClicked = onCheckboxClicked,
+            modifier = modifier
 //        sharedViewModel = sharedViewModel,
 //        onItemsRearrangedOnGUI = onItemsRearrangedOnGUI
-    )
+        )
+    }
 }
 
 @Composable
@@ -157,6 +161,7 @@ fun ItemsList(
     shoppingListItems: List<ShoppingItemEntity>,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
+    modifier: Modifier
 //    sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
@@ -171,89 +176,18 @@ fun ItemsList(
 //    )
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
     ) {
-        // The composable function rememberLazyListState creates an initial state for the list
-        // using rememberSaveable. When the Activity is recreated, the scroll state is
-        // maintained without you having to code anything.
-        LazyColumn(
-            state = LazyListState(), modifier = Modifier
-                .padding(PADDING_MEDIUM)
-        ) {
-            itemsIndexed(shoppingListItems) { index, item ->
-
-//                var offsetX by remember { mutableStateOf(0f) }
-//                var offsetY by remember { mutableStateOf(0f) }
-//                var alpha by remember { mutableStateOf(0f) }
-
-                var isItemChecked by mutableStateOf(item.isItemChecked)
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(PADDING_SMALL)
-//                    .offset {
-//                        IntOffset(
-//                            offsetX.roundToInt(), offsetY.roundToInt()
-//                        )
-//                    }
-//                    .background(
-//                        brush = gradientBrush,
-//                        shape = CutCornerShape(8.dp),
-//                        alpha = alpha
-                ) {
-//                    var itemsThatCrossed: List<ShoppingItemEntity> = emptyList()
-//                    var globalY: Float = remember { 0f }
-//                    isRearranging = sharedViewModel.isRearranging
-
-//                    if (!isRearranging) {
-//                        DragIcon()
-//                    }
-                    CheckboxButton(
-                        isItemChecked = isItemChecked,
-                        onCheckboxClicked = {
-                            onCheckboxClicked(item)
-                            isItemChecked = !isItemChecked
-                        }
-                    )
-                    Text(
-                        text = "$index " + item.itemName + " -- " + item.itemQuantity + " "
-                                + item.itemUnit,
-                        // However sometimes you need to deviate slightly from the selection of
-                        // colors and font styles. In those situations it's better to base your
-                        // color or style on an existing one.
-                        // For this, you can modify a predefined style by using the copy function.
-                        style = MaterialTheme
-                            .typography.subtitle1.copy(fontWeight = FontWeight.ExtraBold)
-                    )
-                    IconButton(onClick = { onDeleteItemClicked(item.itemId) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = stringResource(R.string.delete_item_icon)
-                        )
-                    }
-                }
-            }
-        }
+        ItemCards(
+            shoppingListItems = shoppingListItems,
+            onCheckboxClicked = onCheckboxClicked,
+            onDeleteItemClicked = onDeleteItemClicked,
+            modifier = modifier
+        )
     }
 }
 
-@Composable
-fun CheckboxButton(
-    isItemChecked: Boolean,
-    onCheckboxClicked: () -> Unit
-) {
-
-    IconButton(onClick = onCheckboxClicked) {
-        if (isItemChecked) {
-            Icon(imageVector = Icons.Filled.CheckBox, contentDescription = "")
-        } else {
-            Icon(
-                imageVector = Icons.Filled.CheckBoxOutlineBlank,
-                contentDescription = ""
-            )
-        }
-    }
-}
 
 //@Composable
 //fun DragIcon() {

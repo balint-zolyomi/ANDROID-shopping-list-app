@@ -10,7 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.bzolyomi.shoppinglist.data.GroupWithList
-import com.bzolyomi.shoppinglist.ui.components.GroupCard
+import com.bzolyomi.shoppinglist.ui.components.GroupAndItemsCard
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 
 @Composable
@@ -31,7 +31,7 @@ fun AllGroupsScreen(
                 items(
                     items = shoppingGroupsWithLists
                 ) { shoppingGroupWithList ->
-                    GroupCard(
+                    GroupAndItemsCard(
                         titleGroupName = shoppingGroupWithList.group.groupName,
                         shoppingList = shoppingGroupWithList.shoppingList,
                         onOpenGroupIconClicked = {
