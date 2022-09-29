@@ -1,7 +1,9 @@
 package com.bzolyomi.shoppinglist.ui.components
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +39,8 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_ICONS_OFFICIAL
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_MEDIUM
+import androidx.compose.runtime.getValue
+
 
 @Composable
 fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
@@ -58,7 +63,7 @@ fun GroupAndItemsCard(
     onOpenGroupIconClicked: () -> Unit,
     modifier: Modifier
 ) {
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(false) }
     val titleBottomPaddingDp by animateDpAsState(if (isExpanded) PADDING_ZERO else PADDING_MEDIUM)
     val cardElevation = if (isExpanded) ELEVATION_MEDIUM else ELEVATION_SMALL
 
@@ -295,19 +300,22 @@ private fun ItemCheckboxIconButton(
 
 @Composable
 private fun ExpandIcon(
-    isExpanded: Boolean, onExpandIconClicked: () -> Unit, modifier: Modifier
+    isExpanded: Boolean,
+    onExpandIconClicked: () -> Unit,
+    modifier: Modifier
 ) {
+    val expandIconAngle: Float by animateFloatAsState(targetValue = if (isExpanded) -180f else 0f)
+
     Column {
         IconButton(
             onClick = onExpandIconClicked
         ) {
             Surface(shape = CircleShape, modifier = modifier.size(SIZE_MEDIUM)) {
                 Icon(
-                    imageVector = if (isExpanded) {
-                        Icons.Filled.ExpandLess
-                    } else Icons.Filled.ExpandMore,
+                    imageVector = Icons.Filled.ExpandMore,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary
+                    tint = MaterialTheme.colors.secondary,
+                    modifier = modifier.rotate(expandIconAngle)
                 )
             }
         }
