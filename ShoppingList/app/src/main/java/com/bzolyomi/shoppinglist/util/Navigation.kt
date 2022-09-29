@@ -1,9 +1,14 @@
 package com.bzolyomi.shoppinglist.util
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -13,11 +18,12 @@ import androidx.navigation.navArgument
 import com.bzolyomi.shoppinglist.ui.screens.AddAllScreen
 import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
 import com.bzolyomi.shoppinglist.ui.screens.ItemsOfGroupScreen
+import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun NavigationController(sharedViewModel: SharedViewModel) {
+fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
 
     val navController: NavHostController = rememberNavController()
 
@@ -32,7 +38,10 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 onOpenGroupIconClicked = { groupId ->
                     navController.navigate("group/$groupId")
                     sharedViewModel.setCurrentGroupID(groupId = groupId)
-                }
+                },
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colors.background)
             )
         }
 
@@ -56,7 +65,10 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 onEraseGroupNameInputButtonClicked = { sharedViewModel.groupName = "" },
                 onEraseItemNameInputButtonClicked = { sharedViewModel.itemName = "" },
                 onEraseItemQuantityInputButtonClicked = { sharedViewModel.itemQuantity = "" },
-                onEraseItemUnitInputButtonClicked = { sharedViewModel.itemUnit = "" }
+                onEraseItemUnitInputButtonClicked = { sharedViewModel.itemUnit = "" },
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colors.background)
             )
         }
 
@@ -118,7 +130,10 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 },
                 onCancelAddItemButtonClicked = {
                     sharedViewModel.flushItemGUI()
-                }
+                },
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colors.background)
 //                sharedViewModel = sharedViewModel,
 //                onItemsRearrangedOnGUI = {
 //                    sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)

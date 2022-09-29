@@ -15,12 +15,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
+import com.bzolyomi.shoppinglist.ui.theme.Accent
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_FADE_IN_DURATION
@@ -168,7 +170,7 @@ fun GroupCard(
             top.linkTo(card.top)
             bottom.linkTo(card.bottom)
         }) {
-            Icon(Icons.Filled.Delete, contentDescription = "")
+            Icon(Icons.Filled.Delete, tint = Accent, contentDescription = "")
         }
     }
 }

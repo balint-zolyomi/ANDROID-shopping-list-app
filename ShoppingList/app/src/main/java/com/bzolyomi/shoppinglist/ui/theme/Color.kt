@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.theme
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
@@ -28,3 +29,9 @@ val TextIcons = Color(0xFF212121)
 val SecondaryText = Color(0xFF757575)
 val Divider = Color(0xFFBDBDBD)
 val Thrash = Color(0xFFC2185B)
+
+val GradientBackground = Brush.linearGradient(
+    colors = listOf(LightPrimary, Primary),
+    start = Offset(0f, 0f),
+    end = Offset(0f, Float.POSITIVE_INFINITY)
+)
