@@ -3,6 +3,7 @@ package com.bzolyomi.shoppinglist.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.components.GroupInput
 import com.bzolyomi.shoppinglist.ui.components.ItemInput
 import com.bzolyomi.shoppinglist.ui.components.SubmitAddAllButton
+import com.bzolyomi.shoppinglist.ui.theme.Accent
 import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 
@@ -34,9 +36,8 @@ fun AddAllScreen(
     modifier: Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background)
             .padding(PADDING_MEDIUM)
     ) {
         GroupInput(
@@ -65,7 +66,10 @@ fun AddAllScreen(
 
 @Composable
 fun AddItemButton(onAddItemButtonClicked: () -> Unit) {
-    Button(onClick = onAddItemButtonClicked) {
+    Button(
+        onClick = onAddItemButtonClicked,
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+    ) {
         Text(text = stringResource(R.string.add_item_button_text))
     }
 }

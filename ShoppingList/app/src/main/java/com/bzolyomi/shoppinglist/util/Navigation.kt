@@ -1,6 +1,7 @@
 package com.bzolyomi.shoppinglist.util
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -8,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -27,6 +29,11 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
 
     val navController: NavHostController = rememberNavController()
 
+    val isInDarkMode = isSystemInDarkTheme()
+    val backgroundModifier: Modifier =
+        if (isInDarkMode) Modifier.background(Color.Black)
+        else Modifier.background(GradientBackground)
+
     NavHost(navController = navController, startDestination = "home") {
 
         composable("home") {
@@ -44,9 +51,8 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                         sharedViewModel.deleteGroup(groupId = groupWithList.group.groupId)
                     }
                 },
-                modifier = modifier
+                modifier = backgroundModifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.background)
             )
         }
 
@@ -71,9 +77,8 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                 onEraseItemNameInputButtonClicked = { sharedViewModel.itemName = "" },
                 onEraseItemQuantityInputButtonClicked = { sharedViewModel.itemQuantity = "" },
                 onEraseItemUnitInputButtonClicked = { sharedViewModel.itemUnit = "" },
-                modifier = modifier
+                modifier = backgroundModifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.background)
             )
         }
 
@@ -136,9 +141,8 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                 onCancelAddItemButtonClicked = {
                     sharedViewModel.flushItemGUI()
                 },
-                modifier = modifier
+                modifier = backgroundModifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.background)
 //                sharedViewModel = sharedViewModel,
 //                onItemsRearrangedOnGUI = {
 //                    sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)

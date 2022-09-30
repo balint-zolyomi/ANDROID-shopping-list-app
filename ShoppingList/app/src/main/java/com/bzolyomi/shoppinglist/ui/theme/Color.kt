@@ -25,13 +25,14 @@ val Primary = Color(0xFF8BC34A)
 val LightPrimary = Color(0xFFDCEDC8)
 val DarkPrimary = Color(0xFF689F38)
 val Accent = Color(0xFFE040FB)
+val Secondary = Color(0xFFE040FB)
 val TextIcons = Color(0xFF212121)
 val SecondaryText = Color(0xFF757575)
 val Divider = Color(0xFFBDBDBD)
 val Thrash = Color(0xFFC2185B)
 
 val GradientBackground = Brush.linearGradient(
-    colors = listOf(LightPrimary, Primary),
+    colors = listOf(Primary, LightPrimary),
     start = Offset(0f, 0f),
     end = Offset(0f, Float.POSITIVE_INFINITY)
 )

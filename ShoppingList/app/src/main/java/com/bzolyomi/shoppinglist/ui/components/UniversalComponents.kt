@@ -41,18 +41,25 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_ICONS_OFFICIAL
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_MEDIUM
 import androidx.compose.runtime.getValue
+import com.bzolyomi.shoppinglist.ui.theme.Secondary
 
 
 @Composable
 fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
-    Button(onClick = onSubmitAddAllButtonClicked) {
+    Button(
+        onClick = onSubmitAddAllButtonClicked,
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+    ) {
         Text(text = stringResource(R.string.submit_button_text))
     }
 }
 
 @Composable
 fun SubmitAddItemButton(onSubmitAddItemButtonClicked: () -> Unit) {
-    Button(onClick = onSubmitAddItemButtonClicked) {
+    Button(
+        onClick = onSubmitAddItemButtonClicked,
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+    ) {
         Text(text = stringResource(R.string.submit_button_text))
     }
 }
@@ -176,7 +183,11 @@ fun GroupCard(
             top.linkTo(card.top)
             bottom.linkTo(card.bottom)
         }) {
-            Icon(Icons.Filled.Delete, tint = Accent, contentDescription = "")
+            Icon(
+                Icons.Filled.Delete,
+                tint = MaterialTheme.colors.secondary,
+                contentDescription = ""
+            )
         }
     }
 }
@@ -348,7 +359,7 @@ fun TrailingIconForErase(callback: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.Close,
             contentDescription = "",
-            tint = MaterialTheme.colors.primary
+            tint = MaterialTheme.colors.secondary
         )
     }
 }
@@ -366,14 +377,24 @@ fun ShowAlertDialog(
             title = { Text(text = title) },
             text = { Text(text = message) },
             confirmButton = {
-                Button(onClick =  onConfirmClicked ) {
+                Button(
+                    onClick = onConfirmClicked,
+                    colors = ButtonDefaults
+                        .buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+                ) {
                     Text(text = stringResource(R.string.confirm_button))
                 }
             },
             dismissButton = {
-                            OutlinedButton(onClick = onDismissClicked) {
-                                Text(text = stringResource(R.string.cancel_button))
-                            }
+                OutlinedButton(
+                    onClick = onDismissClicked,
+                    colors = ButtonDefaults
+                        .outlinedButtonColors(
+                            contentColor = MaterialTheme.colors.secondary
+                        )
+                ) {
+                    Text(text = stringResource(R.string.cancel_button))
+                }
             },
             onDismissRequest = onDismissClicked
         )

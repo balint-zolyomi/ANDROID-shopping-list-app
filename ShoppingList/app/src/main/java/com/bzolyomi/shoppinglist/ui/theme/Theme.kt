@@ -18,7 +18,7 @@ import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
-    primary = Accent,
+    primary = Color.Black,
     primaryVariant = Purple700,
     secondary = Accent,
     onPrimary = Color.White,
@@ -27,7 +27,7 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = Accent,
+    primary = Primary,
     primaryVariant = Primary,
     secondary = Accent,
 
@@ -35,7 +35,7 @@ private val LightColorPalette = lightColors(
     background = LightPrimary,
     surface = Color.White,
     onPrimary = Color.White,
-    onSecondary = TextIcons,
+    onSecondary = Color.White,
     onBackground = TextIcons,
     onSurface = TextIcons,
     onError = Thrash,
@@ -59,9 +59,9 @@ fun ShoppingListTheme(
     if (darkTheme) {
         window.statusBarColor = Color.Black.toArgb()
     } else {
-        window.statusBarColor = LightPrimary.toArgb()
-        window.navigationBarColor = LightPrimary.toArgb()
-        systemUiController.setStatusBarColor(color = LightPrimary, darkIcons = true)
+//        window.statusBarColor = Primary.toArgb()
+//        window.navigationBarColor = LightPrimary.toArgb()
+        systemUiController.setStatusBarColor(color = Primary, darkIcons = true)
         systemUiController.setNavigationBarColor(color = LightPrimary, darkIcons = true)
     }
 

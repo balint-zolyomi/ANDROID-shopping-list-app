@@ -3,17 +3,21 @@ package com.bzolyomi.shoppinglist.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.*
+import com.bzolyomi.shoppinglist.ui.theme.Accent
 import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
+import com.bzolyomi.shoppinglist.ui.theme.Primary
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
 
@@ -41,7 +45,10 @@ fun ItemsOfGroupScreen(
     if (selectedGroupWithList != null) {
         var addItem by remember { mutableStateOf(false) }
 
-        Column (modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background)) {
+        Column (
+            modifier = modifier
+                .fillMaxSize()
+        ) {
             ContentWithoutInput(
                 selectedGroupWithList,
                 onDeleteGroupClicked,
@@ -79,6 +86,9 @@ fun ItemsOfGroupScreen(
                         top = PADDING_MEDIUM,
                         end = PADDING_MEDIUM,
                         bottom = PADDING_MEDIUM
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colors.secondary
                     )
                 ) {
                     Text(text = stringResource(R.string.add_item_button))
@@ -128,7 +138,10 @@ fun ItemInputFields(
 
 @Composable
 fun CancelButton(onCancelButtonClicked: () -> Unit) {
-    Button(onClick = onCancelButtonClicked) {
+    Button(
+        onClick = onCancelButtonClicked,
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+    ) {
         Text(text = stringResource(R.string.cancel_button))
     }
 }

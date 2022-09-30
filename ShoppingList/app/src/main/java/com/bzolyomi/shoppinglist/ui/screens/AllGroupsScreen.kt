@@ -34,7 +34,6 @@ fun AllGroupsScreen(
         },
         modifier = modifier
             .fillMaxSize(),
-//            .background(MaterialTheme.colors.background),
         content = {
             LazyColumn(
                 contentPadding = WindowInsets.systemBars
@@ -45,7 +44,6 @@ fun AllGroupsScreen(
                     .asPaddingValues(),
                 modifier = modifier
                     .fillMaxSize()
-//                    .background(MaterialTheme.colors.background)
             ) {
                 items(
                     items = shoppingGroupsWithLists
@@ -83,7 +81,7 @@ fun AppBar(
         title = {
             Text(
                 text = stringResource(R.string.all_groups_screen_appbar_title),
-                color = MaterialTheme.colors.onPrimary
+                color = MaterialTheme.colors.onBackground
             )
         },
         actions = {
@@ -122,7 +120,7 @@ fun DeleteAllAction(
     IconButton(onClick = { isDropdownMenuOpen = true }) {
         Icon(
             imageVector = Icons.Filled.MoreVert, contentDescription = "",
-            tint = MaterialTheme.colors.onPrimary
+            tint = MaterialTheme.colors.onBackground
         )
         DropdownMenu(
             expanded = isDropdownMenuOpen,
