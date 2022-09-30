@@ -9,4 +9,9 @@
     <string name="add_item_button">ADD ITEM</string>
     <string name="cancel_button">CANCEL</string>
     <string name="delete_item_icon">Delete item</string>
+    <string name="all_groups_screen_appbar_title">Shopping groups</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="delete_all_alert_dialog_title">WARNING</string>
+    <string name="delete_all_aler_dialog_message">Delete all shopping groups? This action cannot be undone.</string>
+    <string name="delete_all_appbar_dropdown_menu_option">Delete all</string>
 </resources>

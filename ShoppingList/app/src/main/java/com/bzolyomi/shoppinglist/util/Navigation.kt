@@ -39,6 +39,11 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                     navController.navigate("group/$groupId")
                     sharedViewModel.setCurrentGroupID(groupId = groupId)
                 },
+                onDeleteAllClicked = {
+                    for (groupWithList in shoppingGroupsWithLists) {
+                        sharedViewModel.deleteGroup(groupId = groupWithList.group.groupId)
+                    }
+                },
                 modifier = modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colors.background)

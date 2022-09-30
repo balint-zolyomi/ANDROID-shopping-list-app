@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.components
 
+import android.icu.number.NumberFormatter.UnitWidth
 import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
@@ -348,6 +349,33 @@ fun TrailingIconForErase(callback: () -> Unit) {
             imageVector = Icons.Filled.Close,
             contentDescription = "",
             tint = MaterialTheme.colors.primary
+        )
+    }
+}
+
+@Composable
+fun ShowAlertDialog(
+    title: String,
+    message: String,
+    isOpen: Boolean,
+    onConfirmClicked: () -> Unit,
+    onDismissClicked: () -> Unit
+) {
+    if (isOpen) {
+        AlertDialog(
+            title = { Text(text = title) },
+            text = { Text(text = message) },
+            confirmButton = {
+                Button(onClick =  onConfirmClicked ) {
+                    Text(text = stringResource(R.string.confirm_button))
+                }
+            },
+            dismissButton = {
+                            OutlinedButton(onClick = onDismissClicked) {
+                                Text(text = stringResource(R.string.cancel_button))
+                            }
+            },
+            onDismissRequest = onDismissClicked
         )
     }
 }
