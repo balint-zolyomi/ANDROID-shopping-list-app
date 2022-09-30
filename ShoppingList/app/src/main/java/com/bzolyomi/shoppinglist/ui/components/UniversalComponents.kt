@@ -1,7 +1,5 @@
 package com.bzolyomi.shoppinglist.ui.components
 
-import android.icu.number.NumberFormatter.UnitWidth
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -15,18 +13,17 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
-import com.bzolyomi.shoppinglist.ui.theme.Accent
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_FADE_IN_DURATION
@@ -40,8 +37,6 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_ICONS_OFFICIAL
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_MEDIUM
-import androidx.compose.runtime.getValue
-import com.bzolyomi.shoppinglist.ui.theme.Secondary
 
 
 @Composable
@@ -140,12 +135,23 @@ private fun ColumnScope.CardContent(
             }
             Column {
                 for (item in shoppingList) {
+                    var itemFontStyle = if (item.isItemChecked) {
+                        TextStyle(
+                            textDecoration = TextDecoration.LineThrough,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp,
+                            letterSpacing = 0.15.sp
+                        )
+                    } else {
+                        MaterialTheme.typography.subtitle1
+                    }
+
                     Text(
                         text = item.itemName + " -- "
                                 + item.itemQuantity.toString()
                             .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
                                 + item.itemUnit,
-                        style = MaterialTheme.typography.subtitle1,
+                        style = itemFontStyle,
                         modifier = modifier.padding(vertical = PADDING_X_SMALL)
                     )
                 }
@@ -237,6 +243,18 @@ fun ItemCards(
 //                    if (!isRearranging) {
 //                        DragIcon()
 //                    }
+                    var itemFontStyle = if (isItemChecked) {
+                        // except LineThrough, it is exactly MaterialTheme.typography.subtitle1
+                        TextStyle(
+                            textDecoration = TextDecoration.LineThrough,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp,
+                            letterSpacing = 0.15.sp
+                        )
+                    } else {
+                        MaterialTheme.typography.subtitle1
+                    }
+
                     ItemCheckboxIconButton(
                         isItemChecked = isItemChecked,
                         onCheckboxClicked = {
@@ -250,7 +268,7 @@ fun ItemCards(
                                 + item.itemQuantity.toString()
                             .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
                                 + item.itemUnit,
-                        style = MaterialTheme.typography.subtitle1,
+                        style = itemFontStyle,
                         modifier = modifier.padding(PADDING_X_SMALL)
                     )
                     DeleteItemIconButton(
