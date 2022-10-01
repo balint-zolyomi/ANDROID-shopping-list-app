@@ -88,7 +88,7 @@ fun ItemsOfGroupScreen(
                         bottom = PADDING_MEDIUM
                     ),
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.secondary
+                        backgroundColor = MaterialTheme.colors.primary
                     )
                 ) {
                     Text(text = stringResource(R.string.add_item_button))
@@ -140,7 +140,7 @@ fun ItemInputFields(
 fun CancelButton(onCancelButtonClicked: () -> Unit) {
     Button(
         onClick = onCancelButtonClicked,
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     ) {
         Text(text = stringResource(R.string.cancel_button))
     }

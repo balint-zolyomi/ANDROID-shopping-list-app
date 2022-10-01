@@ -68,7 +68,7 @@ fun AddAllScreen(
 fun AddItemButton(onAddItemButtonClicked: () -> Unit) {
     Button(
         onClick = onAddItemButtonClicked,
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     ) {
         Text(text = stringResource(R.string.add_item_button_text))
     }

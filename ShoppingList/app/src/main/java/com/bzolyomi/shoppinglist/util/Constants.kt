@@ -27,6 +27,7 @@ object Constants {
     val PADDING_MEDIUM = 12.dp
     val PADDING_LARGE = 24.dp
     val PADDING_X_LARGE = 36.dp
+    val PADDING_XX_LARGE = 72.dp
 
         // Elevation
     val ELEVATION_SMALL = 2.dp

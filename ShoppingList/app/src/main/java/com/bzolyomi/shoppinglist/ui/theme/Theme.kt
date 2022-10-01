@@ -1,44 +1,33 @@
 package com.bzolyomi.shoppinglist.ui.theme
 
 import android.app.Activity
-import android.graphics.Color.toArgb
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorPalette = darkColors(
-    primary = Color.Black,
-    primaryVariant = Purple700,
-    secondary = Accent,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
+    primary = Primary,
+    secondary = Secondary,
+    onPrimary = TextOnDark,
     background = Color.Black
 )
 
 private val LightColorPalette = lightColors(
     primary = Primary,
-    primaryVariant = Primary,
-    secondary = Accent,
-
+    secondary = Secondary,
 //     Other default colors to override
-    background = LightPrimary,
+    background = LightSecondary,
     surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onBackground = TextIcons,
-    onSurface = TextIcons,
-    onError = Thrash,
+    onPrimary = OnPrimary,
+    onSecondary = Text,
+    onBackground = Text,
+    onSurface = Text
 )
 
 @Composable
@@ -61,8 +50,8 @@ fun ShoppingListTheme(
     } else {
 //        window.statusBarColor = Primary.toArgb()
 //        window.navigationBarColor = LightPrimary.toArgb()
-        systemUiController.setStatusBarColor(color = Primary, darkIcons = true)
-        systemUiController.setNavigationBarColor(color = LightPrimary, darkIcons = true)
+        systemUiController.setStatusBarColor(color = LightSecondary, darkIcons = true)
+        systemUiController.setNavigationBarColor(color = LightSecondary, darkIcons = true)
     }
 
 //    if (!view.isInEditMode) {

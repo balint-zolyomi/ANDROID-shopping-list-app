@@ -21,18 +21,20 @@ val Turquoise = Color(0xFF21E1E1)
 val Sky = Color(0xFF3B9AE1)
 val Water = Color(0xFF3120E0)
 
-val Primary = Color(0xFF8BC34A)
-val LightPrimary = Color(0xFFDCEDC8)
-val DarkPrimary = Color(0xFF689F38)
+val Primary = Color(0xFFE040FB)
+val OnPrimary = Color(0xFFFEFEFE)
+val LightSecondary = Color(0xFFDCEDC8)
+val DarkSecondary = Color(0xFF689F38)
 val Accent = Color(0xFFE040FB)
-val Secondary = Color(0xFFE040FB)
-val TextIcons = Color(0xFF212121)
+val Secondary = Color(0xFF8BC34A)
+val Text = Color(0xFF212121)
+val TextOnDark = Color(0xFFDEDEDE)
 val SecondaryText = Color(0xFF757575)
 val Divider = Color(0xFFBDBDBD)
-val Thrash = Color(0xFFC2185B)
+val FloatingActionButtonTint = Color.White
 
 val GradientBackground = Brush.linearGradient(
-    colors = listOf(Primary, LightPrimary),
+    colors = listOf(LightSecondary, Secondary),
     start = Offset(0f, 0f),
     end = Offset(0f, Float.POSITIVE_INFINITY)
 )

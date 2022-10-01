@@ -9,13 +9,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.ui.components.GroupAndItemsCard
 import com.bzolyomi.shoppinglist.ui.components.ShowAlertDialog
+import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_XX_LARGE
 
 @Composable
 fun AllGroupsScreen(
@@ -39,7 +41,12 @@ fun AllGroupsScreen(
                 contentPadding = WindowInsets.systemBars
                     .only(WindowInsetsSides.Vertical)
                     .add(
-                        WindowInsets(left = 8.dp, right = 8.dp, top = 16.dp, bottom = 72.dp)
+                        WindowInsets(
+                            left = PADDING_SMALL,
+                            right = PADDING_SMALL,
+                            top = PADDING_MEDIUM,
+                            bottom = PADDING_XX_LARGE
+                        )
                     )
                     .asPaddingValues(),
                 modifier = modifier
@@ -62,11 +69,12 @@ fun AllGroupsScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onAddAllFABClicked,
+                backgroundColor = MaterialTheme.colors.primary
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "",
-                    tint = Color.White
+                    tint = FloatingActionButtonTint,
                 )
             }
         }
@@ -87,7 +95,7 @@ fun AppBar(
         actions = {
             AppBarActions(onConfirmClicked = onDeleteAllClicked)
         },
-        backgroundColor = MaterialTheme.colors.primary
+        backgroundColor = MaterialTheme.colors.background
     )
 }
 

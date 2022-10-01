@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
@@ -43,7 +44,7 @@ import com.bzolyomi.shoppinglist.util.Constants.SIZE_MEDIUM
 fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
     Button(
         onClick = onSubmitAddAllButtonClicked,
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     ) {
         Text(text = stringResource(R.string.submit_button_text))
     }
@@ -53,7 +54,7 @@ fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
 fun SubmitAddItemButton(onSubmitAddItemButtonClicked: () -> Unit) {
     Button(
         onClick = onSubmitAddItemButtonClicked,
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     ) {
         Text(text = stringResource(R.string.submit_button_text))
     }
@@ -120,7 +121,11 @@ private fun DoneRatio(
         if (item.isItemChecked) itemsDone++
     }
 
-    Text(text = "$itemsDone/$itemsTotal", modifier = modifier)
+    Text(
+        text = "$itemsDone/$itemsTotal",
+        modifier = modifier,
+        style = MaterialTheme.typography.body1
+    )
 }
 
 @Composable
@@ -150,7 +155,7 @@ private fun ColumnScope.CardContent(
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary
+                    tint = MaterialTheme.colors.primary
                 )
             }
             Column {
@@ -158,12 +163,12 @@ private fun ColumnScope.CardContent(
                     var itemFontStyle = if (item.isItemChecked) {
                         TextStyle(
                             textDecoration = TextDecoration.LineThrough,
+                            fontFamily = FontFamily.Monospace,
                             fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                            letterSpacing = 0.15.sp
+                            fontSize = 16.sp
                         )
                     } else {
-                        MaterialTheme.typography.subtitle1
+                        MaterialTheme.typography.body1
                     }
 
                     Text(
@@ -201,7 +206,7 @@ fun GroupCard(
         ) {
             CardTitle(
                 titleGroupName = titleGroupName,
-                modifier = modifier.padding(horizontal = PADDING_LARGE)
+                modifier = modifier.padding(horizontal = PADDING_LARGE, vertical = PADDING_SMALL)
             )
         }
         IconButton(onClick = onDeleteGroupClicked, modifier = modifier.constrainAs(button) {
@@ -211,7 +216,7 @@ fun GroupCard(
         }) {
             Icon(
                 Icons.Filled.Delete,
-                tint = MaterialTheme.colors.secondary,
+                tint = MaterialTheme.colors.primary,
                 contentDescription = ""
             )
         }
@@ -267,12 +272,12 @@ fun ItemCards(
                         // except LineThrough, it is exactly MaterialTheme.typography.subtitle1
                         TextStyle(
                             textDecoration = TextDecoration.LineThrough,
+                            fontFamily = FontFamily.Monospace,
                             fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
-                            letterSpacing = 0.15.sp
+                            fontSize = 16.sp
                         )
                     } else {
-                        MaterialTheme.typography.subtitle1
+                        MaterialTheme.typography.body1
                     }
 
                     ItemCheckboxIconButton(
@@ -364,7 +369,7 @@ private fun ExpandIcon(
                 Icon(
                     imageVector = Icons.Filled.ExpandMore,
                     contentDescription = "",
-                    tint = MaterialTheme.colors.secondary,
+                    tint = MaterialTheme.colors.primary,
                     modifier = modifier.rotate(expandIconAngle)
                 )
             }
@@ -397,7 +402,7 @@ fun TrailingIconForErase(callback: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.Close,
             contentDescription = "",
-            tint = MaterialTheme.colors.secondary
+            tint = MaterialTheme.colors.primary
         )
     }
 }
@@ -418,7 +423,7 @@ fun ShowAlertDialog(
                 Button(
                     onClick = onConfirmClicked,
                     colors = ButtonDefaults
-                        .buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+                        .buttonColors(backgroundColor = MaterialTheme.colors.primary)
                 ) {
                     Text(text = stringResource(R.string.confirm_button))
                 }
@@ -428,7 +433,7 @@ fun ShowAlertDialog(
                     onClick = onDismissClicked,
                     colors = ButtonDefaults
                         .outlinedButtonColors(
-                            contentColor = MaterialTheme.colors.secondary
+                            contentColor = MaterialTheme.colors.primary
                         )
                 ) {
                     Text(text = stringResource(R.string.cancel_button))
