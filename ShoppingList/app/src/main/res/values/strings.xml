@@ -1,17 +1,17 @@
 <resources>
     <string name="app_name">Shopping List</string>
-    <string name="add_item_button_text">ADD ITEM</string>
-    <string name="submit_button_text">SUBMIT</string>
+    <string name="add_item_button_text">Add item</string>
+    <string name="submit_button_text">Submit</string>
     <string name="input_label_item_name">Item name</string>
     <string name="input_label_item_quantity">Item quantity</string>
     <string name="input_label_item_unit">Item Unit</string>
     <string name="input_label_group_name">Group name</string>
-    <string name="add_item_button">ADD ITEM</string>
-    <string name="cancel_button">CANCEL</string>
+    <string name="add_item_button">Add item</string>
+    <string name="cancel_button">Cancel</string>
     <string name="delete_item_icon">Delete item</string>
     <string name="all_groups_screen_appbar_title">Shopping groups</string>
     <string name="confirm_button">Confirm</string>
-    <string name="delete_all_alert_dialog_title">WARNING</string>
+    <string name="delete_all_alert_dialog_title">Warning</string>
     <string name="delete_all_aler_dialog_message">Delete all shopping groups? This action cannot be undone.</string>
     <string name="delete_all_appbar_dropdown_menu_option">Delete all</string>
 </resources>

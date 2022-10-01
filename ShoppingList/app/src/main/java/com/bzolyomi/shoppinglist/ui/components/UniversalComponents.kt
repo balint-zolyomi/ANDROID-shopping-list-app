@@ -92,6 +92,10 @@ fun GroupAndItemsCard(
                 CardTitle(
                     titleGroupName = titleGroupName, modifier = modifier.weight(1f)
                 )
+                DoneRatio(
+                    shoppingList = shoppingList,
+                    modifier = modifier.padding(end = PADDING_SMALL)
+                )
             }
             CardContent(
                 isExpanded = isExpanded,
@@ -101,6 +105,22 @@ fun GroupAndItemsCard(
             )
         }
     }
+}
+
+@Composable
+private fun DoneRatio(
+    shoppingList: List<ShoppingItemEntity>,
+    modifier: Modifier
+) {
+    var itemsTotal: Int = 0
+    var itemsDone: Int = 0
+
+    for (item in shoppingList) {
+        itemsTotal++
+        if (item.isItemChecked) itemsDone++
+    }
+
+    Text(text = "$itemsDone/$itemsTotal", modifier = modifier)
 }
 
 @Composable
