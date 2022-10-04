@@ -57,7 +57,9 @@ fun ItemNameInput(
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
         ),
-        trailingIcon = { TrailingIconForErase(onEraseItemNameInputButtonClicked) },
+        trailingIcon = {
+            if (itemName.isNotBlank()) TrailingIconForErase(onEraseItemNameInputButtonClicked)
+        },
 //        {
 //            IconButton(onClick = onEraseNameInputButtonClicked) {
 //                Icon(
@@ -86,7 +88,11 @@ fun ItemQuantityInput(
         ),
         onValueChange = { onItemQuantityChange(it) },
         label = { Text(text = stringResource(R.string.input_label_item_quantity)) },
-        trailingIcon = { TrailingIconForErase(onEraseItemQuantityInputButtonClicked) },
+        trailingIcon = {
+            if (itemQuantity.isNotBlank()) TrailingIconForErase(
+                onEraseItemQuantityInputButtonClicked
+            )
+        },
         singleLine = true
     )
 }
@@ -105,7 +111,11 @@ fun ItemUnitInput(
         ),
         onValueChange = { onItemUnitChange(it) },
         label = { Text(text = stringResource(R.string.input_label_item_unit)) },
-        trailingIcon = { TrailingIconForErase(onEraseItemUnitInputButtonClicked)},
+        trailingIcon = {
+            if (itemUnit.isNotBlank()) TrailingIconForErase(
+                onEraseItemUnitInputButtonClicked
+            )
+        },
         singleLine = true
     )
 }

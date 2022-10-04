@@ -40,7 +40,9 @@ fun GroupNameInput(
         ),
         onValueChange = { onGroupNameChange(it) },
         label = { Text(text = stringResource(R.string.input_label_group_name)) },
-        trailingIcon = { TrailingIconForErase(onEraseGroupNameInputButtonClicked)},
+        trailingIcon = {
+            if (groupName.isNotBlank()) TrailingIconForErase(onEraseGroupNameInputButtonClicked)
+        },
         singleLine = true
     )
 }
