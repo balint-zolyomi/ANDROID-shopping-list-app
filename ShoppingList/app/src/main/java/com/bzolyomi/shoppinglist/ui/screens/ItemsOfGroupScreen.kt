@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -8,16 +7,11 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.*
-import com.bzolyomi.shoppinglist.ui.theme.Accent
-import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
-import com.bzolyomi.shoppinglist.ui.theme.Primary
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
 
@@ -42,6 +36,7 @@ fun ItemsOfGroupScreen(
 //    sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
+
     if (selectedGroupWithList != null) {
         var addItem by remember { mutableStateOf(false) }
 
@@ -116,7 +111,7 @@ fun ItemInputFields(
         ItemNameInput(
             itemName = itemName,
             onItemNameChange = { onItemNameChange(it) },
-            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
+            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked
         )
         ItemQuantityInput(
             itemQuantity,

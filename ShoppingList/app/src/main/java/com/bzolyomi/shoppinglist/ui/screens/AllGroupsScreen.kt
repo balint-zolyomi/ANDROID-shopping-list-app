@@ -107,7 +107,7 @@ fun AppBarActions(
 
     ShowAlertDialog(
         title = stringResource(R.string.delete_all_alert_dialog_title),
-        message = stringResource(R.string.delete_all_aler_dialog_message),
+        message = stringResource(R.string.delete_all_alert_dialog_message),
         isOpen = isAlertDialogOpen,
         onConfirmClicked = {
             onConfirmClicked()

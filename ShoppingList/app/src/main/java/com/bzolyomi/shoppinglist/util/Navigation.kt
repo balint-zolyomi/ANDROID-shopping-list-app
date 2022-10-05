@@ -2,15 +2,13 @@ package com.bzolyomi.shoppinglist.util
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -68,10 +66,10 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                 onItemUnitChange = { sharedViewModel.itemUnit = it },
                 onAddItemButtonClicked = { sharedViewModel.addItemFromGUIToItemList() },
                 onSubmitAddAllButtonClicked = {
-                    sharedViewModel.createWithCoroutines()
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }
                     }
+                    sharedViewModel.createWithCoroutines()
                 },
                 onEraseGroupNameInputButtonClicked = { sharedViewModel.groupName = "" },
                 onEraseItemNameInputButtonClicked = { sharedViewModel.itemName = "" },

@@ -1,20 +1,17 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.components.GroupInput
 import com.bzolyomi.shoppinglist.ui.components.ItemInput
 import com.bzolyomi.shoppinglist.ui.components.SubmitAddAllButton
-import com.bzolyomi.shoppinglist.ui.theme.Accent
-import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 
 @Composable
@@ -35,6 +32,7 @@ fun AddAllScreen(
     onEraseItemUnitInputButtonClicked: () -> Unit,
     modifier: Modifier
 ) {
+
     Column(
         modifier = modifier
             .fillMaxSize()
