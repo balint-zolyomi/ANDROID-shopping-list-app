@@ -41,7 +41,7 @@ fun ItemsOfGroupScreen(
     if (selectedGroupWithList != null) {
         var addItem by remember { mutableStateOf(false) }
 
-        Column (
+        Column(
             modifier = modifier
                 .fillMaxSize()
         ) {
@@ -117,10 +117,11 @@ fun ItemInputFields(
 
     fun validateItemQuantityInput(itemQuantityInput: String) {
         isItemQuantityError = try {
-            itemQuantityInput.toFloat()
+            val tempQuantity = itemQuantityInput.replace(",", ".")
+            tempQuantity.toFloat()
             false
         } catch (e: Exception) {
-            true
+            itemQuantityInput != ""
         }
     }
 
@@ -144,7 +145,10 @@ fun ItemInputFields(
                 validateItemQuantityInput(it)
                 if (!isItemQuantityError) onItemQuantityChange(it)
             },
-            onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
+            onEraseItemQuantityInputButtonClicked = {
+                onEraseItemQuantityInputButtonClicked()
+                validateItemQuantityInput("")
+            },
             onNextInItemQuantityInputClicked = { validateItemQuantityInput(itemQuantity) }
         )
         ItemUnitInput(

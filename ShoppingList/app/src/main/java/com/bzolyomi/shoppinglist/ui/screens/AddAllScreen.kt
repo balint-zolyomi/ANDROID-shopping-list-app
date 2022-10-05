@@ -17,6 +17,7 @@ import com.bzolyomi.shoppinglist.ui.components.GroupInput
 import com.bzolyomi.shoppinglist.ui.components.ItemInput
 import com.bzolyomi.shoppinglist.ui.components.SubmitAddAllButton
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
+import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun AddAllScreen(
@@ -32,8 +33,9 @@ fun AddAllScreen(
     onSubmitAddAllButtonClicked: () -> Unit,
     onEraseGroupNameInputButtonClicked: () -> Unit,
     onEraseItemNameInputButtonClicked: () -> Unit,
-    onEraseItemQuantityInputButtonClicked: () -> Unit,
+//    onEraseItemQuantityInputButtonClicked: () -> Unit,
     onEraseItemUnitInputButtonClicked: () -> Unit,
+    sharedViewModel: SharedViewModel,
     modifier: Modifier
 ) {
     var isGroupNameError by rememberSaveable { mutableStateOf(false) }
@@ -88,7 +90,10 @@ fun AddAllScreen(
             },
             onItemUnitChange = { onItemUnitChange(it) },
             onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
-            onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
+            onEraseItemQuantityInputButtonClicked = {
+                sharedViewModel.itemQuantity = ""
+                validateItemQuantityInput(sharedViewModel.itemQuantity)
+            },
             onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked,
             onDone = {
                 validateGroupNameInput(groupName)
