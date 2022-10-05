@@ -144,7 +144,12 @@ class SharedViewModel @Inject constructor(
                     itemId = null,
                     itemParentId = null,
                     itemName = itemName,
-                    itemQuantity = if (itemQuantity.isBlank()) 0f else itemQuantity.toFloat(),
+                    itemQuantity = if (itemQuantity.isBlank()) {
+                        null
+                    } else {
+                        itemQuantity = itemQuantity.replace(",", ".")
+                        itemQuantity.toFloat()
+                    },
                     itemUnit = itemUnit,
                     isItemChecked = false
                 )

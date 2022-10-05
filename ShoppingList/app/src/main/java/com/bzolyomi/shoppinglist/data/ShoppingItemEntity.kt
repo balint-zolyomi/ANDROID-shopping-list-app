@@ -16,7 +16,7 @@ data class ShoppingItemEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_ID) var itemId: Long?,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_GROUP_ID) var itemParentId: Long?,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_NAME) val itemName: String,
-    @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_QUANTITY) val itemQuantity: Float,
+    @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_QUANTITY) var itemQuantity: Float?,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_UNIT) val itemUnit: String,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_CHECKED) var isItemChecked: Boolean
 )

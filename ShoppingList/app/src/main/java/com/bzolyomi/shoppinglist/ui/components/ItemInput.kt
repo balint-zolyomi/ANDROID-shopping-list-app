@@ -24,7 +24,8 @@ fun ItemInput(
     itemName: String,
     itemQuantity: String,
     itemUnit: String,
-    isError: Boolean,
+    isItemNameError: Boolean,
+    isItemQuantityError: Boolean,
     onItemNameChange: (String) -> Unit,
     onItemQuantityChange: (String) -> Unit,
     onItemUnitChange: (String) -> Unit,
@@ -32,20 +33,23 @@ fun ItemInput(
     onEraseItemQuantityInputButtonClicked: () -> Unit,
     onEraseItemUnitInputButtonClicked: () -> Unit,
     onDone: () -> Unit,
-    onNextInItemNameInputClicked: () -> Unit
+    onNextInItemNameInputClicked: () -> Unit,
+    onNextInItemQuantityInputClicked: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         ItemNameInput(
             itemName = itemName,
-            isError = isError,
+            isError = isItemNameError,
             onItemNameChange = { onItemNameChange(it) },
             onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
             onNextInItemNameInputClicked = onNextInItemNameInputClicked
         )
         ItemQuantityInput(
             itemQuantity = itemQuantity,
+            isError = isItemQuantityError,
             onItemQuantityChange = { onItemQuantityChange(it) },
-            onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked
+            onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
+            onNextInItemQuantityInputClicked = onNextInItemQuantityInputClicked
         )
         ItemUnitInput(
             itemUnit = itemUnit,
@@ -106,25 +110,47 @@ fun ItemNameInput(
 @Composable
 fun ItemQuantityInput(
     itemQuantity: String,
+    isError: Boolean,
     onItemQuantityChange: (String) -> Unit,
-    onEraseItemQuantityInputButtonClicked: () -> Unit
+    onEraseItemQuantityInputButtonClicked: () -> Unit,
+    onNextInItemQuantityInputClicked: () -> Unit
 ) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = itemQuantity,
+        onValueChange = { onItemQuantityChange(it) },
+        label = { Text(text = stringResource(R.string.input_label_item_quantity)) },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Number
         ),
-        onValueChange = { onItemQuantityChange(it) },
-        label = { Text(text = stringResource(R.string.input_label_item_quantity)) },
+        keyboardActions = KeyboardActions(
+            onNext = {
+                onNextInItemQuantityInputClicked()
+                if (!isError) defaultKeyboardAction(ImeAction.Next)
+            }
+        ),
         trailingIcon = {
-            if (itemQuantity.isNotBlank()) TrailingIconForErase(
-                onEraseItemQuantityInputButtonClicked
-            )
+            if (itemQuantity.isNotBlank()) {
+                TrailingIconForErase(onEraseItemQuantityInputButtonClicked)
+            } else if (isError) {
+                Icon(
+                    Icons.Filled.Error,
+                    contentDescription = ""
+                )
+            }
         },
-        singleLine = true
+        singleLine = true,
+        isError = isError
     )
+    if (isError) {
+        Text(
+            text = stringResource(R.string.error_message_quantity_input_field),
+            style = MaterialTheme.typography.caption,
+            color = MaterialTheme.colors.error,
+            modifier = Modifier.padding(start = PADDING_MEDIUM)
+        )
+    }
 }
 
 @Composable

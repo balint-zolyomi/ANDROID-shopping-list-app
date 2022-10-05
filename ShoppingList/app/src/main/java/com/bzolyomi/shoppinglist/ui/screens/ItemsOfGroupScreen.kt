@@ -108,41 +108,64 @@ fun ItemInputFields(
     onEraseItemQuantityInputButtonClicked: () -> Unit,
     onEraseItemUnitInputButtonClicked: () -> Unit
 ) {
-    var isError by rememberSaveable { mutableStateOf(false) }
+    var isItemNameError by rememberSaveable { mutableStateOf(false) }
+    var isItemQuantityError by rememberSaveable { mutableStateOf(false) }
 
-    fun validate(input: String) {
-        isError = input.isBlank()
+    fun validateItemNameInput(itemNameInput: String) {
+        isItemNameError = itemNameInput.isBlank()
     }
 
-    Column(modifier = Modifier.padding(PADDING_MEDIUM)) {
+    fun validateItemQuantityInput(itemQuantityInput: String) {
+        isItemQuantityError = try {
+            itemQuantityInput.toFloat()
+            false
+        } catch (e: Exception) {
+            true
+        }
+    }
+
+    Column(
+        modifier = Modifier.padding(PADDING_MEDIUM)
+    ) {
         ItemNameInput(
             itemName = itemName,
-            isError = isError,
+            isError = isItemNameError,
             onItemNameChange = {
-                validate(it)
-                if (!isError) onItemNameChange(it)
+                validateItemNameInput(it)
+                if (!isItemNameError) onItemNameChange(it)
             },
             onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
-            onNextInItemNameInputClicked = { validate(itemName) }
+            onNextInItemNameInputClicked = { validateItemNameInput(itemName) }
         )
         ItemQuantityInput(
-            itemQuantity,
-            onItemQuantityChange = { onItemQuantityChange(it) },
-            onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked
+            itemQuantity = itemQuantity,
+            isError = isItemQuantityError,
+            onItemQuantityChange = {
+                validateItemQuantityInput(it)
+                if (!isItemQuantityError) onItemQuantityChange(it)
+            },
+            onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
+            onNextInItemQuantityInputClicked = { validateItemQuantityInput(itemQuantity) }
         )
         ItemUnitInput(
             itemUnit,
             onItemUnitChange = { onItemUnitChange(it) },
             onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked,
             onDone = {
-                validate(itemName)
-                if (!isError) onSubmitAddItemButtonClicked()
+                validateItemNameInput(itemName)
+                validateItemQuantityInput(itemQuantity)
+                if (!isItemNameError && !isItemQuantityError) {
+                    onSubmitAddItemButtonClicked()
+                }
             }
         )
         Row(modifier = Modifier.padding(horizontal = PADDING_MEDIUM)) {
             SubmitAddItemButton(onSubmitAddItemButtonClicked = {
-                validate(itemName)
-                if (!isError) onSubmitAddItemButtonClicked()
+                validateItemNameInput(itemName)
+                validateItemQuantityInput(itemQuantity)
+                if (!isItemNameError && !isItemQuantityError) {
+                    onSubmitAddItemButtonClicked()
+                }
             })
             Spacer(modifier = Modifier.weight(1f))
             CancelButton(onCancelButtonClicked = onCancelButtonClicked)

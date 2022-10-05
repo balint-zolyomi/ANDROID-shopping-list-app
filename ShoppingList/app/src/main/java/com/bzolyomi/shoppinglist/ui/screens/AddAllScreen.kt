@@ -38,6 +38,7 @@ fun AddAllScreen(
 ) {
     var isGroupNameError by rememberSaveable { mutableStateOf(false) }
     var isItemNameError by rememberSaveable { mutableStateOf(false) }
+    var isItemQuantityError by rememberSaveable { mutableStateOf(false) }
 
     fun validateGroupNameInput(groupNameInput: String) {
         isGroupNameError = groupNameInput.isBlank()
@@ -45,6 +46,16 @@ fun AddAllScreen(
 
     fun validateItemNameInput(itemNameInput: String) {
         isItemNameError = itemNameInput.isBlank()
+    }
+
+    fun validateItemQuantityInput(itemQuantityInput: String) {
+        isItemQuantityError = try {
+            val tempQuantity = itemQuantityInput.replace(",",".")
+            tempQuantity.toFloat()
+            false
+        } catch (e: Exception) {
+            itemQuantityInput != ""
+        }
     }
 
     Column(
@@ -66,12 +77,15 @@ fun AddAllScreen(
             itemName = itemName,
             itemQuantity = itemQuantity,
             itemUnit = itemUnit,
-            isError = isItemNameError,
+            isItemNameError = isItemNameError,
+            isItemQuantityError = isItemQuantityError,
             onItemNameChange = {
                 validateItemNameInput(it)
                 if (!isItemNameError) onItemNameChange(it)
             },
-            onItemQuantityChange = { onItemQuantityChange(it) },
+            onItemQuantityChange = {
+                onItemQuantityChange(it)
+            },
             onItemUnitChange = { onItemUnitChange(it) },
             onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
             onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
@@ -79,21 +93,31 @@ fun AddAllScreen(
             onDone = {
                 validateGroupNameInput(groupName)
                 validateItemNameInput(itemName)
-                if (!isItemNameError && !isGroupNameError) onSubmitAddAllButtonClicked()
+                validateItemQuantityInput(itemQuantity)
+                if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
+                    onSubmitAddAllButtonClicked()
+                }
             },
-            onNextInItemNameInputClicked = { validateItemNameInput(itemName) }
+            onNextInItemNameInputClicked = { validateItemNameInput(itemName) },
+            onNextInItemQuantityInputClicked = { validateItemQuantityInput(itemQuantity) }
         )
         Row(modifier = Modifier.padding(PADDING_MEDIUM)) {
             AddItemButton(onAddItemButtonClicked = {
                 validateGroupNameInput(groupName)
                 validateItemNameInput(itemName)
-                if (!isItemNameError) onAddItemButtonClicked()
+                validateItemQuantityInput(itemQuantity)
+                if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
+                    onAddItemButtonClicked()
+                }
             })
             Spacer(Modifier.weight(1f))
             SubmitAddAllButton(onSubmitAddAllButtonClicked = {
                 validateGroupNameInput(groupName)
                 validateItemNameInput(itemName)
-                if (!isItemNameError && !isGroupNameError) onSubmitAddAllButtonClicked()
+                validateItemQuantityInput(itemQuantity)
+                if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
+                    onSubmitAddAllButtonClicked()
+                }
             })
         }
     }
