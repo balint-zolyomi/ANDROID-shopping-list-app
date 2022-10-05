@@ -12,10 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -28,18 +24,23 @@ fun ItemInput(
     itemName: String,
     itemQuantity: String,
     itemUnit: String,
+    isError: Boolean,
     onItemNameChange: (String) -> Unit,
     onItemQuantityChange: (String) -> Unit,
     onItemUnitChange: (String) -> Unit,
     onEraseItemNameInputButtonClicked: () -> Unit,
     onEraseItemQuantityInputButtonClicked: () -> Unit,
-    onEraseItemUnitInputButtonClicked: () -> Unit
+    onEraseItemUnitInputButtonClicked: () -> Unit,
+    onDone: () -> Unit,
+    onNextInItemNameInputClicked: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         ItemNameInput(
             itemName = itemName,
+            isError = isError,
             onItemNameChange = { onItemNameChange(it) },
-            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked
+            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
+            onNextInItemNameInputClicked = onNextInItemNameInputClicked
         )
         ItemQuantityInput(
             itemQuantity = itemQuantity,
@@ -49,7 +50,8 @@ fun ItemInput(
         ItemUnitInput(
             itemUnit = itemUnit,
             onItemUnitChange = { onItemUnitChange(it) },
-            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked
+            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked,
+            onDone = onDone
         )
     }
 }
@@ -57,43 +59,33 @@ fun ItemInput(
 @Composable
 fun ItemNameInput(
     itemName: String,
+    isError: Boolean,
     onItemNameChange: (String) -> Unit,
-    onEraseItemNameInputButtonClicked: () -> Unit
+    onEraseItemNameInputButtonClicked: () -> Unit,
+    onNextInItemNameInputClicked: () -> Unit
 ) {
-    var isError by rememberSaveable { mutableStateOf(false) }
-
-    fun validate(input: String) {
-        isError = input.isBlank()
-    }
-
     Column {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = itemName,
-            onValueChange = {
-                isError = if (itemName == "" && it == " ") {
-                    true
-                } else {
-                    onItemNameChange(it)
-                    false
-                }
-            },
+            onValueChange = { onItemNameChange(it) },
             label = { Text(text = stringResource(R.string.input_label_item_name)) },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Next
             ),
-            keyboardActions = KeyboardActions(onNext = {
-                validate(itemName)
-                if (!isError) defaultKeyboardAction(ImeAction.Next)
-            }),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    onNextInItemNameInputClicked()
+                    if (!isError) defaultKeyboardAction(ImeAction.Next)
+                }
+            ),
             trailingIcon = {
                 if (itemName.isNotBlank()) {
                     TrailingIconForErase(onEraseItemNameInputButtonClicked)
                 } else if (isError) {
                     Icon(
                         Icons.Filled.Error,
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.error
+                        contentDescription = ""
                     )
                 }
             },
@@ -139,7 +131,8 @@ fun ItemQuantityInput(
 fun ItemUnitInput(
     itemUnit: String,
     onItemUnitChange: (String) -> Unit,
-    onEraseItemUnitInputButtonClicked: () -> Unit
+    onEraseItemUnitInputButtonClicked: () -> Unit,
+    onDone: () -> Unit
 ) {
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
@@ -147,6 +140,7 @@ fun ItemUnitInput(
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done
         ),
+        keyboardActions = KeyboardActions(onDone = { onDone() }),
         onValueChange = { onItemUnitChange(it) },
         label = { Text(text = stringResource(R.string.input_label_item_unit)) },
         trailingIcon = {

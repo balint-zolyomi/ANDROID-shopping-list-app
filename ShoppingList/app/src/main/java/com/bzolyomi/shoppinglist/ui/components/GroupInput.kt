@@ -12,10 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -25,14 +21,18 @@ import com.bzolyomi.shoppinglist.util.Constants
 @Composable
 fun GroupInput(
     groupName: String,
+    isError: Boolean,
     onGroupNameChange: (String) -> Unit,
-    onEraseGroupNameInputButtonClicked: () -> Unit
+    onEraseGroupNameInputButtonClicked: () -> Unit,
+    onNextInGroupNameInputClicked: () -> Unit
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         GroupNameInput(
             groupName = groupName,
+            isError = isError,
             onGroupNameChange = { onGroupNameChange(it) },
-            onEraseGroupNameInputButtonClicked = onEraseGroupNameInputButtonClicked
+            onEraseGroupNameInputButtonClicked = onEraseGroupNameInputButtonClicked,
+            onNextInGroupNameInputClicked = onNextInGroupNameInputClicked
         )
     }
 }
@@ -40,43 +40,31 @@ fun GroupInput(
 @Composable
 fun GroupNameInput(
     groupName: String,
+    isError: Boolean,
     onGroupNameChange: (String) -> Unit,
-    onEraseGroupNameInputButtonClicked: () -> Unit
+    onEraseGroupNameInputButtonClicked: () -> Unit,
+    onNextInGroupNameInputClicked: () -> Unit
 ) {
-    var isError by rememberSaveable { mutableStateOf(false) }
-
-    fun validate(input: String) {
-        isError = input.isBlank()
-    }
-
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = groupName,
-        onValueChange = {
-
-            isError = if (groupName == "" && it == " ") {
-                true
-            } else {
-                onGroupNameChange(it)
-                false
-            }
-        },
+        onValueChange = { onGroupNameChange(it) },
         label = { Text(text = stringResource(R.string.input_label_group_name)) },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
         ),
-        keyboardActions = KeyboardActions(onNext = {
-            validate(groupName)
-            if (!isError) defaultKeyboardAction(ImeAction.Next)
-        }),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                onNextInGroupNameInputClicked()
+                if (!isError) defaultKeyboardAction(ImeAction.Next)
+            }),
         trailingIcon = {
             if (groupName.isNotBlank()) {
                 TrailingIconForErase(onEraseGroupNameInputButtonClicked)
             } else if (isError) {
                 Icon(
                     Icons.Filled.Error,
-                    contentDescription = "",
-                    tint = MaterialTheme.colors.error
+                    contentDescription = ""
                 )
             }
         },

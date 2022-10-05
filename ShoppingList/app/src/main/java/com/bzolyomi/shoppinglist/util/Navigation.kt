@@ -55,6 +55,8 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
         }
 
         composable("add") {
+            var isInputError: Boolean = false
+
             AddAllScreen(
                 groupName = sharedViewModel.groupName,
                 itemName = sharedViewModel.itemName,
@@ -66,10 +68,12 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                 onItemUnitChange = { sharedViewModel.itemUnit = it },
                 onAddItemButtonClicked = { sharedViewModel.addItemFromGUIToItemList() },
                 onSubmitAddAllButtonClicked = {
-                    navController.navigate("home") {
-                        popUpTo("home") { inclusive = true }
+                    if (!isInputError) {
+                        navController.navigate("home") {
+                            popUpTo("home") { inclusive = true }
+                        }
+                        sharedViewModel.createWithCoroutines()
                     }
-                    sharedViewModel.createWithCoroutines()
                 },
                 onEraseGroupNameInputButtonClicked = { sharedViewModel.groupName = "" },
                 onEraseItemNameInputButtonClicked = { sharedViewModel.itemName = "" },

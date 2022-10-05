@@ -5,7 +5,11 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
@@ -32,6 +36,16 @@ fun AddAllScreen(
     onEraseItemUnitInputButtonClicked: () -> Unit,
     modifier: Modifier
 ) {
+    var isGroupNameError by rememberSaveable { mutableStateOf(false) }
+    var isItemNameError by rememberSaveable { mutableStateOf(false) }
+
+    fun validateGroupNameInput(groupNameInput: String) {
+        isGroupNameError = groupNameInput.isBlank()
+    }
+
+    fun validateItemNameInput(itemNameInput: String) {
+        isItemNameError = itemNameInput.isBlank()
+    }
 
     Column(
         modifier = modifier
@@ -40,24 +54,47 @@ fun AddAllScreen(
     ) {
         GroupInput(
             groupName = groupName,
-            onGroupNameChange = { onGroupNameChange(it) },
-            onEraseGroupNameInputButtonClicked = onEraseGroupNameInputButtonClicked
+            isError = isGroupNameError,
+            onGroupNameChange = {
+                validateGroupNameInput(it)
+                if (!isGroupNameError) onGroupNameChange(it)
+            },
+            onEraseGroupNameInputButtonClicked = onEraseGroupNameInputButtonClicked,
+            onNextInGroupNameInputClicked = { validateGroupNameInput(groupName) }
         )
         ItemInput(
             itemName = itemName,
             itemQuantity = itemQuantity,
             itemUnit = itemUnit,
-            onItemNameChange = { onItemNameChange(it) },
+            isError = isItemNameError,
+            onItemNameChange = {
+                validateItemNameInput(it)
+                if (!isItemNameError) onItemNameChange(it)
+            },
             onItemQuantityChange = { onItemQuantityChange(it) },
             onItemUnitChange = { onItemUnitChange(it) },
             onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
             onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
-            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked
+            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked,
+            onDone = {
+                validateGroupNameInput(groupName)
+                validateItemNameInput(itemName)
+                if (!isItemNameError && !isGroupNameError) onSubmitAddAllButtonClicked()
+            },
+            onNextInItemNameInputClicked = { validateItemNameInput(itemName) }
         )
         Row(modifier = Modifier.padding(PADDING_MEDIUM)) {
-            AddItemButton(onAddItemButtonClicked = onAddItemButtonClicked)
+            AddItemButton(onAddItemButtonClicked = {
+                validateGroupNameInput(groupName)
+                validateItemNameInput(itemName)
+                if (!isItemNameError) onAddItemButtonClicked()
+            })
             Spacer(Modifier.weight(1f))
-            SubmitAddAllButton(onSubmitAddAllButtonClicked = onSubmitAddAllButtonClicked)
+            SubmitAddAllButton(onSubmitAddAllButtonClicked = {
+                validateGroupNameInput(groupName)
+                validateItemNameInput(itemName)
+                if (!isItemNameError && !isGroupNameError) onSubmitAddAllButtonClicked()
+            })
         }
     }
 }

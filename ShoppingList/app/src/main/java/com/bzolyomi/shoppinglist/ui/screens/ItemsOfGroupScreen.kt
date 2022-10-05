@@ -6,6 +6,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
@@ -107,11 +108,22 @@ fun ItemInputFields(
     onEraseItemQuantityInputButtonClicked: () -> Unit,
     onEraseItemUnitInputButtonClicked: () -> Unit
 ) {
+    var isError by rememberSaveable { mutableStateOf(false) }
+
+    fun validate(input: String) {
+        isError = input.isBlank()
+    }
+
     Column(modifier = Modifier.padding(PADDING_MEDIUM)) {
         ItemNameInput(
             itemName = itemName,
-            onItemNameChange = { onItemNameChange(it) },
-            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked
+            isError = isError,
+            onItemNameChange = {
+                validate(it)
+                if (!isError) onItemNameChange(it)
+            },
+            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
+            onNextInItemNameInputClicked = { validate(itemName) }
         )
         ItemQuantityInput(
             itemQuantity,
@@ -121,10 +133,17 @@ fun ItemInputFields(
         ItemUnitInput(
             itemUnit,
             onItemUnitChange = { onItemUnitChange(it) },
-            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked
+            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked,
+            onDone = {
+                validate(itemName)
+                if (!isError) onSubmitAddItemButtonClicked()
+            }
         )
         Row(modifier = Modifier.padding(horizontal = PADDING_MEDIUM)) {
-            SubmitAddItemButton(onSubmitAddItemButtonClicked = onSubmitAddItemButtonClicked)
+            SubmitAddItemButton(onSubmitAddItemButtonClicked = {
+                validate(itemName)
+                if (!isError) onSubmitAddItemButtonClicked()
+            })
             Spacer(modifier = Modifier.weight(1f))
             CancelButton(onCancelButtonClicked = onCancelButtonClicked)
         }
