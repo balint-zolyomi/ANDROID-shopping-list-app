@@ -77,6 +77,7 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                 },
                 onNavigationBarBackButtonClicked = {
                     sharedViewModel.groupName = ""
+                    sharedViewModel.clearItemsList()
                     sharedViewModel.flushItemGUI()
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }

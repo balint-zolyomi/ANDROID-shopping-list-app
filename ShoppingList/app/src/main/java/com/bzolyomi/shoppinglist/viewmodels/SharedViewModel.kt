@@ -94,6 +94,10 @@ class SharedViewModel @Inject constructor(
         itemUnit = ""
     }
 
+    fun clearItemsList() {
+        items.clear()
+    }
+
     // COROUTINES and their functions
     fun createWithCoroutines() = runBlocking {
         var groupId = getGroupIdCoroutine()
