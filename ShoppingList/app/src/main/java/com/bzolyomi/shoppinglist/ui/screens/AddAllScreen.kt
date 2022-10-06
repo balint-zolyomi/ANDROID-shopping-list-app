@@ -67,7 +67,7 @@ fun AddAllScreen(
             isError = isGroupNameError,
             onGroupNameChange = {
                 validateGroupNameInput(it)
-                if (!isGroupNameError) onGroupNameChange(it)
+                if (!isGroupNameError || it == "") onGroupNameChange(it)
             },
             onEraseGroupNameInputButtonClicked = {
                 sharedViewModel.groupName = ""
@@ -77,26 +77,28 @@ fun AddAllScreen(
         )
         ItemInput(
             itemName = itemName,
-            itemQuantity = itemQuantity,
-            itemUnit = itemUnit,
             isItemNameError = isItemNameError,
-            isItemQuantityError = isItemQuantityError,
             onItemNameChange = {
                 validateItemNameInput(it)
-                if (!isItemNameError) onItemNameChange(it)
+                if (!isItemNameError || it == "") onItemNameChange(it)
             },
-            onItemQuantityChange = {
-                onItemQuantityChange(it)
-            },
-            onItemUnitChange = { onItemUnitChange(it) },
             onEraseItemNameInputButtonClicked = {
                 sharedViewModel.itemName = ""
                 validateItemNameInput(sharedViewModel.itemName)
+            },
+            onNextInItemNameInputClicked = { validateItemNameInput(itemName) },
+            itemQuantity = itemQuantity,
+            isItemQuantityError = isItemQuantityError,
+            onItemQuantityChange = {
+                onItemQuantityChange(it)
             },
             onEraseItemQuantityInputButtonClicked = {
                 sharedViewModel.itemQuantity = ""
                 validateItemQuantityInput(sharedViewModel.itemQuantity)
             },
+            onNextInItemQuantityInputClicked = { validateItemQuantityInput(itemQuantity) },
+            itemUnit = itemUnit,
+            onItemUnitChange = { onItemUnitChange(it) },
             onEraseItemUnitInputButtonClicked = {
                 sharedViewModel.itemUnit = ""
             },
@@ -107,9 +109,7 @@ fun AddAllScreen(
                 if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
                     onSubmitAddAllButtonClicked()
                 }
-            },
-            onNextInItemNameInputClicked = { validateItemNameInput(itemName) },
-            onNextInItemQuantityInputClicked = { validateItemQuantityInput(itemQuantity) }
+            }
         )
         Row(modifier = Modifier.padding(PADDING_MEDIUM)) {
             AddItemButton(onAddItemButtonClicked = {

@@ -128,21 +128,12 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                 onCheckboxClicked = {
                     sharedViewModel.updateItemChecked(it)
                 },
-                onEraseItemNameInputButtonClicked = {
-                    sharedViewModel.itemName = ""
-                },
-                onEraseItemQuantityInputButtonClicked = {
-                    sharedViewModel.itemQuantity = ""
-                },
-                onEraseItemUnitInputButtonClicked = {
-                    sharedViewModel.itemUnit = ""
-                },
                 onCancelAddItemButtonClicked = {
                     sharedViewModel.flushItemGUI()
                 },
                 modifier = backgroundModifier
-                    .fillMaxSize()
-//                sharedViewModel = sharedViewModel,
+                    .fillMaxSize(),
+                sharedViewModel = sharedViewModel
 //                onItemsRearrangedOnGUI = {
 //                    sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)
 //                }

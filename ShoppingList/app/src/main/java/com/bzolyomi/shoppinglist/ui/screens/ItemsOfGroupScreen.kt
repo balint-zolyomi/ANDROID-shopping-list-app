@@ -15,6 +15,7 @@ import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
+import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun ItemsOfGroupScreen(
@@ -29,12 +30,9 @@ fun ItemsOfGroupScreen(
     onItemUnitChange: (String) -> Unit,
     onSubmitAddItemButtonClicked: (Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    onEraseItemNameInputButtonClicked: () -> Unit,
-    onEraseItemQuantityInputButtonClicked: () -> Unit,
-    onEraseItemUnitInputButtonClicked: () -> Unit,
     onCancelAddItemButtonClicked: () -> Unit,
-    modifier: Modifier
-//    sharedViewModel: SharedViewModel,
+    modifier: Modifier,
+    sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
 
@@ -70,9 +68,7 @@ fun ItemsOfGroupScreen(
                         onCancelAddItemButtonClicked()
                         addItem = false
                     },
-                    onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
-                    onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
-                    onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked
+                    sharedViewModel = sharedViewModel
                 )
             } else {
                 Button(
@@ -104,9 +100,7 @@ fun ItemInputFields(
     onItemUnitChange: (String) -> Unit,
     onSubmitAddItemButtonClicked: () -> Unit,
     onCancelButtonClicked: () -> Unit,
-    onEraseItemNameInputButtonClicked: () -> Unit,
-    onEraseItemQuantityInputButtonClicked: () -> Unit,
-    onEraseItemUnitInputButtonClicked: () -> Unit
+    sharedViewModel: SharedViewModel
 ) {
     var isItemNameError by rememberSaveable { mutableStateOf(false) }
     var isItemQuantityError by rememberSaveable { mutableStateOf(false) }
@@ -133,28 +127,32 @@ fun ItemInputFields(
             isError = isItemNameError,
             onItemNameChange = {
                 validateItemNameInput(it)
-                if (!isItemNameError) onItemNameChange(it)
+                if (!isItemNameError || it == "") onItemNameChange(it)
             },
-            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
+            onEraseItemNameInputButtonClicked = {
+                sharedViewModel.itemName = ""
+                validateItemNameInput(sharedViewModel.itemName)
+            },
             onNextInItemNameInputClicked = { validateItemNameInput(itemName) }
         )
         ItemQuantityInput(
             itemQuantity = itemQuantity,
             isError = isItemQuantityError,
             onItemQuantityChange = {
-                validateItemQuantityInput(it)
-                if (!isItemQuantityError) onItemQuantityChange(it)
+                onItemQuantityChange(it)
             },
             onEraseItemQuantityInputButtonClicked = {
-                onEraseItemQuantityInputButtonClicked()
-                validateItemQuantityInput("")
+                sharedViewModel.itemQuantity = ""
+                validateItemQuantityInput(sharedViewModel.itemQuantity)
             },
             onNextInItemQuantityInputClicked = { validateItemQuantityInput(itemQuantity) }
         )
         ItemUnitInput(
             itemUnit,
             onItemUnitChange = { onItemUnitChange(it) },
-            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked,
+            onEraseItemUnitInputButtonClicked = {
+                sharedViewModel.itemUnit = ""
+            },
             onDone = {
                 validateItemNameInput(itemName)
                 validateItemQuantityInput(itemQuantity)
