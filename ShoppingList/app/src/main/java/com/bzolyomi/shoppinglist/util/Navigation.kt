@@ -75,6 +75,13 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                         sharedViewModel.createWithCoroutines()
                     }
                 },
+                onNavigationBarBackButtonClicked = {
+                    sharedViewModel.groupName = ""
+                    sharedViewModel.flushItemGUI()
+                    navController.navigate("home") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                },
                 sharedViewModel = sharedViewModel,
                 modifier = backgroundModifier
                     .fillMaxSize()

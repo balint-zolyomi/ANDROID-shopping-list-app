@@ -1,6 +1,7 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -32,9 +33,13 @@ fun AddAllScreen(
     onItemUnitChange: (String) -> Unit,
     onAddItemButtonClicked: () -> Unit,
     onSubmitAddAllButtonClicked: () -> Unit,
+    onNavigationBarBackButtonClicked: () -> Unit,
     sharedViewModel: SharedViewModel,
     modifier: Modifier
 ) {
+
+    BackHandler { onNavigationBarBackButtonClicked() }
+
     var isGroupNameError by rememberSaveable { mutableStateOf(false) }
     var isItemNameError by rememberSaveable { mutableStateOf(false) }
     var isItemQuantityError by rememberSaveable { mutableStateOf(false) }
