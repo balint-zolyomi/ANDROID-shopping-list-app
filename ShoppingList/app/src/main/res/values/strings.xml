@@ -16,4 +16,5 @@
     <string name="delete_all_appbar_dropdown_menu_option">Delete all</string>
     <string name="error_message_input_field">Required field, also cannot start with a space.</string>
     <string name="error_message_quantity_input_field">Must be a number greater than zero, or can be left empty.</string>
+    <string name="delete_shopping_group_and_its_items_alert_dialog_message">Delete shopping group and all its items? This action cannot be undone.</string>
 </resources>

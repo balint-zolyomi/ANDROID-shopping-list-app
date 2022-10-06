@@ -118,7 +118,7 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                 onDeleteItemClicked = {
                     sharedViewModel.deleteItem(itemId = it)
                 },
-                onDeleteGroupClicked = { groupIdToDelete, shoppingListToDelete ->
+                onDeleteGroupConfirmed = { groupIdToDelete, shoppingListToDelete ->
                     sharedViewModel.setCurrentGroupID(groupId = null)
                     sharedViewModel.deleteGroup(groupId = groupIdToDelete)
                     sharedViewModel.deleteItems(shoppingListToDelete)

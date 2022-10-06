@@ -21,7 +21,7 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 fun ItemsOfGroupScreen(
     selectedGroupWithList: GroupWithList?,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
-    onDeleteGroupClicked: (groupId: Long?, shoppingList: List<ShoppingItemEntity>) -> Unit,
+    onDeleteGroupConfirmed: (groupId: Long?, shoppingList: List<ShoppingItemEntity>) -> Unit,
     itemName: String,
     itemQuantity: String,
     itemUnit: String,
@@ -44,10 +44,15 @@ fun ItemsOfGroupScreen(
                 .fillMaxSize()
         ) {
             ContentWithoutInput(
-                selectedGroupWithList,
-                onDeleteGroupClicked,
-                onDeleteItemClicked,
-                onCheckboxClicked,
+                selectedGroupWithList = selectedGroupWithList,
+                onDeleteGroupConfirmed = {
+                    onDeleteGroupConfirmed(
+                        selectedGroupWithList.group.groupId,
+                        selectedGroupWithList.shoppingList
+                    )
+                },
+                onDeleteItemClicked = onDeleteItemClicked,
+                onCheckboxClicked = onCheckboxClicked,
                 modifier = Modifier
 //                sharedViewModel,
 //                onItemsRearrangedOnGUI
@@ -188,22 +193,19 @@ fun CancelButton(onCancelButtonClicked: () -> Unit) {
 @Composable
 fun ContentWithoutInput(
     selectedGroupWithList: GroupWithList,
-    onDeleteGroupClicked: (groupId: Long?, shoppingList: List<ShoppingItemEntity>) -> Unit,
+    onDeleteGroupConfirmed: () -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     modifier: Modifier
 //    sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
+    var isAlertDialogOpen by remember { mutableStateOf(false) }
+
     Column {
         GroupCard(
             titleGroupName = selectedGroupWithList.group.groupName,
-            onDeleteGroupClicked = {
-                onDeleteGroupClicked(
-                    selectedGroupWithList.group.groupId,
-                    selectedGroupWithList.shoppingList
-                )
-            },
+            onDeleteGroupClicked = { isAlertDialogOpen = true },
             modifier = modifier
         )
         ItemsList(
@@ -215,6 +217,17 @@ fun ContentWithoutInput(
 //        onItemsRearrangedOnGUI = onItemsRearrangedOnGUI
         )
     }
+
+    ShowAlertDialog(
+        title = stringResource(R.string.delete_all_alert_dialog_title),
+        message = stringResource(R.string.delete_shopping_group_and_its_items_alert_dialog_message),
+        isOpen = isAlertDialogOpen,
+        onConfirmClicked = {
+            onDeleteGroupConfirmed()
+            isAlertDialogOpen = false
+        },
+        onDismissClicked = { isAlertDialogOpen = false }
+    )
 }
 
 @Composable

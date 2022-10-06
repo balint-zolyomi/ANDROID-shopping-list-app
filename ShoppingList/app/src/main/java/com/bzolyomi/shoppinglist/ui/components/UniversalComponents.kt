@@ -188,7 +188,9 @@ private fun ColumnScope.CardContent(
 
 @Composable
 fun GroupCard(
-    titleGroupName: String, onDeleteGroupClicked: () -> Unit, modifier: Modifier
+    titleGroupName: String,
+    onDeleteGroupClicked: () -> Unit,
+    modifier: Modifier
 ) {
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
 
@@ -209,11 +211,14 @@ fun GroupCard(
                 modifier = modifier.padding(horizontal = PADDING_LARGE, vertical = PADDING_SMALL)
             )
         }
-        IconButton(onClick = onDeleteGroupClicked, modifier = modifier.constrainAs(button) {
-            start.linkTo(card.end)
-            top.linkTo(card.top)
-            bottom.linkTo(card.bottom)
-        }) {
+        IconButton(
+            onClick = onDeleteGroupClicked,
+            modifier = modifier.constrainAs(button) {
+                start.linkTo(card.end)
+                top.linkTo(card.top)
+                bottom.linkTo(card.bottom)
+            }
+        ) {
             Icon(
                 Icons.Filled.Delete,
                 tint = MaterialTheme.colors.primary,
