@@ -125,7 +125,7 @@ class SharedViewModel @Inject constructor(
     }
 
     private suspend fun createGroup() {
-        repo.createGroup(ShoppingGroupEntity(groupId = null, groupName = groupName))
+        repo.createGroup(ShoppingGroupEntity(groupId = null, groupName = groupName.trim()))
     }
 
     private suspend fun getGroupIdCoroutine(): Long? = coroutineScope {
@@ -134,7 +134,7 @@ class SharedViewModel @Inject constructor(
     }
 
     private suspend fun getGroupId(): Long? {
-        return repo.getGroupId(groupName = groupName)
+        return repo.getGroupId(groupName = groupName.trim())
     }
 
     fun addItemFromGUIToItemList() {
@@ -143,14 +143,14 @@ class SharedViewModel @Inject constructor(
                 ShoppingItemEntity(
                     itemId = null,
                     itemParentId = null,
-                    itemName = itemName,
+                    itemName = itemName.trim(),
                     itemQuantity = if (itemQuantity.isBlank()) {
                         null
                     } else {
-                        itemQuantity = itemQuantity.replace(",", ".")
+                        itemQuantity = itemQuantity.replace(",", ".").trim()
                         itemQuantity.toFloat()
                     },
-                    itemUnit = itemUnit,
+                    itemUnit = itemUnit.trim(),
                     isItemChecked = false
                 )
             )
