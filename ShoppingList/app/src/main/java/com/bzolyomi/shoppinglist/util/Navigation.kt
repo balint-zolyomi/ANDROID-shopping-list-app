@@ -66,7 +66,11 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                 onItemNameChange = { sharedViewModel.itemName = it },
                 onItemQuantityChange = { sharedViewModel.itemQuantity = it },
                 onItemUnitChange = { sharedViewModel.itemUnit = it },
-                onAddItemButtonClicked = { sharedViewModel.addItemFromGUIToItemList() },
+                onAddItemButtonClicked = {
+                    if (!isInputError) {
+                        sharedViewModel.createWithCoroutines()
+                    }
+                },
                 onSubmitAddAllButtonClicked = {
                     if (!isInputError) {
                         navController.navigate("home") {

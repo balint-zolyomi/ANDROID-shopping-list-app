@@ -1,8 +1,10 @@
 package com.bzolyomi.shoppinglist.viewmodels
 
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzolyomi.shoppinglist.data.GroupWithList
@@ -141,7 +143,7 @@ class SharedViewModel @Inject constructor(
         return repo.getGroupId(groupName = groupName.trim())
     }
 
-    fun addItemFromGUIToItemList() {
+    private fun addItemFromGUIToItemList() {
         if (itemName.isNotBlank()) {
             items.add(
                 ShoppingItemEntity(

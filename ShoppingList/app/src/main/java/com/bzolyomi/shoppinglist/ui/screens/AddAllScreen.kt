@@ -126,6 +126,7 @@ fun AddAllScreen(
                 validateItemQuantityInput(itemQuantity)
                 if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
                     onAddItemButtonClicked()
+                    showItemAddedToast(context)
                 }
             })
             Spacer(Modifier.weight(1f))

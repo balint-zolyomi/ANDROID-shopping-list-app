@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -36,6 +37,9 @@ fun ItemsOfGroupScreen(
     sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
+    val context = LocalContext.current
+    val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
+
     if (selectedGroupWithList != null) {
         var addItem by remember { mutableStateOf(false) }
 
@@ -50,6 +54,7 @@ fun ItemsOfGroupScreen(
                         selectedGroupWithList.group.groupId,
                         selectedGroupWithList.shoppingList
                     )
+                    Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT).show()
                 },
                 onDeleteItemClicked = onDeleteItemClicked,
                 onCheckboxClicked = onCheckboxClicked,

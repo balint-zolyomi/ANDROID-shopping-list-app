@@ -171,7 +171,7 @@ private fun ColumnScope.CardContent(
             }
             Column {
                 for (item in shoppingList) {
-                    var itemFontStyle = if (item.isItemChecked) {
+                    val itemFontStyle = if (item.isItemChecked) {
                         TextStyle(
                             textDecoration = TextDecoration.LineThrough,
                             fontFamily = FontFamily.Monospace,
@@ -182,10 +182,17 @@ private fun ColumnScope.CardContent(
                         MaterialTheme.typography.body1
                     }
 
-                    Text(
-                        text = item.itemName + " -- "
-                                + item.itemQuantity.toString()
+                    val itemQuantityToDisplay = if (item.itemQuantity == null) {
+                        ""
+                    } else {
+                        " -- " +
+                        item.itemQuantity.toString()
                             .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
+                    }
+
+                    Text(
+                        text = item.itemName
+                                + itemQuantityToDisplay
                                 + item.itemUnit,
                         style = itemFontStyle,
                         modifier = modifier.padding(vertical = PADDING_X_SMALL)
@@ -304,10 +311,17 @@ fun ItemCards(
                         },
                         modifier = modifier.padding(start = PADDING_X_SMALL)
                     )
-                    Text(
-                        text = item.itemName + " -- "
-                                + item.itemQuantity.toString()
+
+                    val itemQuantityToDisplay = if (item.itemQuantity == null) {
+                        ""
+                    } else {
+                        " -- " +
+                        item.itemQuantity.toString()
                             .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
+                    }
+                    Text(
+                        text = item.itemName
+                                + itemQuantityToDisplay
                                 + item.itemUnit,
                         style = itemFontStyle,
                         modifier = modifier.padding(PADDING_X_SMALL)
