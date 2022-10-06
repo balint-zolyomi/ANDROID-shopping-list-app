@@ -114,7 +114,9 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                     sharedViewModel.setCurrentGroupID(groupId = null)
                     sharedViewModel.deleteGroup(groupId = groupIdToDelete)
                     sharedViewModel.deleteItems(shoppingListToDelete)
-                    navController.navigate("home")
+                    navController.navigate("home") {
+                        popUpTo("home") { inclusive = true }
+                    }
                 },
                 itemName = sharedViewModel.itemName,
                 itemQuantity = sharedViewModel.itemQuantity,
