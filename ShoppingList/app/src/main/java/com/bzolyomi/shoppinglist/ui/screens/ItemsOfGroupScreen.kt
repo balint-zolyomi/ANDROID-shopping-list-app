@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.GroupWithList
@@ -35,7 +36,6 @@ fun ItemsOfGroupScreen(
     sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
-
     if (selectedGroupWithList != null) {
         var addItem by remember { mutableStateOf(false) }
 

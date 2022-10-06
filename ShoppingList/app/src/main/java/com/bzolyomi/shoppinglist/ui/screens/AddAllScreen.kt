@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -13,11 +12,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.components.GroupInput
 import com.bzolyomi.shoppinglist.ui.components.ItemInput
 import com.bzolyomi.shoppinglist.ui.components.SubmitAddAllButton
+import com.bzolyomi.shoppinglist.ui.components.showItemAddedToast
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
@@ -39,6 +40,8 @@ fun AddAllScreen(
 ) {
 
     BackHandler { onNavigationBarBackButtonClicked() }
+
+    val context = LocalContext.current
 
     var isGroupNameError by rememberSaveable { mutableStateOf(false) }
     var isItemNameError by rememberSaveable { mutableStateOf(false) }
@@ -132,6 +135,7 @@ fun AddAllScreen(
                 validateItemQuantityInput(itemQuantity)
                 if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
                     onSubmitAddAllButtonClicked()
+                    showItemAddedToast(context)
                 }
             })
         }

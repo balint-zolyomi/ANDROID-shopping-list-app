@@ -1,5 +1,7 @@
 package com.bzolyomi.shoppinglist.ui.components
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -16,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -53,11 +56,19 @@ fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
 @Composable
 fun SubmitAddItemButton(onSubmitAddItemButtonClicked: () -> Unit) {
     Button(
-        onClick = onSubmitAddItemButtonClicked,
+        onClick = {
+            onSubmitAddItemButtonClicked()
+        },
         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     ) {
         Text(text = stringResource(R.string.submit_button_text))
     }
+}
+
+fun showItemAddedToast(context: Context) {
+    Toast
+        .makeText(context, context.getString(R.string.toast_message_item_added), Toast.LENGTH_SHORT)
+        .show()
 }
 
 @Composable
