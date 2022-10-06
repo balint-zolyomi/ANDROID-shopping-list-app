@@ -75,10 +75,6 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                         sharedViewModel.createWithCoroutines()
                     }
                 },
-                onEraseGroupNameInputButtonClicked = { sharedViewModel.groupName = "" },
-                onEraseItemNameInputButtonClicked = { sharedViewModel.itemName = "" },
-//                onEraseItemQuantityInputButtonClicked = { sharedViewModel.itemQuantity = "" },
-                onEraseItemUnitInputButtonClicked = { sharedViewModel.itemUnit = "" },
                 sharedViewModel = sharedViewModel,
                 modifier = backgroundModifier
                     .fillMaxSize()

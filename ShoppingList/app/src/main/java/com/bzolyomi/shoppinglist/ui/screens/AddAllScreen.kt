@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -31,10 +32,6 @@ fun AddAllScreen(
     onItemUnitChange: (String) -> Unit,
     onAddItemButtonClicked: () -> Unit,
     onSubmitAddAllButtonClicked: () -> Unit,
-    onEraseGroupNameInputButtonClicked: () -> Unit,
-    onEraseItemNameInputButtonClicked: () -> Unit,
-//    onEraseItemQuantityInputButtonClicked: () -> Unit,
-    onEraseItemUnitInputButtonClicked: () -> Unit,
     sharedViewModel: SharedViewModel,
     modifier: Modifier
 ) {
@@ -52,7 +49,7 @@ fun AddAllScreen(
 
     fun validateItemQuantityInput(itemQuantityInput: String) {
         isItemQuantityError = try {
-            val tempQuantity = itemQuantityInput.replace(",",".")
+            val tempQuantity = itemQuantityInput.replace(",", ".")
             tempQuantity.toFloat()
             false
         } catch (e: Exception) {
@@ -72,7 +69,10 @@ fun AddAllScreen(
                 validateGroupNameInput(it)
                 if (!isGroupNameError) onGroupNameChange(it)
             },
-            onEraseGroupNameInputButtonClicked = onEraseGroupNameInputButtonClicked,
+            onEraseGroupNameInputButtonClicked = {
+                sharedViewModel.groupName = ""
+                validateGroupNameInput(sharedViewModel.groupName)
+            },
             onNextInGroupNameInputClicked = { validateGroupNameInput(groupName) }
         )
         ItemInput(
@@ -89,12 +89,17 @@ fun AddAllScreen(
                 onItemQuantityChange(it)
             },
             onItemUnitChange = { onItemUnitChange(it) },
-            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
+            onEraseItemNameInputButtonClicked = {
+                sharedViewModel.itemName = ""
+                validateItemNameInput(sharedViewModel.itemName)
+            },
             onEraseItemQuantityInputButtonClicked = {
                 sharedViewModel.itemQuantity = ""
                 validateItemQuantityInput(sharedViewModel.itemQuantity)
             },
-            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked,
+            onEraseItemUnitInputButtonClicked = {
+                sharedViewModel.itemUnit = ""
+            },
             onDone = {
                 validateGroupNameInput(groupName)
                 validateItemNameInput(itemName)
