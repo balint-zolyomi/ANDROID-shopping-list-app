@@ -44,7 +44,7 @@ object Constants {
     const val GROUP_CARD_FADE_OUT_DURATION = 100
 
         // Intro screen
-    const val INTRO_SCREEN_INITIAL_DELAY: Long = 1000
+    const val INTRO_SCREEN_INITIAL_DELAY: Long = 0
     const val INTRO_SCREEN_ZOOM_ANIMATION_DURATION: Int = 400
     const val INTRO_SCREEN_BETWEEN_ANIMATIONS_DELAY: Long = 700
     const val INTRO_SCREEN_FINISH_DELAY: Long = 1000

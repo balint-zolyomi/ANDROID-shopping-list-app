@@ -1,5 +1,9 @@
 package com.bzolyomi.shoppinglist.util
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,9 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
 import com.bzolyomi.shoppinglist.ui.screens.AddAllScreen
 import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
@@ -23,22 +25,32 @@ import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
 import com.bzolyomi.shoppinglist.ui.theme.IntroTheme
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
-import kotlinx.coroutines.delay
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.runBlocking
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
 
-    val navController: NavHostController = rememberNavController()
+    val navController: NavHostController = rememberAnimatedNavController()
 
     val isInDarkMode = isSystemInDarkTheme()
     val backgroundModifier: Modifier =
         if (isInDarkMode) Modifier.background(Color.Black)
         else Modifier.background(GradientBackground)
 
-    NavHost(navController = navController, startDestination = "intro") {
+    AnimatedNavHost(navController = navController, startDestination = "intro") {
 
-        composable("intro") {
+        composable(
+            "intro",
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(200),
+                    targetOffsetX = { -it }
+                )
+            }
+        ) {
             IntroTheme {
                 IntroScreen(
                     isInDarkMode = isInDarkMode,
@@ -119,7 +131,19 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
             route = "group/{groupId}",
             arguments = listOf(navArgument("groupId") {
                 type = NavType.StringType
-            })
+            }),
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(500, 0, easing = LinearOutSlowInEasing),
+                    initialOffsetX = { it / 2 }
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(500),
+                    targetOffsetX = { it }
+                )
+            }
         ) { navBackStackEntry ->
             val groupId = navBackStackEntry.arguments!!.getString("groupId")
 //            var selectedGroupWithList: GroupWithList = GroupWithList(

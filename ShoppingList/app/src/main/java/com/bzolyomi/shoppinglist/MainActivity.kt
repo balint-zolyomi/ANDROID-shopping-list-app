@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
+import com.bzolyomi.shoppinglist.ui.theme.IntroTheme
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
 import com.bzolyomi.shoppinglist.util.NavigationController
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
@@ -29,12 +30,14 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
         setContent {
-//            ShoppingListTheme {
+            IntroTheme {
                 NavigationController(
                     sharedViewModel = sharedViewModel,
-                    modifier = Modifier.fillMaxSize().background(GradientBackground)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(GradientBackground)
                 )
-//            }
+            }
         }
     }
 }
