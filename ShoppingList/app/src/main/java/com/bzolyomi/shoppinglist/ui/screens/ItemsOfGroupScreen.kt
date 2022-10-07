@@ -1,6 +1,7 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -33,10 +34,13 @@ fun ItemsOfGroupScreen(
     onSubmitAddItemButtonClicked: (Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onCancelAddItemButtonClicked: () -> Unit,
+    onNavigationBarBackButtonClicked: () -> Unit,
     modifier: Modifier,
     sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
+    BackHandler { onNavigationBarBackButtonClicked() }
+
     val context = LocalContext.current
     val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
 

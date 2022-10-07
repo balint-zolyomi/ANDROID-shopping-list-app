@@ -38,7 +38,6 @@ fun AddAllScreen(
     sharedViewModel: SharedViewModel,
     modifier: Modifier
 ) {
-
     BackHandler { onNavigationBarBackButtonClicked() }
 
     val context = LocalContext.current

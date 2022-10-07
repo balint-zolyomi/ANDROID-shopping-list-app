@@ -198,6 +198,12 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                     onCancelAddItemButtonClicked = {
                         sharedViewModel.flushItemGUI()
                     },
+                    onNavigationBarBackButtonClicked = {
+                        sharedViewModel.flushItemGUI()
+                        navController.navigate("home") {
+                            popUpTo("home") { inclusive = true }
+                        }
+                    },
                     modifier = backgroundModifier
                         .fillMaxSize(),
                     sharedViewModel = sharedViewModel
