@@ -1,7 +1,6 @@
 package com.bzolyomi.shoppinglist.util
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -24,6 +23,9 @@ import com.bzolyomi.shoppinglist.ui.screens.ItemsOfGroupScreen
 import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
 import com.bzolyomi.shoppinglist.ui.theme.IntroTheme
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_ENTER_DURATION
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_EXIT_DURATION
+import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -46,7 +48,7 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
             "intro",
             exitTransition = {
                 slideOutHorizontally(
-                    animationSpec = tween(200),
+                    animationSpec = tween(INTRO_SCREEN_EXIT_DURATION),
                     targetOffsetX = { -it }
                 )
             }
@@ -134,13 +136,17 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
             }),
             enterTransition = {
                 slideInHorizontally(
-                    animationSpec = tween(500, 0, easing = LinearOutSlowInEasing),
+                    animationSpec = tween(
+                        GROUP_SCREEN_ENTER_DURATION,
+                        0,
+                        easing = LinearOutSlowInEasing
+                    ),
                     initialOffsetX = { it / 2 }
                 )
             },
             exitTransition = {
                 slideOutHorizontally(
-                    animationSpec = tween(500),
+                    animationSpec = tween(GROUP_SCREEN_EXIT_DURATION),
                     targetOffsetX = { it }
                 )
             }

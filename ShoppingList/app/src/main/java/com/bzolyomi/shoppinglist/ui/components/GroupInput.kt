@@ -1,22 +1,22 @@
 package com.bzolyomi.shoppinglist.ui.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.util.Constants
+import java.time.format.TextStyle
 
 @Composable
 fun GroupInput(
@@ -45,11 +45,18 @@ fun GroupNameInput(
     onEraseGroupNameInputButtonClicked: () -> Unit,
     onNextInGroupNameInputClicked: () -> Unit
 ) {
+    val inputTextStyle = if (isSystemInDarkTheme()) {
+        LocalTextStyle.current.copy(color = Color.White)
+    } else {
+        LocalTextStyle.current
+    }
+
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = groupName,
         onValueChange = { onGroupNameChange(it) },
         label = { Text(text = stringResource(R.string.input_label_group_name)) },
+        textStyle = inputTextStyle,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
         ),
