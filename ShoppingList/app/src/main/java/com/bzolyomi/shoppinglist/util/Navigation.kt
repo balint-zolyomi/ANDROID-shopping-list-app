@@ -103,7 +103,9 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                     onItemUnitChange = { sharedViewModel.itemUnit = it },
                     onAddItemButtonClicked = {
                         if (!isInputError) {
+                            val groupName = sharedViewModel.groupName
                             sharedViewModel.createWithCoroutines()
+                            sharedViewModel.groupName = groupName
                         }
                     },
                     onSubmitAddAllButtonClicked = {
