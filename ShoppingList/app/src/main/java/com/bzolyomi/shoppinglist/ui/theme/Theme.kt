@@ -72,3 +72,35 @@ fun ShoppingListTheme(
         content = content
     )
 }
+
+@Composable
+fun IntroTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colors = if (darkTheme) {
+        DarkColorPalette
+    } else {
+        LightColorPalette
+    }
+
+    val view = LocalView.current
+    val window = (view.context as Activity).window
+    val systemUiController = rememberSystemUiController()
+
+    if (darkTheme) {
+        window.statusBarColor = Color.Black.toArgb()
+    } else {
+//        window.statusBarColor = Primary.toArgb()
+//        window.navigationBarColor = LightPrimary.toArgb()
+        systemUiController.setStatusBarColor(color = Color.White, darkIcons = true)
+        systemUiController.setNavigationBarColor(color = Color.White, darkIcons = true)
+    }
+
+    MaterialTheme(
+        colors = colors,
+        typography = Typography,
+        shapes = Shapes,
+        content = content
+    )
+}

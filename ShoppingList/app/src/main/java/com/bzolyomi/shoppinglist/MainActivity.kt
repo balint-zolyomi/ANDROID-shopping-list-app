@@ -29,12 +29,12 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
         setContent {
-            ShoppingListTheme {
+//            ShoppingListTheme {
                 NavigationController(
                     sharedViewModel = sharedViewModel,
                     modifier = Modifier.fillMaxSize().background(GradientBackground)
                 )
-            }
+//            }
         }
     }
 }

@@ -17,9 +17,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.bzolyomi.shoppinglist.ui.screens.AddAllScreen
 import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
+import com.bzolyomi.shoppinglist.ui.screens.IntroScreen
 import com.bzolyomi.shoppinglist.ui.screens.ItemsOfGroupScreen
 import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
+import com.bzolyomi.shoppinglist.ui.theme.IntroTheme
+import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 @Composable
@@ -32,65 +36,83 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
         if (isInDarkMode) Modifier.background(Color.Black)
         else Modifier.background(GradientBackground)
 
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = "intro") {
+
+        composable("intro") {
+            IntroTheme {
+                IntroScreen(
+                    isInDarkMode = isInDarkMode,
+                    onDelayPassed = {
+                        navController.navigate("home") {
+                            popUpTo("intro") { inclusive = true }
+                        }
+                    },
+                    modifier = backgroundModifier.fillMaxSize()
+                )
+            }
+        }
 
         composable("home") {
             val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
 
-            AllGroupsScreen(
-                shoppingGroupsWithLists = shoppingGroupsWithLists,
-                onAddAllFABClicked = { navController.navigate("add") },
-                onOpenGroupIconClicked = { groupId ->
-                    navController.navigate("group/$groupId")
-                    sharedViewModel.setCurrentGroupID(groupId = groupId)
-                },
-                onDeleteAllClicked = {
-                    for (groupWithList in shoppingGroupsWithLists) {
-                        sharedViewModel.deleteGroup(groupId = groupWithList.group.groupId)
-                    }
-                },
-                modifier = backgroundModifier
-                    .fillMaxSize()
-            )
+            ShoppingListTheme {
+                AllGroupsScreen(
+                    shoppingGroupsWithLists = shoppingGroupsWithLists,
+                    onAddAllFABClicked = { navController.navigate("add") },
+                    onOpenGroupIconClicked = { groupId ->
+                        navController.navigate("group/$groupId")
+                        sharedViewModel.setCurrentGroupID(groupId = groupId)
+                    },
+                    onDeleteAllClicked = {
+                        for (groupWithList in shoppingGroupsWithLists) {
+                            sharedViewModel.deleteGroup(groupId = groupWithList.group.groupId)
+                        }
+                    },
+                    modifier = backgroundModifier
+                        .fillMaxSize()
+                )
+            }
         }
 
         composable("add") {
             var isInputError: Boolean = false
 
-            AddAllScreen(
-                groupName = sharedViewModel.groupName,
-                itemName = sharedViewModel.itemName,
-                itemQuantity = sharedViewModel.itemQuantity,
-                itemUnit = sharedViewModel.itemUnit,
-                onGroupNameChange = { sharedViewModel.groupName = it },
-                onItemNameChange = { sharedViewModel.itemName = it },
-                onItemQuantityChange = { sharedViewModel.itemQuantity = it },
-                onItemUnitChange = { sharedViewModel.itemUnit = it },
-                onAddItemButtonClicked = {
-                    if (!isInputError) {
-                        sharedViewModel.createWithCoroutines()
-                    }
-                },
-                onSubmitAddAllButtonClicked = {
-                    if (!isInputError) {
+            ShoppingListTheme {
+                AddAllScreen(
+                    groupName = sharedViewModel.groupName,
+                    itemName = sharedViewModel.itemName,
+                    itemQuantity = sharedViewModel.itemQuantity,
+                    itemUnit = sharedViewModel.itemUnit,
+                    onGroupNameChange = { sharedViewModel.groupName = it },
+                    onItemNameChange = { sharedViewModel.itemName = it },
+                    onItemQuantityChange = { sharedViewModel.itemQuantity = it },
+                    onItemUnitChange = { sharedViewModel.itemUnit = it },
+                    onAddItemButtonClicked = {
+                        if (!isInputError) {
+                            sharedViewModel.createWithCoroutines()
+                        }
+                    },
+                    onSubmitAddAllButtonClicked = {
+                        if (!isInputError) {
+                            navController.navigate("home") {
+                                popUpTo("home") { inclusive = true }
+                            }
+                            sharedViewModel.createWithCoroutines()
+                        }
+                    },
+                    onNavigationBarBackButtonClicked = {
+                        sharedViewModel.groupName = ""
+                        sharedViewModel.clearItemsList()
+                        sharedViewModel.flushItemGUI()
                         navController.navigate("home") {
                             popUpTo("home") { inclusive = true }
                         }
-                        sharedViewModel.createWithCoroutines()
-                    }
-                },
-                onNavigationBarBackButtonClicked = {
-                    sharedViewModel.groupName = ""
-                    sharedViewModel.clearItemsList()
-                    sharedViewModel.flushItemGUI()
-                    navController.navigate("home") {
-                        popUpTo("home") { inclusive = true }
-                    }
-                },
-                sharedViewModel = sharedViewModel,
-                modifier = backgroundModifier
-                    .fillMaxSize()
-            )
+                    },
+                    sharedViewModel = sharedViewModel,
+                    modifier = backgroundModifier
+                        .fillMaxSize()
+                )
+            }
         }
 
         composable(
@@ -117,41 +139,43 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
             }
             val selectedGroupWithList by sharedViewModel.selectedGroupWithList.collectAsState()
 
-            ItemsOfGroupScreen(
-                selectedGroupWithList = selectedGroupWithList,
-                onDeleteItemClicked = {
-                    sharedViewModel.deleteItem(itemId = it)
-                },
-                onDeleteGroupConfirmed = { groupIdToDelete, shoppingListToDelete ->
-                    sharedViewModel.setCurrentGroupID(groupId = null)
-                    sharedViewModel.deleteGroup(groupId = groupIdToDelete)
-                    sharedViewModel.deleteItems(shoppingListToDelete)
-                    navController.navigate("home") {
-                        popUpTo("home") { inclusive = true }
-                    }
-                },
-                itemName = sharedViewModel.itemName,
-                itemQuantity = sharedViewModel.itemQuantity,
-                itemUnit = sharedViewModel.itemUnit,
-                onItemNameChange = { sharedViewModel.itemName = it },
-                onItemQuantityChange = { sharedViewModel.itemQuantity = it },
-                onItemUnitChange = { sharedViewModel.itemUnit = it },
-                onSubmitAddItemButtonClicked = {
-                    runBlocking { sharedViewModel.createItems(groupId = it) }
-                },
-                onCheckboxClicked = {
-                    sharedViewModel.updateItemChecked(it)
-                },
-                onCancelAddItemButtonClicked = {
-                    sharedViewModel.flushItemGUI()
-                },
-                modifier = backgroundModifier
-                    .fillMaxSize(),
-                sharedViewModel = sharedViewModel
+            ShoppingListTheme {
+                ItemsOfGroupScreen(
+                    selectedGroupWithList = selectedGroupWithList,
+                    onDeleteItemClicked = {
+                        sharedViewModel.deleteItem(itemId = it)
+                    },
+                    onDeleteGroupConfirmed = { groupIdToDelete, shoppingListToDelete ->
+                        sharedViewModel.setCurrentGroupID(groupId = null)
+                        sharedViewModel.deleteGroup(groupId = groupIdToDelete)
+                        sharedViewModel.deleteItems(shoppingListToDelete)
+                        navController.navigate("home") {
+                            popUpTo("home") { inclusive = true }
+                        }
+                    },
+                    itemName = sharedViewModel.itemName,
+                    itemQuantity = sharedViewModel.itemQuantity,
+                    itemUnit = sharedViewModel.itemUnit,
+                    onItemNameChange = { sharedViewModel.itemName = it },
+                    onItemQuantityChange = { sharedViewModel.itemQuantity = it },
+                    onItemUnitChange = { sharedViewModel.itemUnit = it },
+                    onSubmitAddItemButtonClicked = {
+                        runBlocking { sharedViewModel.createItems(groupId = it) }
+                    },
+                    onCheckboxClicked = {
+                        sharedViewModel.updateItemChecked(it)
+                    },
+                    onCancelAddItemButtonClicked = {
+                        sharedViewModel.flushItemGUI()
+                    },
+                    modifier = backgroundModifier
+                        .fillMaxSize(),
+                    sharedViewModel = sharedViewModel
 //                onItemsRearrangedOnGUI = {
 //                    sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)
 //                }
-            )
+                )
+            }
         }
     }
 }

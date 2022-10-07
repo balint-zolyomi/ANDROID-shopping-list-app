@@ -37,8 +37,20 @@ object Constants {
     val SIZE_MEDIUM = 25.dp
     val SIZE_ICONS_OFFICIAL = 48.dp
 
-        // Animation
+    // ANIMATION
+        // Group card
     const val GROUP_CARD_FADE_IN_INITIAL_ALPHA = 0.0f
     const val GROUP_CARD_FADE_IN_DURATION = 200
     const val GROUP_CARD_FADE_OUT_DURATION = 100
+
+        // Intro screen
+    const val INTRO_SCREEN_INITIAL_DELAY: Long = 1000
+    const val INTRO_SCREEN_ZOOM_ANIMATION_DURATION: Int = 400
+    const val INTRO_SCREEN_BETWEEN_ANIMATIONS_DELAY: Long = 700
+    const val INTRO_SCREEN_FINISH_DELAY: Long = 1000
+
+    val INTRO_SCREEN_ZOOM_ANIMATION_FINISH_SIZE = 800.dp
+    val INTRO_SCREEN_ZOOM_ANIMATION_START_SIZE = 0.dp
+    val INTRO_SCREEN_SPRING_ANIMATION_FINISH_POSITION = (-50).dp
+    val INTRO_SCREEN_SPRING_ANIMATION_START_POSITION = (-200).dp
 }
