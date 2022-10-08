@@ -18,21 +18,27 @@ import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_XX_LARGE
+import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun AllGroupsScreen(
-    shoppingGroupsWithLists: List<GroupWithList>,
     onAddAllFABClicked: () -> Unit,
     onOpenGroupIconClicked: (groupId: Long?) -> Unit,
-    onDeleteAllClicked: () -> Unit,
+    sharedViewModel: SharedViewModel,
     modifier: Modifier
 ) {
+    val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
+
     val scaffoldState = rememberScaffoldState()
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            AppBar(onDeleteAllClicked = onDeleteAllClicked)
+            AppBar(onDeleteAllClicked = {
+                for (groupWithList in shoppingGroupsWithLists) {
+                    sharedViewModel.deleteGroup(groupId = groupWithList.group.groupId)
+                }
+            })
         },
         modifier = modifier
             .fillMaxSize(),

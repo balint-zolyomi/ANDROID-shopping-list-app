@@ -16,8 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
-// Warning: ViewModels are not part of the Composition. Therefore, you should not hold state
-// created in composables (for example, a remembered value) because this could cause memory leaks.
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     private val repo: Repository
@@ -51,8 +49,6 @@ class SharedViewModel @Inject constructor(
     )
     val selectedGroupWithList: StateFlow<GroupWithList>
         get() = _selectedGroupWithList
-
-    private var _groupId: Long? = null
 
     private var items: MutableList<ShoppingItemEntity> = mutableListOf()
 
@@ -171,11 +167,6 @@ class SharedViewModel @Inject constructor(
         flushItemGUI()
     }
 
-    // OTHER
-    fun setCurrentGroupID(groupId: Long?) {
-        _groupId = groupId
-    }
-
     // DELETE
     fun deleteGroup(groupId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -189,12 +180,17 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun deleteItems(shoppingList: List<ShoppingItemEntity>) {
+    private fun deleteItems(shoppingList: List<ShoppingItemEntity>) {
         for (item in shoppingList) {
             viewModelScope.launch(Dispatchers.IO) {
                 repo.deleteItem(itemId = item.itemId)
             }
         }
+    }
+
+    fun deleteGroupAndItems(groupWithList: GroupWithList) {
+        deleteGroup(groupId = groupWithList.group.groupId)
+        deleteItems(shoppingList = groupWithList.shoppingList)
     }
 
     // UPDATE
@@ -205,13 +201,8 @@ class SharedViewModel @Inject constructor(
             repo.updateItem(item = shoppingListItem)
         }
     }
-
-//    fun updateItem(shoppingListItem: ShoppingItemEntity) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.updateItem(item = shoppingListItem)
-//        }
-//    }
 }
+
 /* --- TODO: REARRANGE
     fun rearrangeItems(
         shoppingListItems: List<ShoppingItemEntity>,

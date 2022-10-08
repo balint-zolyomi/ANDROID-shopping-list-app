@@ -69,21 +69,13 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         }
 
         composable("home") {
-            val shoppingGroupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
-
             ShoppingListTheme {
                 AllGroupsScreen(
-                    shoppingGroupsWithLists = shoppingGroupsWithLists,
                     onAddAllFABClicked = { navController.navigate("add") },
                     onOpenGroupIconClicked = { groupId ->
                         navController.navigate("group/$groupId")
-                        sharedViewModel.setCurrentGroupID(groupId = groupId)
                     },
-                    onDeleteAllClicked = {
-                        for (groupWithList in shoppingGroupsWithLists) {
-                            sharedViewModel.deleteGroup(groupId = groupWithList.group.groupId)
-                        }
-                    },
+                    sharedViewModel = sharedViewModel,
                     modifier = backgroundModifier
                         .fillMaxSize()
                 )
@@ -109,29 +101,14 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 )
             }
         ) {
-            val isInputError = false
-
             ShoppingListTheme {
                 AddAllScreen(
-                    onAddItemButtonClicked = {
-                        if (!isInputError) {
-                            val groupName by sharedViewModel.groupName
-                            sharedViewModel.createWithCoroutines()
-                            sharedViewModel.setGroupName(groupName)
-                        }
-                    },
                     onSubmitAddAllButtonClicked = {
-                        if (!isInputError) {
-                            navController.navigate("home") {
-                                popUpTo("home") { inclusive = true }
-                            }
-                            sharedViewModel.createWithCoroutines()
+                        navController.navigate("home") {
+                            popUpTo("home") { inclusive = true }
                         }
                     },
                     onNavigationBarBackButtonClicked = {
-                        sharedViewModel.setGroupName("")
-                        sharedViewModel.clearItemsList()
-                        sharedViewModel.flushItemGUI()
                         navController.navigate("home") {
                             popUpTo("home") { inclusive = true }
                         }
@@ -166,48 +143,16 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             }
         ) { navBackStackEntry ->
             val groupId = navBackStackEntry.arguments!!.getString("groupId")
-//            var selectedGroupWithList: GroupWithList = GroupWithList(
-//                ShoppingGroupEntity(
-//                    0, ""
-//                ),
-//                shoppingList = emptyList()
-//            )
-
-            LaunchedEffect(key1 = groupId) {
-                sharedViewModel.getSelectedGroupWithList(groupId = groupId)
-//                withContext(this.coroutineContext) {
-//                    sharedViewModel.selectedGroupWithList.collect {
-//                        selectedGroupWithList = it
-//                    }
-//                }
-            }
-            val selectedGroupWithList by sharedViewModel.selectedGroupWithList.collectAsState()
 
             ShoppingListTheme {
                 ItemsOfGroupScreen(
-                    selectedGroupWithList = selectedGroupWithList,
-                    onDeleteItemClicked = {
-                        sharedViewModel.deleteItem(itemId = it)
-                    },
-                    onDeleteGroupConfirmed = { groupIdToDelete, shoppingListToDelete ->
-                        sharedViewModel.setCurrentGroupID(groupId = null)
-                        sharedViewModel.deleteGroup(groupId = groupIdToDelete)
-                        sharedViewModel.deleteItems(shoppingListToDelete)
+                    groupId = groupId,
+                    onDeleteGroupConfirmed = {
                         navController.navigate("home") {
                             popUpTo("home") { inclusive = true }
                         }
                     },
-                    onSubmitAddItemButtonClicked = {
-                        runBlocking { sharedViewModel.createItems(groupId = it) }
-                    },
-                    onCheckboxClicked = {
-                        sharedViewModel.updateItemChecked(it)
-                    },
-                    onCancelAddItemButtonClicked = {
-                        sharedViewModel.flushItemGUI()
-                    },
                     onNavigationBarBackButtonClicked = {
-                        sharedViewModel.flushItemGUI()
                         navController.navigate("home") {
                             popUpTo("home") { inclusive = true }
                         }

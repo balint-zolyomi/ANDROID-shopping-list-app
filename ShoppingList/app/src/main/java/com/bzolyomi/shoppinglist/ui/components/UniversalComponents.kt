@@ -1,6 +1,7 @@
 package com.bzolyomi.shoppinglist.ui.components
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
@@ -268,7 +269,6 @@ fun ItemCards(
 //                var alpha by remember { mutableStateOf(0f) }
 
             var isItemChecked by mutableStateOf(item.isItemChecked)
-
 //            Row(
 //                    .offset {
 //                        IntOffset(
@@ -293,17 +293,6 @@ fun ItemCards(
 //                    if (!isRearranging) {
 //                        DragIcon()
 //                    }
-                    var itemFontStyle = if (isItemChecked) {
-                        // except LineThrough, it is exactly MaterialTheme.typography.subtitle1
-                        TextStyle(
-                            textDecoration = TextDecoration.LineThrough,
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp
-                        )
-                    } else {
-                        MaterialTheme.typography.body1
-                    }
 
                     ItemCheckboxIconButton(
                         isItemChecked = isItemChecked,
@@ -313,6 +302,23 @@ fun ItemCards(
                         },
                         modifier = modifier.padding(start = PADDING_X_SMALL)
                     )
+
+                    val itemFontStyle = if (isItemChecked) {
+                        // except LineThrough, it is exactly MaterialTheme.typography.subtitle1
+                        TextStyle(
+                            textDecoration = TextDecoration.LineThrough,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp
+                        )
+                    } else {
+                        TextStyle(
+                            textDecoration = TextDecoration.None,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 16.sp
+                        )
+                    }
 
                     val itemQuantityToDisplay = if (item.itemQuantity == null) {
                         ""
@@ -363,7 +369,9 @@ private fun DeleteItemIconButton(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ItemCheckboxIconButton(
-    isItemChecked: Boolean, onCheckboxClicked: () -> Unit, modifier: Modifier
+    isItemChecked: Boolean,
+    onCheckboxClicked: () -> Unit,
+    modifier: Modifier
 ) {
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
         IconButton(

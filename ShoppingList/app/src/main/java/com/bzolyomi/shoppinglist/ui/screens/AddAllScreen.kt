@@ -24,13 +24,17 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun AddAllScreen(
-    onAddItemButtonClicked: () -> Unit,
     onSubmitAddAllButtonClicked: () -> Unit,
     onNavigationBarBackButtonClicked: () -> Unit,
     sharedViewModel: SharedViewModel,
     modifier: Modifier
 ) {
-    BackHandler { onNavigationBarBackButtonClicked() }
+    BackHandler {
+        onNavigationBarBackButtonClicked()
+        sharedViewModel.setGroupName("")
+        sharedViewModel.clearItemsList()
+        sharedViewModel.flushItemGUI()
+    }
 
     val context = LocalContext.current
 
@@ -110,6 +114,7 @@ fun AddAllScreen(
                 validateItemQuantityInput(itemQuantity)
                 if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
                     onSubmitAddAllButtonClicked()
+                    sharedViewModel.createWithCoroutines()
                 }
             }
         )
@@ -119,7 +124,9 @@ fun AddAllScreen(
                 validateItemNameInput(itemName)
                 validateItemQuantityInput(itemQuantity)
                 if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
-                    onAddItemButtonClicked()
+                    val tempGroupName = groupName
+                    sharedViewModel.createWithCoroutines()
+                    sharedViewModel.setGroupName(tempGroupName)
                     showItemAddedToast(context)
                 }
             })
@@ -130,6 +137,7 @@ fun AddAllScreen(
                 validateItemQuantityInput(itemQuantity)
                 if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
                     onSubmitAddAllButtonClicked()
+                    sharedViewModel.createWithCoroutines()
                     showItemAddedToast(context)
                 }
             })

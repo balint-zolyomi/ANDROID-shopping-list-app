@@ -14,26 +14,34 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.GroupWithList
+import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun ItemsOfGroupScreen(
-    selectedGroupWithList: GroupWithList?,
-    onDeleteItemClicked: (itemId: Long?) -> Unit,
-    onDeleteGroupConfirmed: (groupId: Long?, shoppingList: List<ShoppingItemEntity>) -> Unit,
-    onSubmitAddItemButtonClicked: (Long?) -> Unit,
-    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    onCancelAddItemButtonClicked: () -> Unit,
+    groupId: String?,
+    onDeleteGroupConfirmed: () -> Unit,
     onNavigationBarBackButtonClicked: () -> Unit,
     modifier: Modifier,
     sharedViewModel: SharedViewModel,
 //    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
-    BackHandler { onNavigationBarBackButtonClicked() }
+    BackHandler {
+        onNavigationBarBackButtonClicked()
+        sharedViewModel.flushItemGUI()
+    }
+
+    LaunchedEffect(key1 = true) {
+        sharedViewModel.getSelectedGroupWithList(groupId = groupId)
+    }
+    val selectedGroupWithList by sharedViewModel.selectedGroupWithList.collectAsState()
 
     val context = LocalContext.current
 
@@ -43,9 +51,9 @@ fun ItemsOfGroupScreen(
 
     val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
 
-    if (selectedGroupWithList != null) {
-        var addItem by remember { mutableStateOf(false) }
+    var addItem by remember { mutableStateOf(false) }
 
+    if (selectedGroupWithList != null) {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -53,17 +61,19 @@ fun ItemsOfGroupScreen(
             ContentWithoutInput(
                 selectedGroupWithList = selectedGroupWithList,
                 onDeleteGroupConfirmed = {
-                    onDeleteGroupConfirmed(
-                        selectedGroupWithList.group.groupId,
-                        selectedGroupWithList.shoppingList
-                    )
+                    sharedViewModel.deleteGroupAndItems(groupWithList = selectedGroupWithList)
                     Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT).show()
+                    onDeleteGroupConfirmed()
                 },
-                onDeleteItemClicked = onDeleteItemClicked,
-                onCheckboxClicked = onCheckboxClicked,
+                onDeleteItemClicked = {
+                    sharedViewModel.deleteItem(itemId = it)
+                },
+                onCheckboxClicked = {
+                    sharedViewModel.updateItemChecked(it)
+                },
                 modifier = Modifier
-//                sharedViewModel,
-//                onItemsRearrangedOnGUI
+    //                sharedViewModel,
+    //                onItemsRearrangedOnGUI
             )
             if (addItem) {
                 ItemInputFields(
@@ -71,11 +81,13 @@ fun ItemsOfGroupScreen(
                     itemQuantity = itemQuantity,
                     itemUnit = itemUnit,
                     onSubmitAddItemButtonClicked = {
-                        onSubmitAddItemButtonClicked(selectedGroupWithList.group.groupId)
+                        runBlocking {
+                            sharedViewModel.createItems(groupId = selectedGroupWithList.group.groupId)
+                        }
                         addItem = false
                     },
                     onCancelButtonClicked = {
-                        onCancelAddItemButtonClicked()
+                        sharedViewModel.flushItemGUI()
                         addItem = false
                     },
                     sharedViewModel = sharedViewModel
