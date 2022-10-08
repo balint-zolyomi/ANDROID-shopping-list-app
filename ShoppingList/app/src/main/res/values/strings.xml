@@ -19,4 +19,14 @@
     <string name="delete_shopping_group_and_its_items_alert_dialog_message">Delete shopping group and all its items? This action cannot be undone.</string>
     <string name="toast_message_item_added">👌💾✅</string>
     <string name="toast_message_group_deleted">👌🗑️✅</string>
+    <string name="content_description_fab">Add group and/or item(s)</string>
+    <string name="content_description_open_dropdown_menu">Open dropdown menu</string>
+    <string name="content_description_error_icon_input_field">Input field error icon</string>
+    <string name="content_description_go_to_items_of_group_screen_icon">Open group details screen icon</string>
+    <string name="content_description_delete_group_icon">Delete group icon</string>
+    <string name="content_description_checkbox_done_item">Checkbox for item done</string>
+    <string name="content_description_checkbox_item_not_done">Checkbox for item not done</string>
+    <string name="conten_description_expand_group_icon">Expand group icon</string>
+    <string name="content_description_erase_input_field">Erase input field icon</string>
+    <string name="content_description_application_logo">Application logo</string>
 </resources>

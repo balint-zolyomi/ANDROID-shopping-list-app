@@ -73,7 +73,7 @@ fun AllGroupsScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "",
+                    contentDescription = stringResource(R.string.content_description_fab),
                     tint = FloatingActionButtonTint,
                 )
             }
@@ -127,7 +127,8 @@ fun DeleteAllAction(
 
     IconButton(onClick = { isDropdownMenuOpen = true }) {
         Icon(
-            imageVector = Icons.Filled.MoreVert, contentDescription = "",
+            imageVector = Icons.Filled.MoreVert,
+            contentDescription = stringResource(R.string.content_description_open_dropdown_menu),
             tint = MaterialTheme.colors.onBackground
         )
         DropdownMenu(

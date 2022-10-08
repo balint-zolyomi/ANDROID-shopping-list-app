@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_BETWEEN_ANIMATIONS_DELAY
@@ -57,7 +58,7 @@ fun IntroScreen(
             painter = painterResource(
                 id = if (isInDarkMode) R.drawable.logo_dark else R.drawable.logo
             ),
-            contentDescription = "",
+            contentDescription = stringResource(R.string.content_description_application_logo),
             modifier = Modifier
                 .size(imageSize)
                 .offset(x = 0.dp, y = imagePositionY)

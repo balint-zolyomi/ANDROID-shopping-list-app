@@ -96,7 +96,9 @@ fun ItemNameInput(
                 } else if (isError) {
                     Icon(
                         Icons.Filled.Error,
-                        contentDescription = ""
+                        contentDescription = stringResource(
+                            id = R.string.content_description_error_icon_input_field
+                        )
                     )
                 }
             },
@@ -150,7 +152,9 @@ fun ItemQuantityInput(
             } else if (isError) {
                 Icon(
                     Icons.Filled.Error,
-                    contentDescription = ""
+                    contentDescription = stringResource(
+                        id = R.string.content_description_error_icon_input_field
+                    )
                 )
             }
         },

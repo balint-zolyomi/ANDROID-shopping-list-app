@@ -165,7 +165,9 @@ private fun ColumnScope.CardContent(
             IconButton(onClick = onOpenGroupIconClicked) {
                 Icon(
                     imageVector = Icons.Filled.Search,
-                    contentDescription = "",
+                    contentDescription = stringResource(
+                        R.string.content_description_go_to_items_of_group_screen_icon
+                    ),
                     tint = MaterialTheme.colors.primary
                 )
             }
@@ -240,7 +242,7 @@ fun GroupCard(
             Icon(
                 Icons.Filled.Delete,
                 tint = MaterialTheme.colors.primary,
-                contentDescription = ""
+                contentDescription = stringResource(R.string.content_description_delete_group_icon)
             )
         }
     }
@@ -371,12 +373,16 @@ private fun ItemCheckboxIconButton(
             if (isItemChecked) {
                 Icon(
                     imageVector = Icons.Filled.CheckBox,
-                    contentDescription = ""
+                    contentDescription = stringResource(
+                        R.string.content_description_checkbox_done_item
+                    )
                 )
             } else {
                 Icon(
                     imageVector = Icons.Filled.CheckBoxOutlineBlank,
-                    contentDescription = ""
+                    contentDescription = stringResource(
+                        R.string.content_description_checkbox_item_not_done
+                    )
                 )
             }
         }
@@ -398,7 +404,9 @@ private fun ExpandIcon(
             Surface(shape = CircleShape, modifier = modifier.size(SIZE_MEDIUM)) {
                 Icon(
                     imageVector = Icons.Filled.ExpandMore,
-                    contentDescription = "",
+                    contentDescription = stringResource(
+                        R.string.conten_description_expand_group_icon
+                    ),
                     tint = MaterialTheme.colors.primary,
                     modifier = modifier.rotate(expandIconAngle)
                 )
@@ -431,7 +439,7 @@ fun TrailingIconForErase(callback: () -> Unit) {
     IconButton(onClick = callback) {
         Icon(
             imageVector = Icons.Filled.Close,
-            contentDescription = "",
+            contentDescription = stringResource(R.string.content_description_erase_input_field),
             tint = MaterialTheme.colors.primary
         )
     }
