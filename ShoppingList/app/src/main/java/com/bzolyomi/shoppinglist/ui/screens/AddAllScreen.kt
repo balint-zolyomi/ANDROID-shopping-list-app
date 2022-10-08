@@ -24,10 +24,8 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun AddAllScreen(
-    itemName: String,
     itemQuantity: String,
     itemUnit: String,
-    onItemNameChange: (String) -> Unit,
     onItemQuantityChange: (String) -> Unit,
     onItemUnitChange: (String) -> Unit,
     onAddItemButtonClicked: () -> Unit,
@@ -41,6 +39,7 @@ fun AddAllScreen(
     val context = LocalContext.current
 
     val groupName by sharedViewModel.groupName
+    val itemName by sharedViewModel.itemName
 
     var isGroupNameError by rememberSaveable { mutableStateOf(false) }
     var isItemNameError by rememberSaveable { mutableStateOf(false) }
@@ -87,11 +86,11 @@ fun AddAllScreen(
             isItemNameError = isItemNameError,
             onItemNameChange = {
                 validateItemNameInput(it)
-                if (!isItemNameError || it == "") onItemNameChange(it)
+                if (!isItemNameError || it == "") sharedViewModel.setItemName(it)
             },
             onEraseItemNameInputButtonClicked = {
-                sharedViewModel.itemName = ""
-                validateItemNameInput(sharedViewModel.itemName)
+                sharedViewModel.setItemName("")
+                validateItemNameInput(sharedViewModel.itemName.value)
             },
             onNextInItemNameInputClicked = { validateItemNameInput(itemName) },
             itemQuantity = itemQuantity,

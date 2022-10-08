@@ -27,7 +27,10 @@ class SharedViewModel @Inject constructor(
     val groupName: State<String>
         get() = mutableStateOf(_groupName)
 
-    var itemName by mutableStateOf("")
+    private var _itemName by mutableStateOf("")
+    val itemName: State<String>
+        get() = mutableStateOf(_itemName)
+
     var itemQuantity by mutableStateOf("")
     var itemUnit by mutableStateOf("")
 
@@ -74,7 +77,7 @@ class SharedViewModel @Inject constructor(
 
     // GUI
     fun flushItemGUI() {
-        itemName = ""
+        _itemName = ""
         itemQuantity = ""
         itemUnit = ""
     }
@@ -85,6 +88,10 @@ class SharedViewModel @Inject constructor(
 
     fun setGroupName(groupName: String) {
         _groupName = groupName
+    }
+
+    fun setItemName(itemName: String) {
+        _itemName = itemName
     }
 
     // COROUTINES and their functions
@@ -131,12 +138,12 @@ class SharedViewModel @Inject constructor(
     }
 
     private fun addItemFromGUIToItemList() {
-        if (itemName.isNotBlank()) {
+        if (_itemName.isNotBlank()) {
             items.add(
                 ShoppingItemEntity(
                     itemId = null,
                     itemParentId = null,
-                    itemName = itemName.trim(),
+                    itemName = _itemName.trim(),
                     itemQuantity = if (itemQuantity.isBlank()) {
                         null
                     } else {

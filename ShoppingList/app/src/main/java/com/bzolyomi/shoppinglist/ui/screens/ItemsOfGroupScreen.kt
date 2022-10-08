@@ -2,13 +2,14 @@ package com.bzolyomi.shoppinglist.ui.screens
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
@@ -18,17 +19,14 @@ import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
-import java.time.format.TextStyle
 
 @Composable
 fun ItemsOfGroupScreen(
     selectedGroupWithList: GroupWithList?,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     onDeleteGroupConfirmed: (groupId: Long?, shoppingList: List<ShoppingItemEntity>) -> Unit,
-    itemName: String,
     itemQuantity: String,
     itemUnit: String,
-    onItemNameChange: (String) -> Unit,
     onItemQuantityChange: (String) -> Unit,
     onItemUnitChange: (String) -> Unit,
     onSubmitAddItemButtonClicked: (Long?) -> Unit,
@@ -42,6 +40,9 @@ fun ItemsOfGroupScreen(
     BackHandler { onNavigationBarBackButtonClicked() }
 
     val context = LocalContext.current
+
+    val itemName by sharedViewModel.itemName
+
     val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
 
     if (selectedGroupWithList != null) {
@@ -71,7 +72,7 @@ fun ItemsOfGroupScreen(
                     itemName = itemName,
                     itemQuantity = itemQuantity,
                     itemUnit = itemUnit,
-                    onItemNameChange = { onItemNameChange(it) },
+                    onItemNameChange = { sharedViewModel.setItemName(it) },
                     onItemQuantityChange = { onItemQuantityChange(it) },
                     onItemUnitChange = { onItemUnitChange(it) },
                     onSubmitAddItemButtonClicked = {
@@ -144,8 +145,8 @@ fun ItemInputFields(
                 if (!isItemNameError || it == "") onItemNameChange(it)
             },
             onEraseItemNameInputButtonClicked = {
-                sharedViewModel.itemName = ""
-                validateItemNameInput(sharedViewModel.itemName)
+                sharedViewModel.setItemName("")
+                validateItemNameInput(sharedViewModel.itemName.value)
             },
             onNextInItemNameInputClicked = { validateItemNameInput(itemName) }
         )

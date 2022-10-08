@@ -113,10 +113,8 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
 
             ShoppingListTheme {
                 AddAllScreen(
-                    itemName = sharedViewModel.itemName,
                     itemQuantity = sharedViewModel.itemQuantity,
                     itemUnit = sharedViewModel.itemUnit,
-                    onItemNameChange = { sharedViewModel.itemName = it },
                     onItemQuantityChange = { sharedViewModel.itemQuantity = it },
                     onItemUnitChange = { sharedViewModel.itemUnit = it },
                     onAddItemButtonClicked = {
@@ -203,10 +201,8 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                             popUpTo("home") { inclusive = true }
                         }
                     },
-                    itemName = sharedViewModel.itemName,
                     itemQuantity = sharedViewModel.itemQuantity,
                     itemUnit = sharedViewModel.itemUnit,
-                    onItemNameChange = { sharedViewModel.itemName = it },
                     onItemQuantityChange = { sharedViewModel.itemQuantity = it },
                     onItemUnitChange = { sharedViewModel.itemUnit = it },
                     onSubmitAddItemButtonClicked = {
