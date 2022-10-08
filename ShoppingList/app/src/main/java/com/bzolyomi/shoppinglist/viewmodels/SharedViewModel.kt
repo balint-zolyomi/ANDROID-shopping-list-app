@@ -1,10 +1,9 @@
 package com.bzolyomi.shoppinglist.viewmodels
 
-import android.widget.Toast
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzolyomi.shoppinglist.data.GroupWithList
@@ -24,7 +23,10 @@ class SharedViewModel @Inject constructor(
     private val repo: Repository
 ) : ViewModel() {
 
-    var groupName by mutableStateOf("")
+    private var _groupName by mutableStateOf("")
+    val groupName: State<String>
+        get() = mutableStateOf(_groupName)
+
     var itemName by mutableStateOf("")
     var itemQuantity by mutableStateOf("")
     var itemUnit by mutableStateOf("")
@@ -70,26 +72,7 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-//    fun resetItemGUIInput() {
-//        itemName = ""
-//        itemQuantity = ""
-//        itemUnit = ""
-//        isItemChecked = false
-//    }
-//
-//    fun addFromGUIToItemList() {
-//        items.add(
-//            ShoppingItemEntity(
-//                itemId = null,
-//                itemParentId = null,
-//                itemName = itemName,
-//                itemQuantity = if (itemQuantity == "") 0f else itemQuantity.toFloat(),
-//                itemUnit = itemUnit,
-//                isItemChecked = false
-//            )
-//        )
-//    }
-
+    // GUI
     fun flushItemGUI() {
         itemName = ""
         itemQuantity = ""
@@ -98,6 +81,10 @@ class SharedViewModel @Inject constructor(
 
     fun clearItemsList() {
         items.clear()
+    }
+
+    fun setGroupName(groupName: String) {
+        _groupName = groupName
     }
 
     // COROUTINES and their functions
@@ -112,7 +99,7 @@ class SharedViewModel @Inject constructor(
             createItems(groupId = groupId)
         }
 
-        groupName = ""
+        _groupName = ""
     }
 
     suspend fun createItems(groupId: Long?) = coroutineScope {
@@ -131,7 +118,7 @@ class SharedViewModel @Inject constructor(
     }
 
     private suspend fun createGroup() {
-        repo.createGroup(ShoppingGroupEntity(groupId = null, groupName = groupName.trim()))
+        repo.createGroup(ShoppingGroupEntity(groupId = null, groupName = _groupName.trim()))
     }
 
     private suspend fun getGroupIdCoroutine(): Long? = coroutineScope {
@@ -140,7 +127,7 @@ class SharedViewModel @Inject constructor(
     }
 
     private suspend fun getGroupId(): Long? {
-        return repo.getGroupId(groupName = groupName.trim())
+        return repo.getGroupId(groupName = _groupName.trim())
     }
 
     private fun addItemFromGUIToItemList() {

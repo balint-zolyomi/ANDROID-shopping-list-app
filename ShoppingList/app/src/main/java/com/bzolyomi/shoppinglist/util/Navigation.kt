@@ -23,6 +23,8 @@ import com.bzolyomi.shoppinglist.ui.screens.ItemsOfGroupScreen
 import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
 import com.bzolyomi.shoppinglist.ui.theme.IntroTheme
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
+import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_ENTER_DURATION
+import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_ENTER_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_EXIT_DURATION
@@ -33,7 +35,7 @@ import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
+fun NavigationController(sharedViewModel: SharedViewModel) {
 
     val navController: NavHostController = rememberAnimatedNavController()
 
@@ -45,7 +47,7 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
     AnimatedNavHost(navController = navController, startDestination = "intro") {
 
         composable(
-            "intro",
+            route = "intro",
             exitTransition = {
                 slideOutHorizontally(
                     animationSpec = tween(INTRO_SCREEN_EXIT_DURATION),
@@ -88,24 +90,40 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
             }
         }
 
-        composable("add") {
-            var isInputError: Boolean = false
+        composable(
+            route = "add",
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(
+                        ADD_SCREEN_ENTER_DURATION,
+                        0,
+                        easing = LinearOutSlowInEasing
+                    ),
+                    initialOffsetX = { it / 2 }
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(ADD_SCREEN_EXIT_DURATION),
+                    targetOffsetX = { it }
+                )
+            }
+        ) {
+            val isInputError = false
 
             ShoppingListTheme {
                 AddAllScreen(
-                    groupName = sharedViewModel.groupName,
                     itemName = sharedViewModel.itemName,
                     itemQuantity = sharedViewModel.itemQuantity,
                     itemUnit = sharedViewModel.itemUnit,
-                    onGroupNameChange = { sharedViewModel.groupName = it },
                     onItemNameChange = { sharedViewModel.itemName = it },
                     onItemQuantityChange = { sharedViewModel.itemQuantity = it },
                     onItemUnitChange = { sharedViewModel.itemUnit = it },
                     onAddItemButtonClicked = {
                         if (!isInputError) {
-                            val groupName = sharedViewModel.groupName
+                            val groupName by sharedViewModel.groupName
                             sharedViewModel.createWithCoroutines()
-                            sharedViewModel.groupName = groupName
+                            sharedViewModel.setGroupName(groupName)
                         }
                     },
                     onSubmitAddAllButtonClicked = {
@@ -117,7 +135,7 @@ fun NavigationController(sharedViewModel: SharedViewModel, modifier: Modifier) {
                         }
                     },
                     onNavigationBarBackButtonClicked = {
-                        sharedViewModel.groupName = ""
+                        sharedViewModel.setGroupName("")
                         sharedViewModel.clearItemsList()
                         sharedViewModel.flushItemGUI()
                         navController.navigate("home") {

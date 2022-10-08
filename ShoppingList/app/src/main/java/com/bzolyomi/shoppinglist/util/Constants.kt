@@ -58,4 +58,6 @@ object Constants {
     const val INTRO_SCREEN_EXIT_DURATION = 200
     const val GROUP_SCREEN_ENTER_DURATION = 500
     const val GROUP_SCREEN_EXIT_DURATION = 500
+    const val ADD_SCREEN_ENTER_DURATION = 500
+    const val ADD_SCREEN_EXIT_DURATION = 500
 }
