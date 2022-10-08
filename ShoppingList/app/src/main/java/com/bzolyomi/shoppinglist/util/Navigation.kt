@@ -113,10 +113,6 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
 
             ShoppingListTheme {
                 AddAllScreen(
-                    itemQuantity = sharedViewModel.itemQuantity,
-                    itemUnit = sharedViewModel.itemUnit,
-                    onItemQuantityChange = { sharedViewModel.itemQuantity = it },
-                    onItemUnitChange = { sharedViewModel.itemUnit = it },
                     onAddItemButtonClicked = {
                         if (!isInputError) {
                             val groupName by sharedViewModel.groupName
@@ -201,10 +197,6 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                             popUpTo("home") { inclusive = true }
                         }
                     },
-                    itemQuantity = sharedViewModel.itemQuantity,
-                    itemUnit = sharedViewModel.itemUnit,
-                    onItemQuantityChange = { sharedViewModel.itemQuantity = it },
-                    onItemUnitChange = { sharedViewModel.itemUnit = it },
                     onSubmitAddItemButtonClicked = {
                         runBlocking { sharedViewModel.createItems(groupId = it) }
                     },

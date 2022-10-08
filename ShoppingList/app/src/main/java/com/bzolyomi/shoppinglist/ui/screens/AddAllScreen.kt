@@ -24,10 +24,6 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun AddAllScreen(
-    itemQuantity: String,
-    itemUnit: String,
-    onItemQuantityChange: (String) -> Unit,
-    onItemUnitChange: (String) -> Unit,
     onAddItemButtonClicked: () -> Unit,
     onSubmitAddAllButtonClicked: () -> Unit,
     onNavigationBarBackButtonClicked: () -> Unit,
@@ -40,6 +36,8 @@ fun AddAllScreen(
 
     val groupName by sharedViewModel.groupName
     val itemName by sharedViewModel.itemName
+    val itemQuantity by sharedViewModel.itemQuantity
+    val itemUnit by sharedViewModel.itemUnit
 
     var isGroupNameError by rememberSaveable { mutableStateOf(false) }
     var isItemNameError by rememberSaveable { mutableStateOf(false) }
@@ -95,18 +93,16 @@ fun AddAllScreen(
             onNextInItemNameInputClicked = { validateItemNameInput(itemName) },
             itemQuantity = itemQuantity,
             isItemQuantityError = isItemQuantityError,
-            onItemQuantityChange = {
-                onItemQuantityChange(it)
-            },
+            onItemQuantityChange = { sharedViewModel.setItemQuantity(it) },
             onEraseItemQuantityInputButtonClicked = {
-                sharedViewModel.itemQuantity = ""
-                validateItemQuantityInput(sharedViewModel.itemQuantity)
+                sharedViewModel.setItemQuantity("")
+                validateItemQuantityInput(sharedViewModel.itemQuantity.value)
             },
             onNextInItemQuantityInputClicked = { validateItemQuantityInput(itemQuantity) },
             itemUnit = itemUnit,
-            onItemUnitChange = { onItemUnitChange(it) },
+            onItemUnitChange = { sharedViewModel.setItemUnit(it) },
             onEraseItemUnitInputButtonClicked = {
-                sharedViewModel.itemUnit = ""
+                sharedViewModel.setItemUnit("")
             },
             onDone = {
                 validateGroupNameInput(groupName)

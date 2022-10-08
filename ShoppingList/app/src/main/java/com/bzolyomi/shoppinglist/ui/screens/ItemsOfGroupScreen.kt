@@ -25,10 +25,6 @@ fun ItemsOfGroupScreen(
     selectedGroupWithList: GroupWithList?,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     onDeleteGroupConfirmed: (groupId: Long?, shoppingList: List<ShoppingItemEntity>) -> Unit,
-    itemQuantity: String,
-    itemUnit: String,
-    onItemQuantityChange: (String) -> Unit,
-    onItemUnitChange: (String) -> Unit,
     onSubmitAddItemButtonClicked: (Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onCancelAddItemButtonClicked: () -> Unit,
@@ -42,6 +38,8 @@ fun ItemsOfGroupScreen(
     val context = LocalContext.current
 
     val itemName by sharedViewModel.itemName
+    val itemQuantity by sharedViewModel.itemQuantity
+    val itemUnit by sharedViewModel.itemUnit
 
     val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
 
@@ -72,9 +70,6 @@ fun ItemsOfGroupScreen(
                     itemName = itemName,
                     itemQuantity = itemQuantity,
                     itemUnit = itemUnit,
-                    onItemNameChange = { sharedViewModel.setItemName(it) },
-                    onItemQuantityChange = { onItemQuantityChange(it) },
-                    onItemUnitChange = { onItemUnitChange(it) },
                     onSubmitAddItemButtonClicked = {
                         onSubmitAddItemButtonClicked(selectedGroupWithList.group.groupId)
                         addItem = false
@@ -110,9 +105,6 @@ fun ItemInputFields(
     itemName: String,
     itemQuantity: String,
     itemUnit: String,
-    onItemNameChange: (String) -> Unit,
-    onItemQuantityChange: (String) -> Unit,
-    onItemUnitChange: (String) -> Unit,
     onSubmitAddItemButtonClicked: () -> Unit,
     onCancelButtonClicked: () -> Unit,
     sharedViewModel: SharedViewModel
@@ -142,7 +134,7 @@ fun ItemInputFields(
             isError = isItemNameError,
             onItemNameChange = {
                 validateItemNameInput(it)
-                if (!isItemNameError || it == "") onItemNameChange(it)
+                if (!isItemNameError || it == "") sharedViewModel.setItemName(it)
             },
             onEraseItemNameInputButtonClicked = {
                 sharedViewModel.setItemName("")
@@ -153,20 +145,18 @@ fun ItemInputFields(
         ItemQuantityInput(
             itemQuantity = itemQuantity,
             isError = isItemQuantityError,
-            onItemQuantityChange = {
-                onItemQuantityChange(it)
-            },
+            onItemQuantityChange = { sharedViewModel.setItemQuantity(it) },
             onEraseItemQuantityInputButtonClicked = {
-                sharedViewModel.itemQuantity = ""
-                validateItemQuantityInput(sharedViewModel.itemQuantity)
+                sharedViewModel.setItemQuantity("")
+                validateItemQuantityInput(sharedViewModel.itemQuantity.value)
             },
             onNextInItemQuantityInputClicked = { validateItemQuantityInput(itemQuantity) }
         )
         ItemUnitInput(
             itemUnit,
-            onItemUnitChange = { onItemUnitChange(it) },
+            onItemUnitChange = { sharedViewModel.setItemUnit(it) },
             onEraseItemUnitInputButtonClicked = {
-                sharedViewModel.itemUnit = ""
+                sharedViewModel.setItemUnit("")
             },
             onDone = {
                 validateItemNameInput(itemName)

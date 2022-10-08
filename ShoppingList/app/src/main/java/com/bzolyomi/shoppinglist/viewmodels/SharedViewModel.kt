@@ -31,8 +31,13 @@ class SharedViewModel @Inject constructor(
     val itemName: State<String>
         get() = mutableStateOf(_itemName)
 
-    var itemQuantity by mutableStateOf("")
-    var itemUnit by mutableStateOf("")
+    private var _itemQuantity by mutableStateOf("")
+    val itemQuantity: State<String>
+        get() = mutableStateOf(_itemQuantity)
+
+    private var _itemUnit by mutableStateOf("")
+    val itemUnit: State<String>
+        get() = mutableStateOf(_itemUnit)
 
     private val _shoppingGroupsWithLists = MutableStateFlow<List<GroupWithList>>(emptyList())
     val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
@@ -78,8 +83,8 @@ class SharedViewModel @Inject constructor(
     // GUI
     fun flushItemGUI() {
         _itemName = ""
-        itemQuantity = ""
-        itemUnit = ""
+        _itemQuantity = ""
+        _itemUnit = ""
     }
 
     fun clearItemsList() {
@@ -92,6 +97,14 @@ class SharedViewModel @Inject constructor(
 
     fun setItemName(itemName: String) {
         _itemName = itemName
+    }
+
+    fun setItemQuantity(itemQuantity: String) {
+        _itemQuantity = itemQuantity
+    }
+
+    fun setItemUnit(itemUnit: String) {
+        _itemUnit = itemUnit
     }
 
     // COROUTINES and their functions
@@ -144,13 +157,13 @@ class SharedViewModel @Inject constructor(
                     itemId = null,
                     itemParentId = null,
                     itemName = _itemName.trim(),
-                    itemQuantity = if (itemQuantity.isBlank()) {
+                    itemQuantity = if (_itemQuantity.isBlank()) {
                         null
                     } else {
-                        itemQuantity = itemQuantity.replace(",", ".").trim()
-                        itemQuantity.toFloat()
+                        _itemQuantity = _itemQuantity.replace(",", ".").trim()
+                        _itemQuantity.toFloat()
                     },
-                    itemUnit = itemUnit.trim(),
+                    itemUnit = _itemUnit.trim(),
                     isItemChecked = false
                 )
             )
