@@ -39,19 +39,11 @@ fun ItemsOfGroupScreen(
         onNavigationBarBackButtonClicked()
         sharedViewModel.flushItemGUI()
     }
-
-//    sharedViewModel.getGroupWithList(groupId)
-//    val selectedGroupWithList = sharedViewModel.selectedGroupWithList
-
-    sharedViewModel.log.LogCompositions(tag = "balint-debug", msg = "recompose")
-
-    val context = LocalContext.current
+//    sharedViewModel.log.LogCompositions(tag = "balint-debug", msg = "recompose")
 
     val itemName by sharedViewModel.itemName
     val itemQuantity by sharedViewModel.itemQuantity
     val itemUnit by sharedViewModel.itemUnit
-
-    val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
 
     var addItem by remember { mutableStateOf(false) }
 
@@ -61,7 +53,10 @@ fun ItemsOfGroupScreen(
     ) {
         ContentWithoutInput(
             selectedGroupWithList = groupWithList,
-            onDeleteGroupConfirmed = onDeleteGroupConfirmed,
+            onDeleteGroupConfirmed = {
+                onDeleteGroupConfirmed()
+                sharedViewModel.deleteGroupAndItsItems()
+            },
             onDeleteItemClicked = {
                 sharedViewModel.deleteItem(itemId = it)
             },
@@ -69,8 +64,8 @@ fun ItemsOfGroupScreen(
                 sharedViewModel.updateItemChecked(it)
             },
             modifier = Modifier
-            //                sharedViewModel,
-            //                onItemsRearrangedOnGUI
+            // sharedViewModel,
+            // onItemsRearrangedOnGUI
         )
         if (addItem) {
             ItemInputFields(

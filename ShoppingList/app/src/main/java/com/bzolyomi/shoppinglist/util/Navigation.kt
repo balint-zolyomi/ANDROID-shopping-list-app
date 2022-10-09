@@ -1,6 +1,7 @@
 package com.bzolyomi.shoppinglist.util
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -12,10 +13,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
+import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.screens.AddAllScreen
 import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
 import com.bzolyomi.shoppinglist.ui.screens.IntroScreen
@@ -59,7 +63,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 IntroScreen(
                     isInDarkMode = isInDarkMode,
                     onDelayPassed = {
-                        navController.navigate("home/${false}") {
+                        navController.navigate("home") {
                             popUpTo("intro") { inclusive = true }
                         }
                     },
@@ -69,13 +73,17 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         }
 
         composable(
-            route = "home/{isDeleteGroup}",
-            arguments = listOf(navArgument("isDeleteGroup") {
-                type = NavType.BoolType
-            })
-        ) { navBackStackEntry ->
-            val isDeleteGroup = navBackStackEntry.arguments!!.getBoolean("isDeleteGroup")
-            if (isDeleteGroup) sharedViewModel.deleteGroupAndItsItems()
+            route = "home"
+        ) {
+//                navBackStackEntry ->
+//            val isDeleteGroup = navBackStackEntry.arguments!!.getBoolean("isDeleteGroup")
+//            if (isDeleteGroup) {
+//                sharedViewModel.deleteGroupAndItsItems()
+
+//                val context = LocalContext.current
+//                val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
+//                Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT).show()
+//            }
 
             ShoppingListTheme {
                 AllGroupsScreen(
@@ -112,12 +120,12 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             ShoppingListTheme {
                 AddAllScreen(
                     onSubmitAddAllButtonClicked = {
-                        navController.navigate("home/${false}") {
+                        navController.navigate("home") {
                             popUpTo("home") { inclusive = true }
                         }
                     },
                     onNavigationBarBackButtonClicked = {
-                        navController.navigate("home/${false}") {
+                        navController.navigate("home") {
                             popUpTo("home") { inclusive = true }
                         }
                     },
@@ -154,20 +162,26 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
 
             if (groupId != null) {
                 LaunchedEffect(key1 = true) {
-                    sharedViewModel.selectedGroupWithList = sharedViewModel.getSelectedGroupWithListCoroutine(groupId = groupId)
+                    sharedViewModel.selectedGroupWithList =
+                        sharedViewModel.getSelectedGroupWithListCoroutine(groupId = groupId)
                 }
 
                 ShoppingListTheme {
+                    val context = LocalContext.current
+                    val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
+
                     ItemsOfGroupScreen(
                         groupWithList = sharedViewModel.selectedGroupWithList,
                         onDeleteGroupConfirmed = {
-                            val isDeleteGroup = true
-                            navController.navigate("home/$isDeleteGroup") {
+                            navController.navigate("home") {
                                 popUpTo("home") { inclusive = true }
                             }
+
+                            Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT)
+                                .show()
                         },
                         onNavigationBarBackButtonClicked = {
-                            navController.navigate("home/${false}") {
+                            navController.navigate("home") {
                                 popUpTo("home") { inclusive = true }
                             }
                         },
