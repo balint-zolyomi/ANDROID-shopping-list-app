@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
@@ -24,9 +25,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
+@NonRestartableComposable
 @Composable
 fun ItemsOfGroupScreen(
-    groupId: String?,
+    groupWithList: GroupWithList,
     onDeleteGroupConfirmed: () -> Unit,
     onNavigationBarBackButtonClicked: () -> Unit,
     modifier: Modifier,
@@ -38,10 +40,10 @@ fun ItemsOfGroupScreen(
         sharedViewModel.flushItemGUI()
     }
 
-    LaunchedEffect(key1 = true) {
-        sharedViewModel.getSelectedGroupWithList(groupId = groupId)
-    }
-    val selectedGroupWithList by sharedViewModel.selectedGroupWithList.collectAsState()
+//    sharedViewModel.getGroupWithList(groupId)
+//    val selectedGroupWithList = sharedViewModel.selectedGroupWithList
+
+    sharedViewModel.log.LogCompositions(tag = "balint-debug", msg = "recompose")
 
     val context = LocalContext.current
 
@@ -53,60 +55,54 @@ fun ItemsOfGroupScreen(
 
     var addItem by remember { mutableStateOf(false) }
 
-    if (selectedGroupWithList != null) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-        ) {
-            ContentWithoutInput(
-                selectedGroupWithList = selectedGroupWithList,
-                onDeleteGroupConfirmed = {
-                    sharedViewModel.deleteGroupAndItems(groupWithList = selectedGroupWithList)
-                    Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT).show()
-                    onDeleteGroupConfirmed()
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        ContentWithoutInput(
+            selectedGroupWithList = groupWithList,
+            onDeleteGroupConfirmed = onDeleteGroupConfirmed,
+            onDeleteItemClicked = {
+                sharedViewModel.deleteItem(itemId = it)
+            },
+            onCheckboxClicked = {
+                sharedViewModel.updateItemChecked(it)
+            },
+            modifier = Modifier
+            //                sharedViewModel,
+            //                onItemsRearrangedOnGUI
+        )
+        if (addItem) {
+            ItemInputFields(
+                itemName = itemName,
+                itemQuantity = itemQuantity,
+                itemUnit = itemUnit,
+                onSubmitAddItemButtonClicked = {
+                    runBlocking {
+                        sharedViewModel.createItems(groupId = groupWithList.group.groupId)
+                    }
+                    addItem = false
                 },
-                onDeleteItemClicked = {
-                    sharedViewModel.deleteItem(itemId = it)
+                onCancelButtonClicked = {
+                    sharedViewModel.flushItemGUI()
+                    addItem = false
                 },
-                onCheckboxClicked = {
-                    sharedViewModel.updateItemChecked(it)
-                },
-                modifier = Modifier
-    //                sharedViewModel,
-    //                onItemsRearrangedOnGUI
+                sharedViewModel = sharedViewModel
             )
-            if (addItem) {
-                ItemInputFields(
-                    itemName = itemName,
-                    itemQuantity = itemQuantity,
-                    itemUnit = itemUnit,
-                    onSubmitAddItemButtonClicked = {
-                        runBlocking {
-                            sharedViewModel.createItems(groupId = selectedGroupWithList.group.groupId)
-                        }
-                        addItem = false
-                    },
-                    onCancelButtonClicked = {
-                        sharedViewModel.flushItemGUI()
-                        addItem = false
-                    },
-                    sharedViewModel = sharedViewModel
+        } else {
+            Button(
+                onClick = { addItem = true },
+                modifier = Modifier.padding(
+                    start = PADDING_X_LARGE,
+                    top = PADDING_MEDIUM,
+                    end = PADDING_MEDIUM,
+                    bottom = PADDING_MEDIUM
+                ),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.primary
                 )
-            } else {
-                Button(
-                    onClick = { addItem = true },
-                    modifier = Modifier.padding(
-                        start = PADDING_X_LARGE,
-                        top = PADDING_MEDIUM,
-                        end = PADDING_MEDIUM,
-                        bottom = PADDING_MEDIUM
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.primary
-                    )
-                ) {
-                    Text(text = stringResource(R.string.add_item_button))
-                }
+            ) {
+                Text(text = stringResource(R.string.add_item_button))
             }
         }
     }
@@ -202,6 +198,7 @@ fun CancelButton(onCancelButtonClicked: () -> Unit) {
     }
 }
 
+@NonRestartableComposable
 @Composable
 fun ContentWithoutInput(
     selectedGroupWithList: GroupWithList,
@@ -235,8 +232,8 @@ fun ContentWithoutInput(
         message = stringResource(R.string.delete_shopping_group_and_its_items_alert_dialog_message),
         isOpen = isAlertDialogOpen,
         onConfirmClicked = {
-            onDeleteGroupConfirmed()
             isAlertDialogOpen = false
+            onDeleteGroupConfirmed()
         },
         onDismissClicked = { isAlertDialogOpen = false }
     )

@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.util
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -8,8 +9,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -31,7 +31,7 @@ import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -59,7 +59,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 IntroScreen(
                     isInDarkMode = isInDarkMode,
                     onDelayPassed = {
-                        navController.navigate("home") {
+                        navController.navigate("home/${false}") {
                             popUpTo("intro") { inclusive = true }
                         }
                     },
@@ -68,12 +68,20 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             }
         }
 
-        composable("home") {
+        composable(
+            route = "home/{isDeleteGroup}",
+            arguments = listOf(navArgument("isDeleteGroup") {
+                type = NavType.BoolType
+            })
+        ) { navBackStackEntry ->
+            val isDeleteGroup = navBackStackEntry.arguments!!.getBoolean("isDeleteGroup")
+            if (isDeleteGroup) sharedViewModel.deleteGroupAndItsItems()
+
             ShoppingListTheme {
                 AllGroupsScreen(
                     onAddAllFABClicked = { navController.navigate("add") },
                     onOpenGroupIconClicked = { groupId ->
-                        navController.navigate("group/$groupId")
+                        if (groupId != null) navController.navigate("group/$groupId")
                     },
                     sharedViewModel = sharedViewModel,
                     modifier = backgroundModifier
@@ -104,12 +112,12 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             ShoppingListTheme {
                 AddAllScreen(
                     onSubmitAddAllButtonClicked = {
-                        navController.navigate("home") {
+                        navController.navigate("home/${false}") {
                             popUpTo("home") { inclusive = true }
                         }
                     },
                     onNavigationBarBackButtonClicked = {
-                        navController.navigate("home") {
+                        navController.navigate("home/${false}") {
                             popUpTo("home") { inclusive = true }
                         }
                     },
@@ -144,26 +152,33 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         ) { navBackStackEntry ->
             val groupId = navBackStackEntry.arguments!!.getString("groupId")
 
-            ShoppingListTheme {
-                ItemsOfGroupScreen(
-                    groupId = groupId,
-                    onDeleteGroupConfirmed = {
-                        navController.navigate("home") {
-                            popUpTo("home") { inclusive = true }
-                        }
-                    },
-                    onNavigationBarBackButtonClicked = {
-                        navController.navigate("home") {
-                            popUpTo("home") { inclusive = true }
-                        }
-                    },
-                    modifier = backgroundModifier
-                        .fillMaxSize(),
-                    sharedViewModel = sharedViewModel
-//                onItemsRearrangedOnGUI = {
-//                    sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)
-//                }
-                )
+            if (groupId != null) {
+                LaunchedEffect(key1 = true) {
+                    sharedViewModel.selectedGroupWithList = sharedViewModel.getSelectedGroupWithListCoroutine(groupId = groupId)
+                }
+
+                ShoppingListTheme {
+                    ItemsOfGroupScreen(
+                        groupWithList = sharedViewModel.selectedGroupWithList,
+                        onDeleteGroupConfirmed = {
+                            val isDeleteGroup = true
+                            navController.navigate("home/$isDeleteGroup") {
+                                popUpTo("home") { inclusive = true }
+                            }
+                        },
+                        onNavigationBarBackButtonClicked = {
+                            navController.navigate("home/${false}") {
+                                popUpTo("home") { inclusive = true }
+                            }
+                        },
+                        modifier = backgroundModifier
+                            .fillMaxSize(),
+                        sharedViewModel = sharedViewModel
+                        // onItemsRearrangedOnGUI = {
+                        // sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)
+                        // }
+                    )
+                }
             }
         }
     }

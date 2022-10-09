@@ -1,15 +1,13 @@
 package com.bzolyomi.shoppinglist.viewmodels
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.data.Repository
 import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
+import com.bzolyomi.shoppinglist.util.CompositionLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,9 +15,12 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class SharedViewModel @Inject constructor(
+class SharedViewModel
+@Inject constructor(
     private val repo: Repository
-) : ViewModel() {
+)    : ViewModel() {
+
+    val log = CompositionLog(0)
 
     private var _groupName by mutableStateOf("")
     val groupName: State<String>
@@ -41,14 +42,26 @@ class SharedViewModel @Inject constructor(
     val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
         get() = _shoppingGroupsWithLists
 
-    private var _selectedGroupWithList = MutableStateFlow(
-        GroupWithList(
-            ShoppingGroupEntity(null, ""),
-            emptyList()
-        )
-    )
-    val selectedGroupWithList: StateFlow<GroupWithList>
-        get() = _selectedGroupWithList
+//    private var _selectedGroupWithList = MutableStateFlow(
+//        GroupWithList(
+//            ShoppingGroupEntity(null, ""),
+//            emptyList()
+//        )
+//    )
+//    val selectedGroupWithList: StateFlow<GroupWithList>
+//        get() = _selectedGroupWithList
+
+    var selectedGroupWithList by mutableStateOf(GroupWithList(
+        ShoppingGroupEntity(null, ""),
+        emptyList()
+    ))
+//    val selectedGroupWithList: GroupWithList
+//        get() = _selectedGroupWithList
+
+//    var selectedGroupWithList by mutableStateOf(GroupWithList(
+//        ShoppingGroupEntity(null, ""),
+//        emptyList()
+//    ))
 
     private var items: MutableList<ShoppingItemEntity> = mutableListOf()
 
@@ -67,13 +80,23 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedGroupWithList(groupId: String?) {
-        val id = groupId?.toLong()
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.getGroupWithList(groupId = id).collect {
-                _selectedGroupWithList.value = it
-            }
-        }
+//    fun getSelectedGroupWithList(groupId: String?) {
+//        val id = groupId?.toLong()
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repo.getGroupWithList(groupId = id).collect {
+//                _selectedGroupWithList = it
+//            }
+//        }
+//    }
+
+    suspend fun getSelectedGroupWithListCoroutine(groupId: String): GroupWithList = coroutineScope {
+        val groupWithList = async { getSelectedGroupWithList(groupId = groupId) }
+        groupWithList.await()
+    }
+
+    private suspend fun getSelectedGroupWithList(groupId: String): GroupWithList {
+        val id = groupId.toLong()
+        return repo.getGroupWithList(groupId = id)
     }
 
     // GUI
@@ -188,9 +211,9 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun deleteGroupAndItems(groupWithList: GroupWithList) {
-        deleteGroup(groupId = groupWithList.group.groupId)
-        deleteItems(shoppingList = groupWithList.shoppingList)
+    fun deleteGroupAndItsItems() {
+        deleteItems(shoppingList = selectedGroupWithList.shoppingList)
+        deleteGroup(groupId = selectedGroupWithList.group.groupId)
     }
 
     // UPDATE

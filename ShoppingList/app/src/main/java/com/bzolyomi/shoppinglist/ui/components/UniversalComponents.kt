@@ -1,7 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.components
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
@@ -19,7 +18,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -42,7 +40,6 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_ICONS_OFFICIAL
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_MEDIUM
-
 
 @Composable
 fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {

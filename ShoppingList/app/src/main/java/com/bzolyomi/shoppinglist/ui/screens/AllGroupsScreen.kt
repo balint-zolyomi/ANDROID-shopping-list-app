@@ -61,14 +61,16 @@ fun AllGroupsScreen(
                 items(
                     items = shoppingGroupsWithLists
                 ) { shoppingGroupWithList ->
-                    GroupAndItemsCard(
-                        titleGroupName = shoppingGroupWithList.group.groupName,
-                        shoppingList = shoppingGroupWithList.shoppingList,
-                        onOpenGroupIconClicked = {
-                            onOpenGroupIconClicked(shoppingGroupWithList.group.groupId)
-                        },
-                        modifier = Modifier
-                    )
+                    if (shoppingGroupWithList != null) {
+                        GroupAndItemsCard(
+                            titleGroupName = shoppingGroupWithList.group.groupName,
+                            shoppingList = shoppingGroupWithList.shoppingList,
+                            onOpenGroupIconClicked = {
+                                onOpenGroupIconClicked(shoppingGroupWithList.group.groupId)
+                            },
+                            modifier = Modifier
+                        )
+                    }
                 }
             }
         },

@@ -10,10 +10,13 @@ import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_NAME
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_QUANTITY
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_UNIT
+import javax.annotation.concurrent.Immutable
 
 @Entity(tableName = SHOPPING_LIST_TABLE)
 data class ShoppingItemEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_ID) var itemId: Long?,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_ID)
+    var itemId: Long?,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_GROUP_ID) var itemParentId: Long?,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_NAME) val itemName: String,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_QUANTITY) var itemQuantity: Float?,
