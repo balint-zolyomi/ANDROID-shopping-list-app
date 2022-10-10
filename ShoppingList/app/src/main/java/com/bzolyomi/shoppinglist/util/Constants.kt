@@ -43,6 +43,10 @@ object Constants {
     const val GROUP_CARD_FADE_IN_DURATION = 200
     const val GROUP_CARD_FADE_OUT_DURATION = 100
 
+        // Expand icon
+    const val EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES = 0f
+    const val EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES = -180f
+
         // Intro screen
     const val INTRO_SCREEN_INITIAL_DELAY: Long = 0
     const val INTRO_SCREEN_ZOOM_ANIMATION_DURATION: Int = 400

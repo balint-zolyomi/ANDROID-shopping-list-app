@@ -22,14 +22,11 @@ class Repository @Inject constructor(
     // READ
     val allGroupsWithLists: Flow<List<GroupWithList>> = dao.getGroupsWithLists()
 
-//    fun getGroupWithList(groupId: Long?): Flow<GroupWithList> {
-//        return dao.getGroupWithList(groupId)
-//    }
     suspend fun getGroupWithList(groupId: Long?): GroupWithList {
         return dao.getGroupWithList(groupId)
     }
 
-    // Special
+        // Special
     suspend fun getGroupId(groupName: String): Long? {
         return dao.getGroupId(groupName = groupName)
     }

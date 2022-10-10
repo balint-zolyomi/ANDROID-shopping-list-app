@@ -20,7 +20,6 @@ interface LocalDatabaseDao {
 
     @Transaction
     @Query("SELECT * FROM shopping_group SG WHERE SG.group_id=:groupId")
-//    fun getGroupWithList(groupId: Long?): Flow<GroupWithList>
     suspend fun getGroupWithList(groupId: Long?): GroupWithList
 
         // Special

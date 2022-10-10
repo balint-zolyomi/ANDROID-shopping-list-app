@@ -20,8 +20,6 @@ class SharedViewModel
     private val repo: Repository
 )    : ViewModel() {
 
-    val log = CompositionLog(0)
-
     private var _groupName by mutableStateOf("")
     val groupName: State<String>
         get() = mutableStateOf(_groupName)
@@ -42,26 +40,10 @@ class SharedViewModel
     val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
         get() = _shoppingGroupsWithLists
 
-//    private var _selectedGroupWithList = MutableStateFlow(
-//        GroupWithList(
-//            ShoppingGroupEntity(null, ""),
-//            emptyList()
-//        )
-//    )
-//    val selectedGroupWithList: StateFlow<GroupWithList>
-//        get() = _selectedGroupWithList
-
     var selectedGroupWithList by mutableStateOf(GroupWithList(
         ShoppingGroupEntity(null, ""),
         emptyList()
     ))
-//    val selectedGroupWithList: GroupWithList
-//        get() = _selectedGroupWithList
-
-//    var selectedGroupWithList by mutableStateOf(GroupWithList(
-//        ShoppingGroupEntity(null, ""),
-//        emptyList()
-//    ))
 
     private var items: MutableList<ShoppingItemEntity> = mutableListOf()
 
@@ -78,25 +60,6 @@ class SharedViewModel
                 _shoppingGroupsWithLists.value = it
             }
         }
-    }
-
-//    fun getSelectedGroupWithList(groupId: String?) {
-//        val id = groupId?.toLong()
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.getGroupWithList(groupId = id).collect {
-//                _selectedGroupWithList = it
-//            }
-//        }
-//    }
-
-    suspend fun getSelectedGroupWithListCoroutine(groupId: String): GroupWithList = coroutineScope {
-        val groupWithList = async { getSelectedGroupWithList(groupId = groupId) }
-        groupWithList.await()
-    }
-
-    private suspend fun getSelectedGroupWithList(groupId: String): GroupWithList {
-        val id = groupId.toLong()
-        return repo.getGroupWithList(groupId = id)
     }
 
     // GUI
@@ -127,6 +90,18 @@ class SharedViewModel
     }
 
     // COROUTINES and their functions
+    // READ
+    suspend fun getSelectedGroupWithListCoroutine(groupId: String): GroupWithList = coroutineScope {
+        val groupWithList = async { getSelectedGroupWithList(groupId = groupId) }
+        groupWithList.await()
+    }
+
+    private suspend fun getSelectedGroupWithList(groupId: String): GroupWithList {
+        val id = groupId.toLong()
+        return repo.getGroupWithList(groupId = id)
+    }
+
+    // CREATE
     fun createWithCoroutines() = runBlocking {
         var groupId = getGroupIdCoroutine()
 

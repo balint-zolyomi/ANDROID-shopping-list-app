@@ -91,8 +91,6 @@ fun IntroTheme(
     if (darkTheme) {
         window.statusBarColor = Color.Black.toArgb()
     } else {
-//        window.statusBarColor = Primary.toArgb()
-//        window.navigationBarColor = LightPrimary.toArgb()
         systemUiController.setStatusBarColor(color = Color.White, darkIcons = true)
         systemUiController.setNavigationBarColor(color = Color.White, darkIcons = true)
     }

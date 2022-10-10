@@ -29,6 +29,8 @@ import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
+import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
+import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_FADE_IN_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_FADE_IN_INITIAL_ALPHA
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_FADE_OUT_DURATION
@@ -304,14 +306,14 @@ fun ItemCards(
                         // except LineThrough, it is exactly MaterialTheme.typography.subtitle1
                         TextStyle(
                             textDecoration = TextDecoration.LineThrough,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = FontFamily.SansSerif,
                             fontWeight = FontWeight.Normal,
                             fontSize = 16.sp
                         )
                     } else {
                         TextStyle(
                             textDecoration = TextDecoration.None,
-                            fontFamily = FontFamily.Monospace,
+                            fontFamily = FontFamily.SansSerif,
                             fontWeight = FontWeight.Normal,
                             fontSize = 16.sp
                         )
@@ -400,7 +402,10 @@ private fun ExpandIcon(
     onExpandIconClicked: () -> Unit,
     modifier: Modifier
 ) {
-    val expandIconAngle: Float by animateFloatAsState(targetValue = if (isExpanded) -180f else 0f)
+    val expandIconAngle: Float by animateFloatAsState(targetValue =
+        if (isExpanded) EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
+        else EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
+    )
 
     Column {
         IconButton(

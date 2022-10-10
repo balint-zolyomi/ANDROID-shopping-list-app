@@ -27,7 +27,9 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun IntroScreen(
-    isInDarkMode: Boolean, onDelayPassed: () -> Unit, modifier: Modifier
+    isInDarkMode: Boolean,
+    onDelayPassed: () -> Unit,
+    modifier: Modifier
 ) {
     var startZoomAnimation by remember { mutableStateOf(false) }
     var startSpringAnimation by remember { mutableStateOf(false) }

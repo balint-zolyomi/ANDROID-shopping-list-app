@@ -71,7 +71,9 @@ fun GroupNameInput(
             } else if (isError) {
                 Icon(
                     Icons.Filled.Error,
-                    contentDescription = stringResource(R.string.content_description_error_icon_input_field)
+                    contentDescription = stringResource(
+                        R.string.content_description_error_icon_input_field
+                    )
                 )
             }
         },

@@ -1,7 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -11,21 +10,16 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.GroupWithList
-import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
-@NonRestartableComposable
 @Composable
 fun ItemsOfGroupScreen(
     groupWithList: GroupWithList,
@@ -39,7 +33,6 @@ fun ItemsOfGroupScreen(
         onNavigationBarBackButtonClicked()
         sharedViewModel.flushItemGUI()
     }
-//    sharedViewModel.log.LogCompositions(tag = "balint-debug", msg = "recompose")
 
     val itemName by sharedViewModel.itemName
     val itemQuantity by sharedViewModel.itemQuantity
@@ -58,7 +51,7 @@ fun ItemsOfGroupScreen(
                 sharedViewModel.deleteGroupAndItsItems()
             },
             onDeleteItemClicked = {
-                sharedViewModel.deleteItem(itemId = it)
+                sharedViewModel.deleteItem(it)
             },
             onCheckboxClicked = {
                 sharedViewModel.updateItemChecked(it)
@@ -100,6 +93,78 @@ fun ItemsOfGroupScreen(
                 Text(text = stringResource(R.string.add_item_button))
             }
         }
+    }
+}
+
+@Composable
+fun ContentWithoutInput(
+    selectedGroupWithList: GroupWithList,
+    onDeleteGroupConfirmed: () -> Unit,
+    onDeleteItemClicked: (itemId: Long?) -> Unit,
+    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
+    modifier: Modifier
+//    sharedViewModel: SharedViewModel,
+//    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
+) {
+    var isAlertDialogOpen by remember { mutableStateOf(false) }
+
+    Column {
+        GroupCard(
+            titleGroupName = selectedGroupWithList.group.groupName,
+            onDeleteGroupClicked = { isAlertDialogOpen = true },
+            modifier = modifier
+        )
+        ItemsList(
+            shoppingListItems = selectedGroupWithList.shoppingList,
+            onDeleteItemClicked = onDeleteItemClicked,
+            onCheckboxClicked = onCheckboxClicked,
+            modifier = modifier
+//        sharedViewModel = sharedViewModel,
+//        onItemsRearrangedOnGUI = onItemsRearrangedOnGUI
+        )
+    }
+
+    ShowAlertDialog(
+        title = stringResource(R.string.delete_all_alert_dialog_title),
+        message = stringResource(R.string.delete_shopping_group_and_its_items_alert_dialog_message),
+        isOpen = isAlertDialogOpen,
+        onConfirmClicked = {
+            isAlertDialogOpen = false
+            onDeleteGroupConfirmed()
+        },
+        onDismissClicked = { isAlertDialogOpen = false }
+    )
+}
+
+@Composable
+fun ItemsList(
+    shoppingListItems: List<ShoppingItemEntity>,
+    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
+    onDeleteItemClicked: (itemId: Long?) -> Unit,
+    modifier: Modifier
+//    sharedViewModel: SharedViewModel,
+//    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
+) {
+//    var isRearranging by mutableStateOf(false)
+//    isRearranging = sharedViewModel.isRearranging
+//    val yPositionOfItems by sharedViewModel.yPositionOfItems.collectAsState()
+//
+//    val gradientBrush = Brush.horizontalGradient(
+//        colors = listOf(Color.Red, Color.Blue, Color.Green),
+//        startX = 0.0f,
+//        endX = 500.0f
+//    )
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        ItemCards(
+            shoppingListItems = shoppingListItems,
+            onCheckboxClicked = onCheckboxClicked,
+            onDeleteItemClicked = onDeleteItemClicked,
+            modifier = modifier
+        )
     }
 }
 
@@ -193,78 +258,6 @@ fun CancelButton(onCancelButtonClicked: () -> Unit) {
     }
 }
 
-@NonRestartableComposable
-@Composable
-fun ContentWithoutInput(
-    selectedGroupWithList: GroupWithList,
-    onDeleteGroupConfirmed: () -> Unit,
-    onDeleteItemClicked: (itemId: Long?) -> Unit,
-    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    modifier: Modifier
-//    sharedViewModel: SharedViewModel,
-//    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
-) {
-    var isAlertDialogOpen by remember { mutableStateOf(false) }
-
-    Column {
-        GroupCard(
-            titleGroupName = selectedGroupWithList.group.groupName,
-            onDeleteGroupClicked = { isAlertDialogOpen = true },
-            modifier = modifier
-        )
-        ItemsList(
-            shoppingListItems = selectedGroupWithList.shoppingList,
-            onDeleteItemClicked = onDeleteItemClicked,
-            onCheckboxClicked = onCheckboxClicked,
-            modifier = modifier
-//        sharedViewModel = sharedViewModel,
-//        onItemsRearrangedOnGUI = onItemsRearrangedOnGUI
-        )
-    }
-
-    ShowAlertDialog(
-        title = stringResource(R.string.delete_all_alert_dialog_title),
-        message = stringResource(R.string.delete_shopping_group_and_its_items_alert_dialog_message),
-        isOpen = isAlertDialogOpen,
-        onConfirmClicked = {
-            isAlertDialogOpen = false
-            onDeleteGroupConfirmed()
-        },
-        onDismissClicked = { isAlertDialogOpen = false }
-    )
-}
-
-@Composable
-fun ItemsList(
-    shoppingListItems: List<ShoppingItemEntity>,
-    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    onDeleteItemClicked: (itemId: Long?) -> Unit,
-    modifier: Modifier
-//    sharedViewModel: SharedViewModel,
-//    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
-) {
-//    var isRearranging by mutableStateOf(false)
-//    isRearranging = sharedViewModel.isRearranging
-//    val yPositionOfItems by sharedViewModel.yPositionOfItems.collectAsState()
-//
-//    val gradientBrush = Brush.horizontalGradient(
-//        colors = listOf(Color.Red, Color.Blue, Color.Green),
-//        startX = 0.0f,
-//        endX = 500.0f
-//    )
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        ItemCards(
-            shoppingListItems = shoppingListItems,
-            onCheckboxClicked = onCheckboxClicked,
-            onDeleteItemClicked = onDeleteItemClicked,
-            modifier = modifier
-        )
-    }
-}
 
 
 //@Composable

@@ -8,7 +8,7 @@ import com.bzolyomi.shoppinglist.BuildConfig
 import dagger.hilt.android.scopes.ViewModelScoped
 
 @ViewModelScoped
-class CompositionLog(var value: Int) {
+class CompositionLog(private var value: Int) {
 
     @Composable
     fun LogCompositions(tag: String, msg: String) {
@@ -19,3 +19,8 @@ class CompositionLog(var value: Int) {
         }
     }
 }
+
+//  Use in composables:
+//  sharedViewModel.log.LogCompositions(tag = "balint-debug", msg = "recompose")
+
+// Also needs to be injected and instantiated in SharedViewModel.

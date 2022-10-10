@@ -10,7 +10,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -35,7 +34,6 @@ import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -75,16 +73,6 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         composable(
             route = "home"
         ) {
-//                navBackStackEntry ->
-//            val isDeleteGroup = navBackStackEntry.arguments!!.getBoolean("isDeleteGroup")
-//            if (isDeleteGroup) {
-//                sharedViewModel.deleteGroupAndItsItems()
-
-//                val context = LocalContext.current
-//                val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
-//                Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT).show()
-//            }
-
             ShoppingListTheme {
                 AllGroupsScreen(
                     onAddAllFABClicked = { navController.navigate("add") },

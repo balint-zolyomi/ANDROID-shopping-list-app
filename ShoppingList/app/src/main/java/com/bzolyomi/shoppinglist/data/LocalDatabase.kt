@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase
 @Database(
     entities = [ShoppingItemEntity::class, ShoppingGroupEntity::class],
     version = 1,
-    exportSchema = true
+    exportSchema = true // TODO
 )
 //@AutoMigration(from = 1, to = 2)
 abstract class LocalDatabase : RoomDatabase() {
