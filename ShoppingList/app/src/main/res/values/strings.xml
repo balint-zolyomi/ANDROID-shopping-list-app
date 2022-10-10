@@ -29,4 +29,6 @@
     <string name="conten_description_expand_group_icon">Expand group icon</string>
     <string name="content_description_erase_input_field">Erase input field icon</string>
     <string name="content_description_application_logo">Application logo</string>
+    <string name="button_rearrange_items">Rearrange items</string>
+    <string name="button_rearrange_items_done">Rearrange done</string>
 </resources>

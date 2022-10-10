@@ -8,8 +8,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -23,6 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.bzolyomi.shoppinglist.R
@@ -42,6 +42,10 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_ICONS_OFFICIAL
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_MEDIUM
+import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.detectReorderAfterLongPress
+import org.burnoutcrew.reorderable.rememberReorderableLazyListState
+import org.burnoutcrew.reorderable.reorderable
 
 @Composable
 fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
@@ -188,8 +192,8 @@ private fun ColumnScope.CardContent(
                         ""
                     } else {
                         " -- " +
-                        item.itemQuantity.toString()
-                            .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
+                                item.itemQuantity.toString()
+                                    .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
                     }
 
                     Text(
@@ -248,98 +252,216 @@ fun GroupCard(
     }
 }
 
+//@Composable
+//fun ItemCards(
+//    shoppingListItems: List<ShoppingItemEntity>,
+//    isRearranging: Boolean,
+//    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
+//    onDeleteItemClicked: (itemId: Long?) -> Unit,
+//    modifier: Modifier
+//) {
+////    val yMap = mutableMapOf<Int, Float>()
+//    // The composable function rememberLazyListState creates an initial state for the list
+//    // using rememberSaveable. When the Activity is recreated, the scroll state is
+//    // maintained without you having to code anything.
+//    LazyColumn(
+//        state = LazyListState()
+//    ) {
+//        itemsIndexed(shoppingListItems) { index, item ->
+//
+//            var isItemChecked by mutableStateOf(item.isItemChecked)
+//
+////            var isGetInitialYComplete by remember { mutableStateOf(false) }
+////            var offsetY by remember { mutableStateOf(0f) }
+////                var alpha by remember { mutableStateOf(0f) }
+//
+//            Card(
+//                elevation = ELEVATION_SMALL,
+//                shape = MaterialTheme.shapes.large,
+//                modifier = modifier
+//                    .padding(PADDING_SMALL)
+////                    .offset {
+////                        IntOffset(
+////                            x = 0, y = offsetY.roundToInt()
+////                        )
+////                    }
+////                    .onGloballyPositioned {
+////                        if (isRearranging) {
+////                            val yGlobalOfItem = it.positionInRoot().y
+////
+////                            if (!isGetInitialYComplete) {
+////                                yMap[index] = yGlobalOfItem
+////                                isGetInitialYComplete = true
+////                                Log.d("balint-debug", " \nid: ${index}\ny: $yGlobalOfItem")
+////                                Log.d("balint-debug", " \nmap: ${yMap.toString()}")
+////                            }
+////                        }
+////                    }
+//            ) {
+//                Row(verticalAlignment = Alignment.CenterVertically) {
+//
+////                    if (isRearranging) {
+////                        DragIcon(onDragAmount = {
+////                            offsetY += it
+////                        })
+////                    }
+//
+//                    ItemCheckboxIconButton(
+//                        isItemChecked = isItemChecked,
+//                        onCheckboxClicked = {
+//                            onCheckboxClicked(item)
+//                            isItemChecked = !isItemChecked
+//                        },
+//                        modifier = modifier.padding(start = PADDING_X_SMALL)
+//                    )
+//
+//                    val itemFontStyle = if (isItemChecked) {
+//                        // except LineThrough, it is exactly MaterialTheme.typography.subtitle1
+//                        TextStyle(
+//                            textDecoration = TextDecoration.LineThrough,
+//                            fontFamily = FontFamily.SansSerif,
+//                            fontWeight = FontWeight.Normal,
+//                            fontSize = 16.sp
+//                        )
+//                    } else {
+//                        TextStyle(
+//                            textDecoration = TextDecoration.None,
+//                            fontFamily = FontFamily.SansSerif,
+//                            fontWeight = FontWeight.Normal,
+//                            fontSize = 16.sp
+//                        )
+//                    }
+//
+//                    val itemQuantityToDisplay = if (item.itemQuantity == null) {
+//                        ""
+//                    } else {
+//                        " -- " +
+//                                item.itemQuantity.toString()
+//                                    .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
+//                    }
+//                    Text(
+//                        text = item.itemName
+//                                + itemQuantityToDisplay
+//                                + item.itemUnit,
+//                        style = itemFontStyle,
+//                        modifier = modifier.padding(PADDING_X_SMALL)
+//                    )
+//                    DeleteItemIconButton(
+//                        item = item,
+//                        onDeleteItemClicked = onDeleteItemClicked,
+//                        modifier = modifier.padding(end = PADDING_X_SMALL)
+//                    )
+//                }
+////                }
+//            }
+//        }
+//    }
+//}
+
 @Composable
 fun ItemCards(
     shoppingListItems: List<ShoppingItemEntity>,
+    isRearranging: Boolean,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     modifier: Modifier
 ) {
-    // The composable function rememberLazyListState creates an initial state for the list
-    // using rememberSaveable. When the Activity is recreated, the scroll state is
-    // maintained without you having to code anything.
+//    val shoppingList = remember { mutableStateOf(List(shoppingListItems.size) {
+//        shoppingListItems[it]
+//    }) }
+    val listOfShoppingItemIds = remember {
+        mutableStateOf(
+            List(shoppingListItems.size) {
+                shoppingListItems[it].itemId.toString()
+            }
+        )
+    }
+    val state = rememberReorderableLazyListState(onMove = { from, to ->
+        listOfShoppingItemIds.value = listOfShoppingItemIds.value.toMutableList().apply {
+            add(to.index, removeAt(from.index))
+        }
+    })
+
     LazyColumn(
-        state = LazyListState()
+        state = state.listState,
+        modifier = Modifier
+            .reorderable(state = state)
+            .detectReorderAfterLongPress(state = state)
     ) {
-        itemsIndexed(shoppingListItems) { _, item ->
+        items(listOfShoppingItemIds.value, { it }) { item ->
+            val itemId = item.toLong()
+            var shoppingListItem = ShoppingItemEntity(
+                itemId = null,
+                itemParentId = null,
+                itemName = "",
+                itemQuantity = null,
+                itemUnit = "",
+                isItemChecked = true
+            )
+            for (i in shoppingListItems) {
+                if (i.itemId == itemId) shoppingListItem = i
+            }
 
-//                var offsetX by remember { mutableStateOf(0f) }
-//                var offsetY by remember { mutableStateOf(0f) }
-//                var alpha by remember { mutableStateOf(0f) }
+            var isItemChecked by mutableStateOf(shoppingListItem.isItemChecked)
 
-            var isItemChecked by mutableStateOf(item.isItemChecked)
-//            Row(
-//                    .offset {
-//                        IntOffset(
-//                            offsetX.roundToInt(), offsetY.roundToInt()
-//                        )
-//                    }
-//                    .background(
-//                        brush = gradientBrush,
-//                        shape = CutCornerShape(8.dp),
-//                        alpha = alpha
-//            ) {
-            Card(
-                elevation = ELEVATION_SMALL,
-                shape = MaterialTheme.shapes.large,
-                modifier = modifier.padding(PADDING_SMALL)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-//                    var itemsThatCrossed: List<ShoppingItemEntity> = emptyList()
-//                    var globalY: Float = remember { 0f }
-//                    isRearranging = sharedViewModel.isRearranging
+            ReorderableItem(reorderableState = state, key = item) { isDragging ->
+                val elevation = animateDpAsState(targetValue = if (isDragging) 16.dp else 0.dp)
 
-//                    if (!isRearranging) {
-//                        DragIcon()
-//                    }
-
-                    ItemCheckboxIconButton(
-                        isItemChecked = isItemChecked,
-                        onCheckboxClicked = {
-                            onCheckboxClicked(item)
-                            isItemChecked = !isItemChecked
-                        },
-                        modifier = modifier.padding(start = PADDING_X_SMALL)
-                    )
-
-                    val itemFontStyle = if (isItemChecked) {
-                        // except LineThrough, it is exactly MaterialTheme.typography.subtitle1
-                        TextStyle(
-                            textDecoration = TextDecoration.LineThrough,
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp
+                Card(
+                    elevation = elevation.value,
+                    shape = MaterialTheme.shapes.large,
+                    modifier = modifier
+                        .padding(PADDING_SMALL)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+//                        Text(item)
+                        ItemCheckboxIconButton(
+                            isItemChecked = isItemChecked,
+                            onCheckboxClicked = {
+                                onCheckboxClicked(shoppingListItem)
+                                isItemChecked = !isItemChecked
+                            },
+                            modifier = modifier.padding(start = PADDING_X_SMALL)
                         )
-                    } else {
-                        TextStyle(
-                            textDecoration = TextDecoration.None,
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp
+
+                        val itemFontStyle = if (isItemChecked) {
+                            TextStyle(
+                                textDecoration = TextDecoration.LineThrough,
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 16.sp
+                            )
+                        } else {
+                            TextStyle(
+                                textDecoration = TextDecoration.None,
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.Normal,
+                                fontSize = 16.sp
+                            )
+                        }
+
+                        val itemQuantityToDisplay = if (shoppingListItem.itemQuantity == null) {
+                            ""
+                        } else {
+                            " -- " +
+                                    shoppingListItem.itemQuantity.toString()
+                                        .dropLastWhile { it == '0' }
+                                        .dropLastWhile { it == '.' } + " "
+                        }
+                        Text(
+                            text = shoppingListItem.itemName
+                                    + itemQuantityToDisplay
+                                    + shoppingListItem.itemUnit,
+                            style = itemFontStyle,
+                            modifier = modifier.padding(PADDING_X_SMALL)
+                        )
+                        DeleteItemIconButton(
+                            item = shoppingListItem,
+                            onDeleteItemClicked = onDeleteItemClicked,
+                            modifier = modifier.padding(end = PADDING_X_SMALL)
                         )
                     }
-
-                    val itemQuantityToDisplay = if (item.itemQuantity == null) {
-                        ""
-                    } else {
-                        " -- " +
-                        item.itemQuantity.toString()
-                            .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
-                    }
-                    Text(
-                        text = item.itemName
-                                + itemQuantityToDisplay
-                                + item.itemUnit,
-                        style = itemFontStyle,
-                        modifier = modifier.padding(PADDING_X_SMALL)
-                    )
-                    DeleteItemIconButton(
-                        item = item,
-                        onDeleteItemClicked = onDeleteItemClicked,
-                        modifier = modifier.padding(end = PADDING_X_SMALL)
-                    )
                 }
-//                }
             }
         }
     }
@@ -402,7 +524,8 @@ private fun ExpandIcon(
     onExpandIconClicked: () -> Unit,
     modifier: Modifier
 ) {
-    val expandIconAngle: Float by animateFloatAsState(targetValue =
+    val expandIconAngle: Float by animateFloatAsState(
+        targetValue =
         if (isExpanded) EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
         else EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
     )
