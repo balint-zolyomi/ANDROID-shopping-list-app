@@ -13,16 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.GroupWithList
+import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 
 @Composable
 fun ItemsOfGroupScreen(
-    groupWithList: GroupWithList,
     onDeleteGroupConfirmed: () -> Unit,
     onNavigationBarBackButtonClicked: () -> Unit,
     modifier: Modifier,
@@ -33,6 +33,15 @@ fun ItemsOfGroupScreen(
         onNavigationBarBackButtonClicked()
         sharedViewModel.flushItemGUI()
     }
+
+    val shoppingGroup by mutableStateOf(sharedViewModel.selectedGroupWithList.group)
+    val shoppingList by sharedViewModel.selectedShoppingList.collectAsState()
+
+    val positionOfItems: MutableList<Long?> = mutableListOf()
+    for (item in shoppingList) {
+        positionOfItems.add(item.itemId)
+    }
+    Log.d("balint-debug", " \n${positionOfItems.toString()}")
 
     val itemName by sharedViewModel.itemName
     val itemQuantity by sharedViewModel.itemQuantity
@@ -45,7 +54,8 @@ fun ItemsOfGroupScreen(
             .fillMaxSize()
     ) {
         ContentWithoutInput(
-            selectedGroupWithList = groupWithList,
+            shoppingGroup = shoppingGroup,
+            shoppingList = shoppingList,
             onDeleteGroupConfirmed = {
                 onDeleteGroupConfirmed()
                 sharedViewModel.deleteGroupAndItsItems()
@@ -61,14 +71,14 @@ fun ItemsOfGroupScreen(
             // onItemsRearrangedOnGUI
         )
         if (addItem) {
+            val scope = rememberCoroutineScope()
+
             ItemInputFields(
                 itemName = itemName,
                 itemQuantity = itemQuantity,
                 itemUnit = itemUnit,
                 onSubmitAddItemButtonClicked = {
-                    runBlocking {
-                        sharedViewModel.createItems(groupId = groupWithList.group.groupId)
-                    }
+                    scope.launch{ sharedViewModel.createItems(groupId = shoppingGroup.groupId) }
                     addItem = false
                 },
                 onCancelButtonClicked = {
@@ -98,7 +108,8 @@ fun ItemsOfGroupScreen(
 
 @Composable
 fun ContentWithoutInput(
-    selectedGroupWithList: GroupWithList,
+    shoppingGroup: ShoppingGroupEntity,
+    shoppingList: List<ShoppingItemEntity>,
     onDeleteGroupConfirmed: () -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
@@ -110,12 +121,12 @@ fun ContentWithoutInput(
 
     Column {
         GroupCard(
-            titleGroupName = selectedGroupWithList.group.groupName,
+            titleGroupName = shoppingGroup.groupName,
             onDeleteGroupClicked = { isAlertDialogOpen = true },
             modifier = modifier
         )
         ItemsList(
-            shoppingListItems = selectedGroupWithList.shoppingList,
+            shoppingListItems = shoppingList,
             onDeleteItemClicked = onDeleteItemClicked,
             onCheckboxClicked = onCheckboxClicked,
             modifier = modifier
@@ -257,7 +268,6 @@ fun CancelButton(onCancelButtonClicked: () -> Unit) {
         Text(text = stringResource(R.string.cancel_button))
     }
 }
-
 
 
 //@Composable

@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.data
 
-import android.util.Log
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -24,6 +23,10 @@ class Repository @Inject constructor(
 
     suspend fun getGroupWithList(groupId: Long?): GroupWithList {
         return dao.getGroupWithList(groupId)
+    }
+
+    fun getShoppingList(groupId: Long?): Flow<List<ShoppingItemEntity>> {
+        return dao.getShoppingList(groupId)
     }
 
         // Special

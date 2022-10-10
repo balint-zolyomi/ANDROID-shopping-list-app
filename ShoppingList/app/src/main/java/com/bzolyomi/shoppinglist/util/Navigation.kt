@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.util
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -152,6 +151,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 LaunchedEffect(key1 = true) {
                     sharedViewModel.selectedGroupWithList =
                         sharedViewModel.getSelectedGroupWithListCoroutine(groupId = groupId)
+                    sharedViewModel.getSelectedShoppingListCoroutine(groupId = groupId)
                 }
 
                 ShoppingListTheme {
@@ -159,7 +159,6 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                     val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
 
                     ItemsOfGroupScreen(
-                        groupWithList = sharedViewModel.selectedGroupWithList,
                         onDeleteGroupConfirmed = {
                             navController.navigate("home") {
                                 popUpTo("home") { inclusive = true }

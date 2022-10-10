@@ -7,7 +7,6 @@ import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.data.Repository
 import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
-import com.bzolyomi.shoppinglist.util.CompositionLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +43,10 @@ class SharedViewModel
         ShoppingGroupEntity(null, ""),
         emptyList()
     ))
+
+    private val _selectedShoppingList = MutableStateFlow<List<ShoppingItemEntity>>(emptyList())
+    val selectedShoppingList: StateFlow<List<ShoppingItemEntity>>
+        get() = _selectedShoppingList
 
     private var items: MutableList<ShoppingItemEntity> = mutableListOf()
 
@@ -99,6 +102,15 @@ class SharedViewModel
     private suspend fun getSelectedGroupWithList(groupId: String): GroupWithList {
         val id = groupId.toLong()
         return repo.getGroupWithList(groupId = id)
+    }
+
+    fun getSelectedShoppingListCoroutine(groupId: String?) {
+        val id = groupId?.toLong()
+        viewModelScope.launch {
+            repo.getShoppingList(id).collect {
+                _selectedShoppingList.value = it
+            }
+        }
     }
 
     // CREATE
