@@ -29,8 +29,7 @@ fun ItemsOfGroupScreen(
     onDeleteGroupConfirmed: () -> Unit,
     onNavigationBarBackButtonClicked: () -> Unit,
     modifier: Modifier,
-    sharedViewModel: SharedViewModel,
-//    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
+    sharedViewModel: SharedViewModel
 ) {
     BackHandler {
         onNavigationBarBackButtonClicked()
@@ -40,18 +39,11 @@ fun ItemsOfGroupScreen(
     val shoppingGroup by mutableStateOf(sharedViewModel.selectedGroupWithList.group)
     val shoppingList by sharedViewModel.selectedShoppingList.collectAsState()
 
-    val positionOfItems: MutableList<Long?> = mutableListOf()
-    for (item in shoppingList) {
-        positionOfItems.add(item.itemId)
-    }
-//    Log.d("balint-debug", " \n${positionOfItems.toString()}")
-
     val itemName by sharedViewModel.itemName
     val itemQuantity by sharedViewModel.itemQuantity
     val itemUnit by sharedViewModel.itemUnit
 
     var isAddItem by remember { mutableStateOf(false) }
-    var isRearranging by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -60,7 +52,6 @@ fun ItemsOfGroupScreen(
         ContentWithoutInput(
             shoppingGroup = shoppingGroup,
             shoppingList = shoppingList,
-            isRearranging = isRearranging,
             onDeleteGroupConfirmed = {
                 onDeleteGroupConfirmed()
                 sharedViewModel.deleteGroupAndItsItems()
@@ -72,8 +63,6 @@ fun ItemsOfGroupScreen(
                 sharedViewModel.updateItemChecked(it)
             },
             modifier = Modifier
-            // sharedViewModel,
-            // onItemsRearrangedOnGUI
         )
         if (isAddItem) {
             val scope = rememberCoroutineScope()
@@ -108,24 +97,6 @@ fun ItemsOfGroupScreen(
                 ) {
                     Text(text = stringResource(R.string.add_item_button))
                 }
-                Button(
-                    onClick = { isRearranging = !isRearranging },
-                    modifier = Modifier.padding(
-                        start = PADDING_X_LARGE,
-                        top = PADDING_MEDIUM,
-                        end = PADDING_MEDIUM,
-                        bottom = PADDING_MEDIUM
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.primary
-                    )
-                ) {
-                    if (isRearranging) {
-                        Text(text = stringResource(R.string.button_rearrange_items_done))
-                    } else {
-                        Text(text = stringResource(R.string.button_rearrange_items))
-                    }
-                }
             }
         }
     }
@@ -135,13 +106,10 @@ fun ItemsOfGroupScreen(
 fun ContentWithoutInput(
     shoppingGroup: ShoppingGroupEntity,
     shoppingList: List<ShoppingItemEntity>,
-    isRearranging: Boolean,
     onDeleteGroupConfirmed: () -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     modifier: Modifier
-//    sharedViewModel: SharedViewModel,
-//    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
     var isAlertDialogOpen by remember { mutableStateOf(false) }
 
@@ -153,12 +121,9 @@ fun ContentWithoutInput(
         )
         ItemsList(
             shoppingListItems = shoppingList,
-            isRearranging = isRearranging,
             onDeleteItemClicked = onDeleteItemClicked,
             onCheckboxClicked = onCheckboxClicked,
             modifier = modifier
-//        sharedViewModel = sharedViewModel,
-//        onItemsRearrangedOnGUI = onItemsRearrangedOnGUI
         )
     }
 
@@ -177,30 +142,16 @@ fun ContentWithoutInput(
 @Composable
 fun ItemsList(
     shoppingListItems: List<ShoppingItemEntity>,
-    isRearranging: Boolean,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     modifier: Modifier
-//    sharedViewModel: SharedViewModel,
-//    onItemsRearrangedOnGUI: (MutableMap<Int, Float>) -> Unit
 ) {
-//    var isRearranging by mutableStateOf(false)
-//    isRearranging = sharedViewModel.isRearranging
-//    val yPositionOfItems by sharedViewModel.yPositionOfItems.collectAsState()
-//
-//    val gradientBrush = Brush.horizontalGradient(
-//        colors = listOf(Color.Red, Color.Blue, Color.Green),
-//        startX = 0.0f,
-//        endX = 500.0f
-//    )
-
     Column(
         modifier = modifier
             .fillMaxWidth()
     ) {
         ItemCards(
             shoppingListItems = shoppingListItems,
-            isRearranging = isRearranging,
             onCheckboxClicked = onCheckboxClicked,
             onDeleteItemClicked = onDeleteItemClicked,
             modifier = modifier
@@ -297,70 +248,3 @@ fun CancelButton(onCancelButtonClicked: () -> Unit) {
         Text(text = stringResource(R.string.cancel_button))
     }
 }
-
-/*
-
-@Composable
-fun DragIcon(
-//    offsetY: Float,
-    onDragAmount: (Float) -> Unit
-) {
-    Icon(
-        imageVector = Icons.Filled.DragIndicator,
-        contentDescription = "",
-        modifier = Modifier
-            .padding(start = PADDING_SMALL)
-            .onGloballyPositioned {
-//                globalY = it.positionInRoot().y
-//                yPositionOfItems[index] = globalY
-            }
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    onDragAmount(dragAmount.y)
-                }
-            }
-    )
-}
-*/
-
-//                    var canDragUp = offsetY > -12f
-//                    var canDragDown = offsetY < 1200f
-//
-//                    if (canDragDown && dragAmount.y > 0) {
-//                        if (offsetY + dragAmount.y > 1200f) {
-//                            offsetY = 1200f
-//                        } else {
-//                            offsetY += dragAmount.y
-//                        }
-//                        alpha = 0.75f
-//                    } else if (canDragUp && dragAmount.y < 0) {
-//                        if (offsetY + dragAmount.y < 12f) {
-//                            offsetY =
-//                                -12f
-//                        } else {
-//                            offsetY += dragAmount.y
-//                        }
-//                        alpha = 0.75f
-//                                        itemsThatCrossed = listOf(
-//                                            shoppingListItems.elementAt(index = index),
-//                                            shoppingListItems.elementAt(index = index + 1)
-//                                        )
-//                    }
-
-//                                    if (
-//                                        shoppingListItems.lastIndex != index
-//                                        && globalY > shoppingListItems[index + 1].
-//                                    )
-
-//                    onItemsRearrangedOnGUI(yPositionOfItems)
-//                                    LaunchedEffect(key1 = true) {
-//                                        Log.d("balint-debug", yPositionOfItems.toString())
-//                                        sharedViewModel.rearrangeItems(
-//                                            shoppingListItems = shoppingListItems,
-//                                            yPositionOfItems = yPositionOfItems
-//                                        )
-//                                    }
-//                }
-//            })
-//}

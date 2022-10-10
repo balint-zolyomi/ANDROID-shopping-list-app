@@ -252,123 +252,13 @@ fun GroupCard(
     }
 }
 
-//@Composable
-//fun ItemCards(
-//    shoppingListItems: List<ShoppingItemEntity>,
-//    isRearranging: Boolean,
-//    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-//    onDeleteItemClicked: (itemId: Long?) -> Unit,
-//    modifier: Modifier
-//) {
-////    val yMap = mutableMapOf<Int, Float>()
-//    // The composable function rememberLazyListState creates an initial state for the list
-//    // using rememberSaveable. When the Activity is recreated, the scroll state is
-//    // maintained without you having to code anything.
-//    LazyColumn(
-//        state = LazyListState()
-//    ) {
-//        itemsIndexed(shoppingListItems) { index, item ->
-//
-//            var isItemChecked by mutableStateOf(item.isItemChecked)
-//
-////            var isGetInitialYComplete by remember { mutableStateOf(false) }
-////            var offsetY by remember { mutableStateOf(0f) }
-////                var alpha by remember { mutableStateOf(0f) }
-//
-//            Card(
-//                elevation = ELEVATION_SMALL,
-//                shape = MaterialTheme.shapes.large,
-//                modifier = modifier
-//                    .padding(PADDING_SMALL)
-////                    .offset {
-////                        IntOffset(
-////                            x = 0, y = offsetY.roundToInt()
-////                        )
-////                    }
-////                    .onGloballyPositioned {
-////                        if (isRearranging) {
-////                            val yGlobalOfItem = it.positionInRoot().y
-////
-////                            if (!isGetInitialYComplete) {
-////                                yMap[index] = yGlobalOfItem
-////                                isGetInitialYComplete = true
-////                                Log.d("balint-debug", " \nid: ${index}\ny: $yGlobalOfItem")
-////                                Log.d("balint-debug", " \nmap: ${yMap.toString()}")
-////                            }
-////                        }
-////                    }
-//            ) {
-//                Row(verticalAlignment = Alignment.CenterVertically) {
-//
-////                    if (isRearranging) {
-////                        DragIcon(onDragAmount = {
-////                            offsetY += it
-////                        })
-////                    }
-//
-//                    ItemCheckboxIconButton(
-//                        isItemChecked = isItemChecked,
-//                        onCheckboxClicked = {
-//                            onCheckboxClicked(item)
-//                            isItemChecked = !isItemChecked
-//                        },
-//                        modifier = modifier.padding(start = PADDING_X_SMALL)
-//                    )
-//
-//                    val itemFontStyle = if (isItemChecked) {
-//                        // except LineThrough, it is exactly MaterialTheme.typography.subtitle1
-//                        TextStyle(
-//                            textDecoration = TextDecoration.LineThrough,
-//                            fontFamily = FontFamily.SansSerif,
-//                            fontWeight = FontWeight.Normal,
-//                            fontSize = 16.sp
-//                        )
-//                    } else {
-//                        TextStyle(
-//                            textDecoration = TextDecoration.None,
-//                            fontFamily = FontFamily.SansSerif,
-//                            fontWeight = FontWeight.Normal,
-//                            fontSize = 16.sp
-//                        )
-//                    }
-//
-//                    val itemQuantityToDisplay = if (item.itemQuantity == null) {
-//                        ""
-//                    } else {
-//                        " -- " +
-//                                item.itemQuantity.toString()
-//                                    .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
-//                    }
-//                    Text(
-//                        text = item.itemName
-//                                + itemQuantityToDisplay
-//                                + item.itemUnit,
-//                        style = itemFontStyle,
-//                        modifier = modifier.padding(PADDING_X_SMALL)
-//                    )
-//                    DeleteItemIconButton(
-//                        item = item,
-//                        onDeleteItemClicked = onDeleteItemClicked,
-//                        modifier = modifier.padding(end = PADDING_X_SMALL)
-//                    )
-//                }
-////                }
-//            }
-//        }
-//    }
-//}
-
 @Composable
 fun ItemCards(
     shoppingListItems: List<ShoppingItemEntity>,
-    isRearranging: Boolean,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     modifier: Modifier
 ) {
-//    val shoppingList = remember { mutableStateOf(List(shoppingListItems.size) {
-//        shoppingListItems[it]
-//    }) }
     val listOfShoppingItemIds = remember {
         mutableStateOf(
             List(shoppingListItems.size) {
@@ -414,7 +304,7 @@ fun ItemCards(
                         .padding(PADDING_SMALL)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-//                        Text(item)
+
                         ItemCheckboxIconButton(
                             isItemChecked = isItemChecked,
                             onCheckboxClicked = {
