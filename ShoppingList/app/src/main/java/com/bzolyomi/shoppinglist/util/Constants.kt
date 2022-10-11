@@ -19,6 +19,12 @@ object Constants {
     const val SHOPPING_LIST_TABLE_COLUMN_ITEM_UNIT = "item_unit"
     const val SHOPPING_LIST_TABLE_COLUMN_ITEM_CHECKED = "item_checked"
 
+    const val LIST_ORDER_TABLE = "list_order"
+    const val LIST_ORDER_TABLE_COLUMN_LIST_ORDER_ID = "list_order_id"
+    const val LIST_ORDER_TABLE_COLUMN_GROUP_ID = "group_id"
+    const val LIST_ORDER_TABLE_COLUMN_ITEM_ID = "item_id"
+    const val LIST_ORDER_TABLE_COLUMN_ITEM_POSITION = "item_position"
+
     // STYLE
         // Padding
     val PADDING_ZERO = 0.dp

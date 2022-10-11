@@ -8,7 +8,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,7 +20,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -31,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.bzolyomi.shoppinglist.R
+import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
@@ -85,6 +84,7 @@ fun showItemAddedToast(context: Context) {
 fun GroupAndItemsCard(
     titleGroupName: String,
     shoppingList: List<ShoppingItemEntity>,
+    listOrder: List<ListOrderEntity>,
     onOpenGroupIconClicked: () -> Unit,
     modifier: Modifier
 ) {
@@ -121,6 +121,7 @@ fun GroupAndItemsCard(
             CardContent(
                 isExpanded = isExpanded,
                 shoppingList = shoppingList,
+                listOrder = listOrder,
                 onOpenGroupIconClicked = onOpenGroupIconClicked,
                 modifier = modifier
             )
@@ -149,6 +150,7 @@ private fun DoneRatio(
 private fun ColumnScope.CardContent(
     isExpanded: Boolean,
     shoppingList: List<ShoppingItemEntity>,
+    listOrder: List<ListOrderEntity>,
     onOpenGroupIconClicked: () -> Unit,
     modifier: Modifier
 ) {
@@ -176,30 +178,39 @@ private fun ColumnScope.CardContent(
                 )
             }
             Column {
-                for (item in shoppingList) {
-                    val itemFontStyle = if (item.isItemChecked) {
-                        TextStyle(
-                            textDecoration = TextDecoration.LineThrough,
-                            fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp
-                        )
-                    } else {
-                        MaterialTheme.typography.body1
-                    }
+                val order = listOrder.sortedBy {
+                    it.itemPositionInList
+                }
 
-                    val itemQuantityToDisplay = if (item.itemQuantity == null) {
-                        ""
-                    } else {
-                        " -- " + item.itemQuantity.toString().dropLastWhile { it == '0' }
-                            .dropLastWhile { it == '.' } + " "
-                    }
+                for (position in order) {
+                    for (item in shoppingList) {
+                        if (position.itemId == item.itemId) {
 
-                    Text(
-                        text = item.itemName + itemQuantityToDisplay + item.itemUnit,
-                        style = itemFontStyle,
-                        modifier = modifier.padding(vertical = PADDING_X_SMALL)
-                    )
+                            val itemFontStyle = if (item.isItemChecked) {
+                                TextStyle(
+                                    textDecoration = TextDecoration.LineThrough,
+                                    fontFamily = FontFamily.Monospace,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 16.sp
+                                )
+                            } else {
+                                MaterialTheme.typography.body1
+                            }
+
+                            val itemQuantityToDisplay = if (item.itemQuantity == null) {
+                                ""
+                            } else {
+                                " -- " + item.itemQuantity.toString().dropLastWhile { it == '0' }
+                                    .dropLastWhile { it == '.' } + " "
+                            }
+
+                            Text(
+                                text = item.itemName + itemQuantityToDisplay + item.itemUnit,
+                                style = itemFontStyle,
+                                modifier = modifier.padding(vertical = PADDING_X_SMALL)
+                            )
+                        }
+                    }
                 }
             }
             Spacer(modifier = modifier.weight(1f))
@@ -247,22 +258,41 @@ fun GroupCard(
 @Composable
 fun ItemCardsRearrange(
     shoppingListItems: List<ShoppingItemEntity>,
+    itemPositions: List<ListOrderEntity>,
+    onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
     modifier: Modifier
 ) {
-    val listOfShoppingItemIds = remember {
-        mutableStateOf(List(shoppingListItems.size) {
-            shoppingListItems[it].itemId.toString()
-        })
+    val listOrder = itemPositions.sortedBy {
+        it.itemPositionInList
     }
 
+    var listOfShoppingItemIds by remember {
+        mutableStateOf(
+            List(listOrder.size) {
+                listOrder[it].itemId.toString()
+            }
+        )
+    }
+
+//    Log.d("balint-debug", " \n listOrder: ${listOrder.toString()}")
+
     val state = rememberReorderableLazyListState(onMove = { from, to ->
-        listOfShoppingItemIds.value = listOfShoppingItemIds.value.toMutableList().apply {
+        listOfShoppingItemIds = listOfShoppingItemIds.toMutableList().apply {
             add(to.index, removeAt(from.index))
         }
-        Log.d("balint-debug", " \n${listOfShoppingItemIds.toString()}")
+
+        val tempList = listOrder.toMutableList()
+        val tempPosition = listOrder[to.index].itemPositionInList
+        tempList[to.index].itemPositionInList = tempList[from.index].itemPositionInList
+        tempList[from.index].itemPositionInList = tempPosition
+
+        onItemsOrderChange(tempList)
+        for (item in tempList) {
+            Log.d("balint-debug", " \n${item.itemPositionInList}")
+        }
     })
 
-    Log.d("balint-debug", " \n${listOfShoppingItemIds.toString()}")
+//    Log.d("balint-debug", " \n${listOfShoppingItemIds.toString()}")
 
     LazyColumn(
         state = state.listState,
@@ -270,8 +300,7 @@ fun ItemCardsRearrange(
             .reorderable(state = state)
             .detectReorderAfterLongPress(state = state)
     ) {
-        items(listOfShoppingItemIds.value, { it }) { item ->
-            val itemId = item.toLong()
+        items(listOfShoppingItemIds, { it }) { listOrderId ->
             var shoppingListItem by mutableStateOf(
                 ShoppingItemEntity(
                     itemId = null,
@@ -283,12 +312,12 @@ fun ItemCardsRearrange(
                 )
             )
             for (i in shoppingListItems) {
-                if (i.itemId == itemId) shoppingListItem = i
+                if (i.itemId == listOrderId.toLong()) shoppingListItem = i
             }
 
             val isItemChecked by mutableStateOf(shoppingListItem.isItemChecked)
 
-            ReorderableItem(reorderableState = state, key = item) { isDragging ->
+            ReorderableItem(reorderableState = state, key = listOrderId) { isDragging ->
                 val elevation = animateDpAsState(
                     targetValue =
                     if (isDragging) 16.dp else ELEVATION_SMALL
@@ -301,7 +330,8 @@ fun ItemCardsRearrange(
                     targetValue =
                     if (isDragging) 2.dp else 0.dp
                 )
-                val borderColor = animateColorAsState(targetValue =
+                val borderColor = animateColorAsState(
+                    targetValue =
                     if (isDragging) MaterialTheme.colors.primary else MaterialTheme.colors.surface
                 )
 
@@ -339,11 +369,13 @@ fun ItemCardsRearrange(
                             " -- " + shoppingListItem.itemQuantity.toString()
                                 .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
                         }
+                        DragIcon()
                         Text(
                             text = shoppingListItem.itemName + itemQuantityToDisplay + shoppingListItem.itemUnit,
                             style = itemFontStyle,
                             modifier = modifier.padding(PADDING_X_SMALL)
                         )
+                        DragIcon()
                     }
                 }
             }
@@ -352,8 +384,17 @@ fun ItemCardsRearrange(
 }
 
 @Composable
+fun DragIcon() {
+    Icon(
+        imageVector = Icons.Filled.DragIndicator,
+        contentDescription = stringResource(R.string.drag_icon_content_description)
+    )
+}
+
+@Composable
 fun ItemCards(
     shoppingListItems: List<ShoppingItemEntity>,
+    itemPositions: List<ListOrderEntity>,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     modifier: Modifier
@@ -361,9 +402,17 @@ fun ItemCards(
     LazyColumn(
         state = rememberLazyListState()
     ) {
-        items(shoppingListItems) { item ->
+        val order = itemPositions.sortedBy {
+            it.itemPositionInList
+        }
 
-            var isItemChecked by mutableStateOf(item.isItemChecked)
+        items(order) { listOrder ->
+
+            val shoppingListItem = shoppingListItems.find { shoppingItem ->
+                shoppingItem.itemId == listOrder.itemId
+            }
+
+            var isItemChecked by mutableStateOf(shoppingListItem!!.isItemChecked)
 
             Card(
                 elevation = ELEVATION_SMALL,
@@ -374,16 +423,16 @@ fun ItemCards(
 
                     ItemCheckboxIconButton(
                         isItemChecked = isItemChecked, onCheckboxClicked = {
-                            onCheckboxClicked(item)
+                            onCheckboxClicked(shoppingListItem!!)
                             isItemChecked = !isItemChecked
                         }, modifier = modifier.padding(start = PADDING_X_SMALL)
                     )
                     Item(
-                        item = item,
+                        item = shoppingListItem!!,
                         modifier = modifier
                     )
                     DeleteItemIconButton(
-                        item = item,
+                        item = shoppingListItem,
                         onDeleteItemClicked = onDeleteItemClicked,
                         modifier = modifier.padding(end = PADDING_X_SMALL)
                     )

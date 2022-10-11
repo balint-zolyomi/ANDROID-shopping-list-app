@@ -18,6 +18,10 @@ class Repository @Inject constructor(
         dao.createItem(item = item)
     }
 
+    suspend fun createListOrder(listOrder: ListOrderEntity) {
+        dao.createListOrder(listOrder = listOrder)
+    }
+
     // READ
     val allGroupsWithLists: Flow<List<GroupWithList>> = dao.getGroupsWithLists()
 
@@ -27,6 +31,10 @@ class Repository @Inject constructor(
 
     fun getShoppingList(groupId: Long?): Flow<List<ShoppingItemEntity>> {
         return dao.getShoppingList(groupId)
+    }
+
+    fun getListOrder(groupId: Long?): Flow<List<ListOrderEntity>> {
+        return dao.getListOrder(groupId)
     }
 
         // Special
@@ -39,6 +47,10 @@ class Repository @Inject constructor(
         dao.updateItem(item = item)
     }
 
+    suspend fun updateListOrder(listOrder: List<ListOrderEntity>) {
+        dao.updateListOrder(listOrder = listOrder)
+    }
+
     // DELETE
     suspend fun deleteGroup(groupId: Long?) {
         dao.deleteGroup(groupId = groupId)
@@ -46,5 +58,13 @@ class Repository @Inject constructor(
 
     suspend fun deleteItem(itemId: Long?) {
         dao.deleteItem(itemId = itemId)
+    }
+
+    suspend fun deleteListOrder(groupId: Long?, itemId: Long?) {
+        dao.deleteListOrder(groupId = groupId, itemId = itemId)
+    }
+
+    suspend fun deleteAllListOrders(groupId: Long?) {
+        dao.deleteAllListOrders(groupId = groupId)
     }
 }

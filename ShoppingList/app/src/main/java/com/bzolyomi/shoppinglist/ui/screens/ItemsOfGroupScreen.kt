@@ -8,6 +8,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
+import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.*
@@ -30,6 +31,7 @@ fun ItemsOfGroupScreen(
 
     val shoppingGroup by mutableStateOf(sharedViewModel.selectedGroupWithList.group)
     val shoppingList by sharedViewModel.selectedShoppingList.collectAsState()
+    val listOrder by sharedViewModel.selectedListOrder.collectAsState()
 
     val itemName by sharedViewModel.itemName
     val itemQuantity by sharedViewModel.itemQuantity
@@ -38,6 +40,8 @@ fun ItemsOfGroupScreen(
     var isAddItem by remember { mutableStateOf(false) }
     var isRearrange by remember { mutableStateOf(false) }
 
+    var orderOfItemIds: List<ListOrderEntity> = mutableListOf()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -45,16 +49,24 @@ fun ItemsOfGroupScreen(
         ContentWithoutInput(
             shoppingGroup = shoppingGroup,
             shoppingList = shoppingList,
+            listOrder = listOrder,
             isRearrange = isRearrange,
             onDeleteGroupConfirmed = {
                 onDeleteGroupConfirmed()
                 sharedViewModel.deleteGroupAndItsItems()
             },
             onDeleteItemClicked = {
-                sharedViewModel.deleteItem(it)
+                sharedViewModel.deleteItem(
+                    itemId = it,
+                    groupId = shoppingGroup.groupId
+                )
             },
             onCheckboxClicked = {
                 sharedViewModel.updateItemChecked(it)
+            },
+            onItemsOrderChange = {
+                orderOfItemIds = it
+//                sharedViewModel.updateListOrder(it)
             },
             modifier = Modifier
         )
@@ -66,7 +78,8 @@ fun ItemsOfGroupScreen(
                 itemQuantity = itemQuantity,
                 itemUnit = itemUnit,
                 onSubmitAddItemButtonClicked = {
-                    scope.launch { sharedViewModel.createItems(groupId = shoppingGroup.groupId) }
+                    sharedViewModel.setGroupName(shoppingGroup.groupName)
+                    scope.launch { sharedViewModel.createWithCoroutines() }
                     isAddItem = false
                 },
                 onCancelButtonClicked = {
@@ -94,7 +107,12 @@ fun ItemsOfGroupScreen(
                     }
                 }
                 Button(
-                    onClick = { isRearrange = !isRearrange },
+                    onClick = {
+                        if (isRearrange) {
+                            sharedViewModel.updateListOrder(orderOfItemIds)
+                        }
+                        isRearrange = !isRearrange
+                    },
                     modifier = Modifier.padding(
                         start = PADDING_X_LARGE,
                         top = PADDING_MEDIUM,
@@ -116,10 +134,12 @@ fun ItemsOfGroupScreen(
 fun ContentWithoutInput(
     shoppingGroup: ShoppingGroupEntity,
     shoppingList: List<ShoppingItemEntity>,
+    listOrder: List<ListOrderEntity>,
     isRearrange: Boolean,
     onDeleteGroupConfirmed: () -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
+    onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
     modifier: Modifier
 ) {
     var isAlertDialogOpen by remember { mutableStateOf(false) }
@@ -132,9 +152,11 @@ fun ContentWithoutInput(
         )
         ItemsList(
             shoppingListItems = shoppingList,
+            listOrder = listOrder,
             isRearrange = isRearrange,
             onDeleteItemClicked = onDeleteItemClicked,
             onCheckboxClicked = onCheckboxClicked,
+            onItemsOrderChange = onItemsOrderChange,
             modifier = modifier
         )
     }
@@ -154,9 +176,11 @@ fun ContentWithoutInput(
 @Composable
 fun ItemsList(
     shoppingListItems: List<ShoppingItemEntity>,
+    listOrder: List<ListOrderEntity>,
     isRearrange: Boolean,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
+    onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
     modifier: Modifier
 ) {
     Column(
@@ -166,11 +190,14 @@ fun ItemsList(
         if (isRearrange) {
             ItemCardsRearrange(
                 shoppingListItems = shoppingListItems,
+                itemPositions = listOrder,
+                onItemsOrderChange = onItemsOrderChange,
                 modifier = modifier
             )
         } else {
             ItemCards(
                 shoppingListItems = shoppingListItems,
+                itemPositions = listOrder,
                 onCheckboxClicked = onCheckboxClicked,
                 onDeleteItemClicked = onDeleteItemClicked,
                 modifier = modifier

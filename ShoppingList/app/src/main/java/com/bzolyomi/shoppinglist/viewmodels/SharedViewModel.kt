@@ -3,10 +3,7 @@ package com.bzolyomi.shoppinglist.viewmodels
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bzolyomi.shoppinglist.data.GroupWithList
-import com.bzolyomi.shoppinglist.data.Repository
-import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
-import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
+import com.bzolyomi.shoppinglist.data.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +14,7 @@ import javax.inject.Inject
 class SharedViewModel
 @Inject constructor(
     private val repo: Repository
-)    : ViewModel() {
+) : ViewModel() {
 
     private var _groupName by mutableStateOf("")
     val groupName: State<String>
@@ -39,14 +36,21 @@ class SharedViewModel
     val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
         get() = _shoppingGroupsWithLists
 
-    var selectedGroupWithList by mutableStateOf(GroupWithList(
-        ShoppingGroupEntity(null, ""),
-        emptyList()
-    ))
+    var selectedGroupWithList by mutableStateOf(
+        GroupWithList(
+            ShoppingGroupEntity(null, ""),
+            emptyList(),
+            emptyList()
+        )
+    )
 
     private val _selectedShoppingList = MutableStateFlow<List<ShoppingItemEntity>>(emptyList())
     val selectedShoppingList: StateFlow<List<ShoppingItemEntity>>
         get() = _selectedShoppingList
+
+    private val _selectedListOrder = MutableStateFlow<List<ListOrderEntity>>(emptyList())
+    val selectedListOrder: StateFlow<List<ListOrderEntity>>
+        get() = _selectedListOrder
 
     private var items: MutableList<ShoppingItemEntity> = mutableListOf()
 
@@ -94,10 +98,11 @@ class SharedViewModel
 
     // COROUTINES and their functions
     // READ
-    suspend fun getSelectedGroupWithListCoroutine(groupId: String): GroupWithList = coroutineScope {
-        val groupWithList = async { getSelectedGroupWithList(groupId = groupId) }
-        groupWithList.await()
-    }
+    suspend fun getSelectedGroupWithListCoroutine(groupId: String): GroupWithList =
+        coroutineScope {
+            val groupWithList = async { getSelectedGroupWithList(groupId = groupId) }
+            groupWithList.await()
+        }
 
     private suspend fun getSelectedGroupWithList(groupId: String): GroupWithList {
         val id = groupId.toLong()
@@ -109,6 +114,15 @@ class SharedViewModel
         viewModelScope.launch {
             repo.getShoppingList(id).collect {
                 _selectedShoppingList.value = it
+            }
+        }
+    }
+
+    fun getSelectedListOrderCoroutine(groupId: String?) {
+        val id = groupId?.toLong()
+        viewModelScope.launch {
+            repo.getListOrder(id).collect {
+                _selectedListOrder.value = it
             }
         }
     }
@@ -136,6 +150,8 @@ class SharedViewModel
         }
         flushItemGUI()
         items.clear()
+
+        updateListOrderCoroutine(groupId = groupId)
     }
 
     private suspend fun createGroupCoroutine() = coroutineScope {
@@ -144,7 +160,35 @@ class SharedViewModel
     }
 
     private suspend fun createGroup() {
-        repo.createGroup(ShoppingGroupEntity(groupId = null, groupName = _groupName.trim()))
+        repo.createGroup(
+            ShoppingGroupEntity(
+                groupId = null,
+                groupName = _groupName.trim()
+            )
+        )
+    }
+
+    private suspend fun updateListOrderCoroutine(groupId: Long?) = coroutineScope {
+        selectedGroupWithList = getSelectedGroupWithListCoroutine(groupId = groupId.toString())
+        val deleteDone = async {
+            deleteAllListOrdersAsync(groupId = selectedGroupWithList.group.groupId)
+        }
+        deleteDone.await()
+        val createListOrder = async { updateListOrder() }
+        createListOrder.await()
+    }
+
+    private suspend fun updateListOrder() {
+        for ((itemPosition, item) in selectedGroupWithList.shoppingList.withIndex()){
+            repo.createListOrder(
+                ListOrderEntity(
+                    listOrderId = null,
+                    groupId = selectedGroupWithList.group.groupId,
+                    itemId = item.itemId,
+                    itemPositionInList = itemPosition
+                    )
+            )
+        }
     }
 
     private suspend fun getGroupIdCoroutine(): Long? = coroutineScope {
@@ -178,15 +222,16 @@ class SharedViewModel
     }
 
     // DELETE
-    fun deleteGroup(groupId: Long?) {
+    fun deleteGroup(groupId: Long?) { // TODO: home>deleteAll doesn't delete items?
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteGroup(groupId = groupId)
         }
     }
 
-    fun deleteItem(itemId: Long?) {
+    fun deleteItem(itemId: Long?, groupId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteItem(itemId = itemId)
+            repo.deleteListOrder(groupId = groupId, itemId = itemId)
         }
     }
 
@@ -194,13 +239,25 @@ class SharedViewModel
         for (item in shoppingList) {
             viewModelScope.launch(Dispatchers.IO) {
                 repo.deleteItem(itemId = item.itemId)
+                repo.deleteListOrder(groupId = item.itemParentId, itemId = item.itemId)
             }
         }
+    }
+
+    private fun deleteAllListOrders(groupId: Long?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteAllListOrders(groupId = groupId)
+        }
+    }
+
+    private suspend fun deleteAllListOrdersAsync(groupId: Long?) {
+        repo.deleteAllListOrders(groupId = groupId)
     }
 
     fun deleteGroupAndItsItems() {
         deleteItems(shoppingList = selectedGroupWithList.shoppingList)
         deleteGroup(groupId = selectedGroupWithList.group.groupId)
+        deleteAllListOrders(groupId = selectedGroupWithList.group.groupId)
     }
 
     // UPDATE
@@ -211,57 +268,14 @@ class SharedViewModel
             repo.updateItem(item = shoppingListItem)
         }
     }
+
+    fun updateListOrder(orderOfItemIds: List<ListOrderEntity>) {
+//        TODO: maybe not list, just items with for?
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.updateListOrder(
+                listOrder = orderOfItemIds
+            )
+        }
+    }
 }
-
-/* --- TODO: REARRANGE
-    fun rearrangeItems(
-        shoppingListItems: List<ShoppingItemEntity>,
-        yPositionOfItems: MutableMap<Int, Float>
-    ) {
-        var rearrangedMutableList: MutableList<ShoppingItemEntity> = mutableListOf()
-        for (item in shoppingListItems) {
-            rearrangedMutableList.add(item)
-        }
-
-        for (itemIndex in 0..shoppingListItems.size - 2) {
-            if (yPositionOfItems[itemIndex]!! > yPositionOfItems[itemIndex + 1]!!) {
-                isRearranging = true
-                *//*
-                // Create new, rearranged list (switch items)
-                rearrangedMutableList[itemIndex + 1] = shoppingListItems[itemIndex]
-                rearrangedMutableList[itemIndex] = shoppingListItems[itemIndex + 1]
-
-                // Convert back to list
-                val rearrangedList: List<ShoppingListEntity> = rearrangedMutableList
-
-                // Don't forget groupId
-                retrievedGroupId = rearrangedList[0].groupId
-
-                // Delete all previous items of list in database
-                deleteItems(shoppingListItems)
-
-                // Create all items of new list
-                items.clear()
-                items = rearrangedMutableList
-                createItems()
-                *//*
-
-                // Save item
-                val savedItem: ShoppingItemEntity = shoppingListItems[itemIndex]
-                currentGroupId = savedItem.itemParentId
-
-                // Delete item
-                deleteItem(shoppingListItems[itemIndex].itemId)
-
-                // Add item
-                items.clear()
-                itemName = savedItem.itemName
-                itemQuantity = savedItem.itemQuantity.toString()
-                itemUnit = savedItem.itemUnit
-                createItemsAndClearCaches()
-            }
-        }
-
-    }*/
-
-

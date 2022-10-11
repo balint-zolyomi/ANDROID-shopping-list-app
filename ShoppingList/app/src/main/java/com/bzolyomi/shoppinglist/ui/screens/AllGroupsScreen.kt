@@ -64,7 +64,8 @@ fun AllGroupsScreen(
                     if (shoppingGroupWithList != null) {
                         GroupAndItemsCard(
                             titleGroupName = shoppingGroupWithList.group.groupName,
-                            shoppingList = shoppingGroupWithList.shoppingList,
+                            shoppingList = shoppingGroupWithList.shoppingList ,
+                            listOrder = shoppingGroupWithList.listOrder,
                             onOpenGroupIconClicked = {
                                 onOpenGroupIconClicked(shoppingGroupWithList.group.groupId)
                             },
