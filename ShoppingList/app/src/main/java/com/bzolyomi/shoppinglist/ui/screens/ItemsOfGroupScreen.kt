@@ -77,19 +77,21 @@ fun ItemsOfGroupScreen(
             )
         } else {
             Row {
-                Button(
-                    onClick = { isAddItem = true },
-                    modifier = Modifier.padding(
-                        start = PADDING_X_LARGE,
-                        top = PADDING_MEDIUM,
-                        end = PADDING_MEDIUM,
-                        bottom = PADDING_MEDIUM
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.primary
-                    )
-                ) {
-                    Text(text = stringResource(R.string.add_item_button))
+                if (!isRearrange) {
+                    Button(
+                        onClick = { isAddItem = true },
+                        modifier = Modifier.padding(
+                            start = PADDING_X_LARGE,
+                            top = PADDING_MEDIUM,
+                            end = PADDING_MEDIUM,
+                            bottom = PADDING_MEDIUM
+                        ),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = MaterialTheme.colors.primary
+                        )
+                    ) {
+                        Text(text = stringResource(R.string.add_item_button))
+                    }
                 }
                 Button(
                     onClick = { isRearrange = !isRearrange },

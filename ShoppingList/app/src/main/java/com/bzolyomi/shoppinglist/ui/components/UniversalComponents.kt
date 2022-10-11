@@ -7,6 +7,8 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -19,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -256,11 +259,14 @@ fun ItemCardsRearrange(
         listOfShoppingItemIds.value = listOfShoppingItemIds.value.toMutableList().apply {
             add(to.index, removeAt(from.index))
         }
+        Log.d("balint-debug", " \n${listOfShoppingItemIds.toString()}")
     })
+
+    Log.d("balint-debug", " \n${listOfShoppingItemIds.toString()}")
 
     LazyColumn(
         state = state.listState,
-        modifier = Modifier
+        modifier = modifier
             .reorderable(state = state)
             .detectReorderAfterLongPress(state = state)
     ) {
@@ -283,16 +289,32 @@ fun ItemCardsRearrange(
             val isItemChecked by mutableStateOf(shoppingListItem.isItemChecked)
 
             ReorderableItem(reorderableState = state, key = item) { isDragging ->
-                val elevation = animateDpAsState(targetValue = if (isDragging) 16.dp else 0.dp)
+                val elevation = animateDpAsState(
+                    targetValue =
+                    if (isDragging) 16.dp else ELEVATION_SMALL
+                )
+                val padding = animateDpAsState(
+                    targetValue =
+                    if (isDragging) PADDING_MEDIUM else PADDING_SMALL
+                )
+                val border = animateDpAsState(
+                    targetValue =
+                    if (isDragging) 2.dp else 0.dp
+                )
+                val borderColor = animateColorAsState(targetValue =
+                    if (isDragging) MaterialTheme.colors.primary else MaterialTheme.colors.surface
+                )
 
                 Card(
                     elevation = elevation.value,
                     shape = MaterialTheme.shapes.large,
-                    modifier = modifier.padding(PADDING_SMALL)
+                    modifier = modifier
+                        .padding(PADDING_SMALL),
+                    border = BorderStroke(border.value, borderColor.value)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = modifier.padding(PADDING_SMALL)
+                        modifier = modifier.padding(padding.value)
                     ) {
 
                         val itemFontStyle = if (isItemChecked) {
