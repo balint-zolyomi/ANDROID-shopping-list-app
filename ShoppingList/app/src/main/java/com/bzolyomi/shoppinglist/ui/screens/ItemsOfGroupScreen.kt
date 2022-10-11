@@ -1,25 +1,17 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DragIndicator
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
-import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import kotlinx.coroutines.launch
@@ -44,6 +36,7 @@ fun ItemsOfGroupScreen(
     val itemUnit by sharedViewModel.itemUnit
 
     var isAddItem by remember { mutableStateOf(false) }
+    var isRearrange by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -52,6 +45,7 @@ fun ItemsOfGroupScreen(
         ContentWithoutInput(
             shoppingGroup = shoppingGroup,
             shoppingList = shoppingList,
+            isRearrange = isRearrange,
             onDeleteGroupConfirmed = {
                 onDeleteGroupConfirmed()
                 sharedViewModel.deleteGroupAndItsItems()
@@ -97,6 +91,20 @@ fun ItemsOfGroupScreen(
                 ) {
                     Text(text = stringResource(R.string.add_item_button))
                 }
+                Button(
+                    onClick = { isRearrange = !isRearrange },
+                    modifier = Modifier.padding(
+                        start = PADDING_X_LARGE,
+                        top = PADDING_MEDIUM,
+                        end = PADDING_MEDIUM,
+                        bottom = PADDING_MEDIUM
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colors.primary
+                    )
+                ) {
+                    if (!isRearrange) Text(text = "Rearrange") else Text(text = "Rearrange done")
+                }
             }
         }
     }
@@ -106,6 +114,7 @@ fun ItemsOfGroupScreen(
 fun ContentWithoutInput(
     shoppingGroup: ShoppingGroupEntity,
     shoppingList: List<ShoppingItemEntity>,
+    isRearrange: Boolean,
     onDeleteGroupConfirmed: () -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
@@ -121,6 +130,7 @@ fun ContentWithoutInput(
         )
         ItemsList(
             shoppingListItems = shoppingList,
+            isRearrange = isRearrange,
             onDeleteItemClicked = onDeleteItemClicked,
             onCheckboxClicked = onCheckboxClicked,
             modifier = modifier
@@ -142,6 +152,7 @@ fun ContentWithoutInput(
 @Composable
 fun ItemsList(
     shoppingListItems: List<ShoppingItemEntity>,
+    isRearrange: Boolean,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     modifier: Modifier
@@ -150,12 +161,19 @@ fun ItemsList(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        ItemCards(
-            shoppingListItems = shoppingListItems,
-            onCheckboxClicked = onCheckboxClicked,
-            onDeleteItemClicked = onDeleteItemClicked,
-            modifier = modifier
-        )
+        if (isRearrange) {
+            ItemCardsRearrange(
+                shoppingListItems = shoppingListItems,
+                modifier = modifier
+            )
+        } else {
+            ItemCards(
+                shoppingListItems = shoppingListItems,
+                onCheckboxClicked = onCheckboxClicked,
+                onDeleteItemClicked = onDeleteItemClicked,
+                modifier = modifier
+            )
+        }
     }
 }
 

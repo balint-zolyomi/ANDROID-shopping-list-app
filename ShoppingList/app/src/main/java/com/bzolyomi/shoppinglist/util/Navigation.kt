@@ -52,7 +52,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             exitTransition = {
                 slideOutHorizontally(
                     animationSpec = tween(INTRO_SCREEN_EXIT_DURATION),
-                    targetOffsetX = { -it }
+                    targetOffsetX = { -it / 2 }
                 )
             }
         ) {
@@ -100,7 +100,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             exitTransition = {
                 slideOutHorizontally(
                     animationSpec = tween(ADD_SCREEN_EXIT_DURATION),
-                    targetOffsetX = { it }
+                    targetOffsetX = { it / 2 }
                 )
             }
         ) {
@@ -141,7 +141,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             exitTransition = {
                 slideOutHorizontally(
                     animationSpec = tween(GROUP_SCREEN_EXIT_DURATION),
-                    targetOffsetX = { it }
+                    targetOffsetX = { it / 2 }
                 )
             }
         ) { navBackStackEntry ->

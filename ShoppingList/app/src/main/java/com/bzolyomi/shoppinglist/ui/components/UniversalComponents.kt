@@ -1,6 +1,7 @@
 package com.bzolyomi.shoppinglist.ui.components
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
@@ -9,6 +10,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -62,17 +64,18 @@ fun SubmitAddItemButton(onSubmitAddItemButtonClicked: () -> Unit) {
     Button(
         onClick = {
             onSubmitAddItemButtonClicked()
-        },
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+        }, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     ) {
         Text(text = stringResource(R.string.submit_button_text))
     }
 }
 
 fun showItemAddedToast(context: Context) {
-    Toast
-        .makeText(context, context.getString(R.string.toast_message_item_added), Toast.LENGTH_SHORT)
-        .show()
+    Toast.makeText(
+        context,
+        context.getString(R.string.toast_message_item_added),
+        Toast.LENGTH_SHORT
+    ).show()
 }
 
 @Composable
@@ -109,8 +112,7 @@ fun GroupAndItemsCard(
                     titleGroupName = titleGroupName, modifier = modifier.weight(1f)
                 )
                 DoneRatio(
-                    shoppingList = shoppingList,
-                    modifier = modifier.padding(end = PADDING_SMALL)
+                    shoppingList = shoppingList, modifier = modifier.padding(end = PADDING_SMALL)
                 )
             }
             CardContent(
@@ -125,8 +127,7 @@ fun GroupAndItemsCard(
 
 @Composable
 private fun DoneRatio(
-    shoppingList: List<ShoppingItemEntity>,
-    modifier: Modifier
+    shoppingList: List<ShoppingItemEntity>, modifier: Modifier
 ) {
     var itemsTotal: Int = 0
     var itemsDone: Int = 0
@@ -137,9 +138,7 @@ private fun DoneRatio(
     }
 
     Text(
-        text = "$itemsDone/$itemsTotal",
-        modifier = modifier,
-        style = MaterialTheme.typography.body1
+        text = "$itemsDone/$itemsTotal", modifier = modifier, style = MaterialTheme.typography.body1
     )
 }
 
@@ -168,11 +167,9 @@ private fun ColumnScope.CardContent(
         ) {
             IconButton(onClick = onOpenGroupIconClicked) {
                 Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = stringResource(
+                    imageVector = Icons.Filled.Search, contentDescription = stringResource(
                         R.string.content_description_go_to_items_of_group_screen_icon
-                    ),
-                    tint = MaterialTheme.colors.primary
+                    ), tint = MaterialTheme.colors.primary
                 )
             }
             Column {
@@ -191,15 +188,12 @@ private fun ColumnScope.CardContent(
                     val itemQuantityToDisplay = if (item.itemQuantity == null) {
                         ""
                     } else {
-                        " -- " +
-                                item.itemQuantity.toString()
-                                    .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
+                        " -- " + item.itemQuantity.toString().dropLastWhile { it == '0' }
+                            .dropLastWhile { it == '.' } + " "
                     }
 
                     Text(
-                        text = item.itemName
-                                + itemQuantityToDisplay
-                                + item.itemUnit,
+                        text = item.itemName + itemQuantityToDisplay + item.itemUnit,
                         style = itemFontStyle,
                         modifier = modifier.padding(vertical = PADDING_X_SMALL)
                     )
@@ -212,9 +206,7 @@ private fun ColumnScope.CardContent(
 
 @Composable
 fun GroupCard(
-    titleGroupName: String,
-    onDeleteGroupClicked: () -> Unit,
-    modifier: Modifier
+    titleGroupName: String, onDeleteGroupClicked: () -> Unit, modifier: Modifier
 ) {
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
 
@@ -235,14 +227,11 @@ fun GroupCard(
                 modifier = modifier.padding(horizontal = PADDING_LARGE, vertical = PADDING_SMALL)
             )
         }
-        IconButton(
-            onClick = onDeleteGroupClicked,
-            modifier = modifier.constrainAs(button) {
-                start.linkTo(card.end)
-                top.linkTo(card.top)
-                bottom.linkTo(card.bottom)
-            }
-        ) {
+        IconButton(onClick = onDeleteGroupClicked, modifier = modifier.constrainAs(button) {
+            start.linkTo(card.end)
+            top.linkTo(card.top)
+            bottom.linkTo(card.bottom)
+        }) {
             Icon(
                 Icons.Filled.Delete,
                 tint = MaterialTheme.colors.primary,
@@ -253,19 +242,16 @@ fun GroupCard(
 }
 
 @Composable
-fun ItemCards(
+fun ItemCardsRearrange(
     shoppingListItems: List<ShoppingItemEntity>,
-    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    onDeleteItemClicked: (itemId: Long?) -> Unit,
     modifier: Modifier
 ) {
     val listOfShoppingItemIds = remember {
-        mutableStateOf(
-            List(shoppingListItems.size) {
-                shoppingListItems[it].itemId.toString()
-            }
-        )
+        mutableStateOf(List(shoppingListItems.size) {
+            shoppingListItems[it].itemId.toString()
+        })
     }
+
     val state = rememberReorderableLazyListState(onMove = { from, to ->
         listOfShoppingItemIds.value = listOfShoppingItemIds.value.toMutableList().apply {
             add(to.index, removeAt(from.index))
@@ -280,19 +266,21 @@ fun ItemCards(
     ) {
         items(listOfShoppingItemIds.value, { it }) { item ->
             val itemId = item.toLong()
-            var shoppingListItem = ShoppingItemEntity(
-                itemId = null,
-                itemParentId = null,
-                itemName = "",
-                itemQuantity = null,
-                itemUnit = "",
-                isItemChecked = true
+            var shoppingListItem by mutableStateOf(
+                ShoppingItemEntity(
+                    itemId = null,
+                    itemParentId = null,
+                    itemName = "",
+                    itemQuantity = null,
+                    itemUnit = "",
+                    isItemChecked = true
+                )
             )
             for (i in shoppingListItems) {
                 if (i.itemId == itemId) shoppingListItem = i
             }
 
-            var isItemChecked by mutableStateOf(shoppingListItem.isItemChecked)
+            val isItemChecked by mutableStateOf(shoppingListItem.isItemChecked)
 
             ReorderableItem(reorderableState = state, key = item) { isDragging ->
                 val elevation = animateDpAsState(targetValue = if (isDragging) 16.dp else 0.dp)
@@ -300,19 +288,12 @@ fun ItemCards(
                 Card(
                     elevation = elevation.value,
                     shape = MaterialTheme.shapes.large,
-                    modifier = modifier
-                        .padding(PADDING_SMALL)
+                    modifier = modifier.padding(PADDING_SMALL)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-
-                        ItemCheckboxIconButton(
-                            isItemChecked = isItemChecked,
-                            onCheckboxClicked = {
-                                onCheckboxClicked(shoppingListItem)
-                                isItemChecked = !isItemChecked
-                            },
-                            modifier = modifier.padding(start = PADDING_X_SMALL)
-                        )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = modifier.padding(PADDING_SMALL)
+                    ) {
 
                         val itemFontStyle = if (isItemChecked) {
                             TextStyle(
@@ -333,22 +314,13 @@ fun ItemCards(
                         val itemQuantityToDisplay = if (shoppingListItem.itemQuantity == null) {
                             ""
                         } else {
-                            " -- " +
-                                    shoppingListItem.itemQuantity.toString()
-                                        .dropLastWhile { it == '0' }
-                                        .dropLastWhile { it == '.' } + " "
+                            " -- " + shoppingListItem.itemQuantity.toString()
+                                .dropLastWhile { it == '0' }.dropLastWhile { it == '.' } + " "
                         }
                         Text(
-                            text = shoppingListItem.itemName
-                                    + itemQuantityToDisplay
-                                    + shoppingListItem.itemUnit,
+                            text = shoppingListItem.itemName + itemQuantityToDisplay + shoppingListItem.itemUnit,
                             style = itemFontStyle,
                             modifier = modifier.padding(PADDING_X_SMALL)
-                        )
-                        DeleteItemIconButton(
-                            item = shoppingListItem,
-                            onDeleteItemClicked = onDeleteItemClicked,
-                            modifier = modifier.padding(end = PADDING_X_SMALL)
                         )
                     }
                 }
@@ -357,24 +329,63 @@ fun ItemCards(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun DeleteItemIconButton(
-    item: ShoppingItemEntity,
+fun ItemCards(
+    shoppingListItems: List<ShoppingItemEntity>,
+    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onDeleteItemClicked: (itemId: Long?) -> Unit,
     modifier: Modifier
 ) {
-    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
-        IconButton(
-            onClick = { onDeleteItemClicked(item.itemId) },
-            modifier = modifier.size(SIZE_ICONS_OFFICIAL)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Close,
-                contentDescription = stringResource(R.string.delete_item_icon)
-            )
+    LazyColumn(
+        state = rememberLazyListState()
+    ) {
+        items(shoppingListItems) { item ->
+
+            var isItemChecked by mutableStateOf(item.isItemChecked)
+
+            Card(
+                elevation = ELEVATION_SMALL,
+                shape = MaterialTheme.shapes.large,
+                modifier = modifier.padding(PADDING_SMALL)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+
+                    ItemCheckboxIconButton(
+                        isItemChecked = isItemChecked, onCheckboxClicked = {
+                            onCheckboxClicked(item)
+                            isItemChecked = !isItemChecked
+                        }, modifier = modifier.padding(start = PADDING_X_SMALL)
+                    )
+                    Item(
+                        item = item,
+                        modifier = modifier
+                    )
+                    DeleteItemIconButton(
+                        item = item,
+                        onDeleteItemClicked = onDeleteItemClicked,
+                        modifier = modifier.padding(end = PADDING_X_SMALL)
+                    )
+                }
+            }
         }
     }
+}
+
+@Composable
+private fun Item(
+    item: ShoppingItemEntity,
+    modifier: Modifier
+) {
+    val itemQuantityToDisplay = if (item.itemQuantity == null) {
+        ""
+    } else {
+        " -- " + item.itemQuantity.toString().dropLastWhile { it == '0' }
+            .dropLastWhile { it == '.' } + " "
+    }
+    Text(
+        text = item.itemName + itemQuantityToDisplay + item.itemUnit,
+        modifier = modifier.padding(PADDING_X_SMALL)
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -386,13 +397,11 @@ private fun ItemCheckboxIconButton(
 ) {
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
         IconButton(
-            onClick = onCheckboxClicked, modifier = modifier
-                .size(SIZE_ICONS_OFFICIAL)
+            onClick = onCheckboxClicked, modifier = modifier.size(SIZE_ICONS_OFFICIAL)
         ) {
             if (isItemChecked) {
                 Icon(
-                    imageVector = Icons.Filled.CheckBox,
-                    contentDescription = stringResource(
+                    imageVector = Icons.Filled.CheckBox, contentDescription = stringResource(
                         R.string.content_description_checkbox_done_item
                     )
                 )
@@ -408,15 +417,30 @@ private fun ItemCheckboxIconButton(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun DeleteItemIconButton(
+    item: ShoppingItemEntity, onDeleteItemClicked: (itemId: Long?) -> Unit, modifier: Modifier
+) {
+    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+        IconButton(
+            onClick = { onDeleteItemClicked(item.itemId) },
+            modifier = modifier.size(SIZE_ICONS_OFFICIAL)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = stringResource(R.string.delete_item_icon)
+            )
+        }
+    }
+}
+
 @Composable
 private fun ExpandIcon(
-    isExpanded: Boolean,
-    onExpandIconClicked: () -> Unit,
-    modifier: Modifier
+    isExpanded: Boolean, onExpandIconClicked: () -> Unit, modifier: Modifier
 ) {
     val expandIconAngle: Float by animateFloatAsState(
-        targetValue =
-        if (isExpanded) EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
+        targetValue = if (isExpanded) EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
         else EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
     )
 
@@ -483,19 +507,16 @@ fun ShowAlertDialog(
             confirmButton = {
                 Button(
                     onClick = onConfirmClicked,
-                    colors = ButtonDefaults
-                        .buttonColors(backgroundColor = MaterialTheme.colors.primary)
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
                 ) {
                     Text(text = stringResource(R.string.confirm_button))
                 }
             },
             dismissButton = {
                 OutlinedButton(
-                    onClick = onDismissClicked,
-                    colors = ButtonDefaults
-                        .outlinedButtonColors(
-                            contentColor = MaterialTheme.colors.primary
-                        )
+                    onClick = onDismissClicked, colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colors.primary
+                    )
                 ) {
                     Text(text = stringResource(R.string.cancel_button))
                 }
