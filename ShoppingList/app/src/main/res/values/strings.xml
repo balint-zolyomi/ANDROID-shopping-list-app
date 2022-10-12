@@ -11,9 +11,9 @@
     <string name="delete_item_icon">Delete item</string>
     <string name="all_groups_screen_appbar_title">Shopping groups</string>
     <string name="confirm_button">Confirm</string>
-    <string name="delete_all_alert_dialog_title">Warning</string>
+    <string name="delete_alert_dialog_title">Warning</string>
     <string name="delete_all_alert_dialog_message">Delete all shopping groups? This action cannot be undone.</string>
-    <string name="delete_all_appbar_dropdown_menu_option">Delete all</string>
+    <string name="delete_all_appbar_dropdown_menu_option_delete_all">Delete all</string>
     <string name="error_message_input_field">Required field, also cannot start with a space.</string>
     <string name="error_message_quantity_input_field">Must be a number greater than zero, or can be left empty.</string>
     <string name="delete_shopping_group_and_its_items_alert_dialog_message">Delete shopping group and all its items? This action cannot be undone.</string>
@@ -26,13 +26,18 @@
     <string name="content_description_delete_group_icon">Delete group icon</string>
     <string name="content_description_checkbox_done_item">Checkbox for item done</string>
     <string name="content_description_checkbox_item_not_done">Checkbox for item not done</string>
-    <string name="conten_description_expand_group_icon">Expand group icon</string>
+    <string name="content_description_expand_group_icon">Expand group icon</string>
     <string name="content_description_erase_input_field">Erase input field icon</string>
     <string name="content_description_application_logo">Application logo</string>
     <string name="button_rearrange_items">Rearrange items</string>
     <string name="button_rearrange_items_done">Rearrange done</string>
     <string name="drag_icon_content_description">Press and hold to reorder item.</string>
     <string name="fab_add_item">Floating action button: add item</string>
-    <string name="topappbar_title_add_group_and_items">Add group and item(s)</string>
-    <string name="topappbar_title_add_items">Add item(s) to group</string>
+    <string name="top_appbar_title_add_group_and_items">Add group and/or item(s)</string>
+    <string name="top_appbar_title_add_items">Add item to group</string>
+    <string name="delete_all_appbar_dropdown_menu_option_delete_group">Delete group</string>
+    <string name="delete_group_alert_dialog_message">Delete shopping group and its item(s)? This action cannot be undone.</string>
+    <string name="content_description_toggle_on_reorder_items_icon">Toggle reorder items on icon</string>
+    <string name="content_description_toggle_off_reorder_icon">Toggle reorder items off icon</string>
+    <string name="toast_message_reorder_hint">Long press item and drag to reorder</string>
 </resources>

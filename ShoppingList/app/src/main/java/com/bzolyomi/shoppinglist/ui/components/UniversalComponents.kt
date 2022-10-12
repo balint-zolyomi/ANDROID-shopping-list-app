@@ -1,7 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.components
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
@@ -539,7 +538,7 @@ private fun ExpandIcon(
                 Icon(
                     imageVector = Icons.Filled.ExpandMore,
                     contentDescription = stringResource(
-                        R.string.conten_description_expand_group_icon
+                        R.string.content_description_expand_group_icon
                     ),
                     tint = MaterialTheme.colors.primary,
                     modifier = modifier.rotate(expandIconAngle)

@@ -6,12 +6,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ChangeCircle
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.outlined.ChangeCircle
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
-import com.bzolyomi.shoppinglist.data.GroupWithList
 import com.bzolyomi.shoppinglist.ui.components.GroupAndItemsCard
 import com.bzolyomi.shoppinglist.ui.components.ShowAlertDialog
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
@@ -34,13 +35,25 @@ fun AllGroupsScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            AppBar(onDeleteAllClicked = {
-                for (groupWithList in shoppingGroupsWithLists) {
-                    sharedViewModel.deleteGroup(groupId = groupWithList.group.groupId)
-                    sharedViewModel.deleteItems(shoppingList = groupWithList.shoppingList)
-                    sharedViewModel.deleteAllListOrders(groupId = groupWithList.group.groupId)
-                }
-            })
+            AppBar(
+                appBarTitle = stringResource(R.string.all_groups_screen_appbar_title),
+                isShowingReorderIcon = false,
+                isReordering = false,
+                alertDialogMessage = stringResource(
+                    R.string.delete_all_alert_dialog_message
+                ),
+                appBarDropDownTitle = stringResource(
+                    R.string.delete_all_appbar_dropdown_menu_option_delete_all
+                ),
+                onDeleteClicked = {
+                    for (groupWithList in shoppingGroupsWithLists) {
+                        sharedViewModel.deleteGroup(groupId = groupWithList.group.groupId)
+                        sharedViewModel.deleteItems(shoppingList = groupWithList.shoppingList)
+                        sharedViewModel.deleteAllListOrders(groupId = groupWithList.group.groupId)
+                    }
+                },
+                onReorderButtonToggled = {}
+            )
         },
         modifier = modifier
             .fillMaxSize(),
@@ -66,7 +79,7 @@ fun AllGroupsScreen(
                     if (shoppingGroupWithList != null) {
                         GroupAndItemsCard(
                             titleGroupName = shoppingGroupWithList.group.groupName,
-                            shoppingList = shoppingGroupWithList.shoppingList ,
+                            shoppingList = shoppingGroupWithList.shoppingList,
                             listOrder = shoppingGroupWithList.listOrder,
                             onOpenGroupIconClicked = {
                                 onOpenGroupIconClicked(shoppingGroupWithList.group.groupId)
@@ -94,31 +107,76 @@ fun AllGroupsScreen(
 
 @Composable
 fun AppBar(
-    onDeleteAllClicked: () -> Unit
+    appBarTitle: String,
+    isShowingReorderIcon: Boolean,
+    isReordering: Boolean,
+    appBarDropDownTitle: String,
+    alertDialogMessage: String,
+    onDeleteClicked: () -> Unit,
+    onReorderButtonToggled: () -> Unit
 ) {
     TopAppBar(
         title = {
             Text(
-                text = stringResource(R.string.all_groups_screen_appbar_title),
+                text = appBarTitle,
                 color = MaterialTheme.colors.onBackground
             )
         },
         actions = {
-            AppBarActions(onConfirmClicked = onDeleteAllClicked)
+            if (isShowingReorderIcon) {
+                AppBarActionReorder(
+                    isReordering = isReordering,
+                    onReorderButtonToggled = onReorderButtonToggled
+                )
+            }
+            AppBarActionDropdown(
+                appBarDropDownTitle = appBarDropDownTitle,
+                alertDialogMessage = alertDialogMessage,
+                onConfirmClicked = onDeleteClicked
+            )
         },
         backgroundColor = MaterialTheme.colors.background
     )
 }
 
 @Composable
-fun AppBarActions(
+fun AppBarActionReorder(
+    isReordering: Boolean,
+    onReorderButtonToggled: () -> Unit
+) {
+
+    IconButton(onClick = onReorderButtonToggled) {
+        if (!isReordering) {
+            Icon(
+                imageVector = Icons.Outlined.ChangeCircle,
+                contentDescription = stringResource(
+                    R.string.content_description_toggle_on_reorder_items_icon
+                ),
+                tint = MaterialTheme.colors.onBackground
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Filled.ChangeCircle,
+                contentDescription = stringResource(
+                    R.string.content_description_toggle_off_reorder_icon
+                ),
+                tint = MaterialTheme.colors.onBackground
+            )
+        }
+    }
+}
+
+@Composable
+fun AppBarActionDropdown(
+    appBarDropDownTitle: String,
+    alertDialogMessage: String,
     onConfirmClicked: () -> Unit
 ) {
     var isAlertDialogOpen by remember { mutableStateOf(false) }
 
     ShowAlertDialog(
-        title = stringResource(R.string.delete_all_alert_dialog_title),
-        message = stringResource(R.string.delete_all_alert_dialog_message),
+        title = stringResource(R.string.delete_alert_dialog_title),
+        message = alertDialogMessage,
         isOpen = isAlertDialogOpen,
         onConfirmClicked = {
             onConfirmClicked()
@@ -127,12 +185,16 @@ fun AppBarActions(
         onDismissClicked = { isAlertDialogOpen = false }
     )
 
-    DeleteAllAction(onDeleteAllClicked = { isAlertDialogOpen = true })
+    DeleteAppBarAction(
+        appBarDropDownTitle = appBarDropDownTitle,
+        onDeleteClicked = { isAlertDialogOpen = true }
+    )
 }
 
 @Composable
-fun DeleteAllAction(
-    onDeleteAllClicked: () -> Unit
+fun DeleteAppBarAction(
+    appBarDropDownTitle: String,
+    onDeleteClicked: () -> Unit
 ) {
     var isDropdownMenuOpen by remember { mutableStateOf(false) }
 
@@ -148,9 +210,9 @@ fun DeleteAllAction(
         ) {
             DropdownMenuItem(onClick = {
                 isDropdownMenuOpen = false
-                onDeleteAllClicked()
+                onDeleteClicked()
             }) {
-                Text(text = stringResource(R.string.delete_all_appbar_dropdown_menu_option))
+                Text(text = appBarDropDownTitle)
             }
         }
     }

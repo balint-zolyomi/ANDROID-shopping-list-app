@@ -89,11 +89,11 @@ fun AddAllScreen(
             TopAppBar(
                 title = {
                     if (groupId == -1L) {
-                        Text(text = stringResource(R.string.topappbar_title_add_group_and_items))
+                        Text(text = stringResource(R.string.top_appbar_title_add_group_and_items))
                     } else {
                         Text(
                             text = stringResource(
-                                R.string.topappbar_title_add_items
+                                R.string.top_appbar_title_add_items
                             )
                         )
                     }
