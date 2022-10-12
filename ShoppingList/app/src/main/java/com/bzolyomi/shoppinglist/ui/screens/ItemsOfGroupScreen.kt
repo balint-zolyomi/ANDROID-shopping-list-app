@@ -190,7 +190,7 @@ fun ItemsList(
         if (isRearrange) {
             ItemCardsRearrange(
                 shoppingListItems = shoppingListItems,
-                itemPositions = listOrder,
+                listOrderById = listOrder,
                 onItemsOrderChange = onItemsOrderChange,
                 modifier = modifier
             )

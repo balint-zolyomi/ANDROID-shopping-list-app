@@ -258,41 +258,36 @@ fun GroupCard(
 @Composable
 fun ItemCardsRearrange(
     shoppingListItems: List<ShoppingItemEntity>,
-    itemPositions: List<ListOrderEntity>,
+    listOrderById: List<ListOrderEntity>,
     onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
     modifier: Modifier
 ) {
-    val listOrder = itemPositions.sortedBy {
+    var listOrderByPosition = listOrderById.sortedBy {
         it.itemPositionInList
     }
 
-    var listOfShoppingItemIds by remember {
+    var itemIdsSortedByPosition by remember {
         mutableStateOf(
-            List(listOrder.size) {
-                listOrder[it].itemId.toString()
+            List(listOrderByPosition.size) {
+                listOrderByPosition[it].itemId.toString()
             }
         )
     }
 
-//    Log.d("balint-debug", " \n listOrder: ${listOrder.toString()}")
-
     val state = rememberReorderableLazyListState(onMove = { from, to ->
-        listOfShoppingItemIds = listOfShoppingItemIds.toMutableList().apply {
+        itemIdsSortedByPosition = itemIdsSortedByPosition.toMutableList().apply {
             add(to.index, removeAt(from.index))
         }
 
-        val tempList = listOrder.toMutableList()
-        val tempPosition = listOrder[to.index].itemPositionInList
-        tempList[to.index].itemPositionInList = tempList[from.index].itemPositionInList
-        tempList[from.index].itemPositionInList = tempPosition
-
-        onItemsOrderChange(tempList)
-        for (item in tempList) {
-            Log.d("balint-debug", " \n${item.itemPositionInList}")
+        listOrderByPosition = listOrderByPosition.toMutableList().apply {
+            add(to.index, removeAt(from.index))
         }
-    })
+        for ((i, item) in listOrderByPosition.withIndex()) {
+            item.itemPositionInList = i
+        }
 
-//    Log.d("balint-debug", " \n${listOfShoppingItemIds.toString()}")
+        onItemsOrderChange(listOrderByPosition)
+    })
 
     LazyColumn(
         state = state.listState,
@@ -300,7 +295,7 @@ fun ItemCardsRearrange(
             .reorderable(state = state)
             .detectReorderAfterLongPress(state = state)
     ) {
-        items(listOfShoppingItemIds, { it }) { listOrderId ->
+        items(itemIdsSortedByPosition, { it }) { listOrderId ->
             var shoppingListItem by mutableStateOf(
                 ShoppingItemEntity(
                     itemId = null,
