@@ -16,11 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.util.Constants
-import java.time.format.TextStyle
 
 @Composable
 fun GroupInput(
     groupName: String,
+    groupId: Long?,
     isError: Boolean,
     onGroupNameChange: (String) -> Unit,
     onEraseGroupNameInputButtonClicked: () -> Unit,
@@ -30,6 +30,7 @@ fun GroupInput(
         GroupNameInput(
             groupName = groupName,
             isError = isError,
+            groupId = groupId,
             onGroupNameChange = { onGroupNameChange(it) },
             onEraseGroupNameInputButtonClicked = onEraseGroupNameInputButtonClicked,
             onNextInGroupNameInputClicked = onNextInGroupNameInputClicked
@@ -40,6 +41,7 @@ fun GroupInput(
 @Composable
 fun GroupNameInput(
     groupName: String,
+    groupId: Long?,
     isError: Boolean,
     onGroupNameChange: (String) -> Unit,
     onEraseGroupNameInputButtonClicked: () -> Unit,
@@ -51,11 +53,16 @@ fun GroupNameInput(
         LocalTextStyle.current
     }
 
+    val isEnabled = groupId == -1L
+
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = groupName,
+        enabled = isEnabled,
         onValueChange = { onGroupNameChange(it) },
-        label = { Text(text = stringResource(R.string.input_label_group_name)) },
+        label = {
+            Text(text = stringResource(R.string.input_label_group_name))
+        },
         textStyle = inputTextStyle,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
@@ -66,7 +73,7 @@ fun GroupNameInput(
                 if (!isError) defaultKeyboardAction(ImeAction.Next)
             }),
         trailingIcon = {
-            if (groupName.isNotBlank()) {
+            if (groupName.isNotBlank() && isEnabled) {
                 TrailingIconForErase(onEraseGroupNameInputButtonClicked)
             } else if (isError) {
                 Icon(

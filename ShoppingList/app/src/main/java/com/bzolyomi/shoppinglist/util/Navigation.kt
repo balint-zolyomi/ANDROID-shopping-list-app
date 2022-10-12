@@ -74,7 +74,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         ) {
             ShoppingListTheme {
                 AllGroupsScreen(
-                    onAddAllFABClicked = { navController.navigate("add") },
+                    onAddAllFABClicked = { navController.navigate("add/${-1}") },
                     onOpenGroupIconClicked = { groupId ->
                         if (groupId != null) navController.navigate("group/$groupId")
                     },
@@ -86,7 +86,10 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         }
 
         composable(
-            route = "add",
+            route = "add/{groupId}",
+            arguments = listOf(navArgument("groupId") {
+                type = NavType.StringType
+            }),
             enterTransition = {
                 slideInHorizontally(
                     animationSpec = tween(
@@ -103,17 +106,20 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                     targetOffsetX = { it / 2 }
                 )
             }
-        ) {
+        ) { navBackStackEntry ->
+            val groupId = navBackStackEntry.arguments?.getString("groupId")?.toLong()
+
             ShoppingListTheme {
                 AddAllScreen(
-                    onSubmitAddAllButtonClicked = {
+                    groupId = groupId,
+                    NavigateToHomeScreen = {
                         navController.navigate("home") {
                             popUpTo("home") { inclusive = true }
                         }
                     },
-                    onNavigationBarBackButtonClicked = {
-                        navController.navigate("home") {
-                            popUpTo("home") { inclusive = true }
+                    NavigateToItemsOfGroupScreen = {
+                        navController.navigate("group/$groupId") {
+                            popUpTo("group/$groupId") { inclusive = true }
                         }
                     },
                     sharedViewModel = sharedViewModel,
@@ -129,20 +135,26 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 type = NavType.StringType
             }),
             enterTransition = {
-                slideInHorizontally(
-                    animationSpec = tween(
-                        GROUP_SCREEN_ENTER_DURATION,
-                        0,
-                        easing = LinearOutSlowInEasing
-                    ),
-                    initialOffsetX = { it / 2 }
-                )
+                when (initialState.destination.route) {
+                    "home" -> slideInHorizontally(
+                        animationSpec = tween(
+                            GROUP_SCREEN_ENTER_DURATION,
+                            0,
+                            easing = LinearOutSlowInEasing
+                        ),
+                        initialOffsetX = { it / 2 }
+                    )
+                    else -> null
+                }
             },
             exitTransition = {
-                slideOutHorizontally(
-                    animationSpec = tween(GROUP_SCREEN_EXIT_DURATION),
-                    targetOffsetX = { it / 2 }
-                )
+                when (targetState.destination.route) {
+                    "home" -> slideOutHorizontally(
+                        animationSpec = tween(GROUP_SCREEN_EXIT_DURATION),
+                        targetOffsetX = { it / 2 }
+                    )
+                    else -> null
+                }
             }
         ) { navBackStackEntry ->
             val groupId = navBackStackEntry.arguments!!.getString("groupId")
@@ -157,7 +169,8 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
 
                 ShoppingListTheme {
                     val context = LocalContext.current
-                    val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
+                    val toastMessageForGroupDelete =
+                        stringResource(R.string.toast_message_group_deleted)
 
                     ItemsOfGroupScreen(
                         onDeleteGroupConfirmed = {
@@ -172,6 +185,9 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                             navController.navigate("home") {
                                 popUpTo("home") { inclusive = true }
                             }
+                        },
+                        onAddItemFABClicked = { groupId ->
+                            navController.navigate("add/$groupId")
                         },
                         modifier = backgroundModifier
                             .fillMaxSize(),

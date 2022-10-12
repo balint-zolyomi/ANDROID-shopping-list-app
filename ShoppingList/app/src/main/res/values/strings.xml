@@ -32,4 +32,7 @@
     <string name="button_rearrange_items">Rearrange items</string>
     <string name="button_rearrange_items_done">Rearrange done</string>
     <string name="drag_icon_content_description">Press and hold to reorder item.</string>
+    <string name="fab_add_item">Floating action button: add item</string>
+    <string name="topappbar_title_add_group_and_items">Add group and item(s)</string>
+    <string name="topappbar_title_add_items">Add item(s) to group</string>
 </resources>

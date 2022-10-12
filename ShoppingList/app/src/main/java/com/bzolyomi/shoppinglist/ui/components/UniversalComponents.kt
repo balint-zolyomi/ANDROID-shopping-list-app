@@ -51,26 +51,26 @@ import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
-@Composable
-fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
-    Button(
-        onClick = onSubmitAddAllButtonClicked,
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
-    ) {
-        Text(text = stringResource(R.string.submit_button_text))
-    }
-}
-
-@Composable
-fun SubmitAddItemButton(onSubmitAddItemButtonClicked: () -> Unit) {
-    Button(
-        onClick = {
-            onSubmitAddItemButtonClicked()
-        }, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
-    ) {
-        Text(text = stringResource(R.string.submit_button_text))
-    }
-}
+//@Composable
+//fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
+//    Button(
+//        onClick = onSubmitAddAllButtonClicked,
+//        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+//    ) {
+//        Text(text = stringResource(R.string.submit_button_text))
+//    }
+//}
+//
+//@Composable
+//fun SubmitAddItemButton(onSubmitAddItemButtonClicked: () -> Unit) {
+//    Button(
+//        onClick = {
+//            onSubmitAddItemButtonClicked()
+//        }, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+//    ) {
+//        Text(text = stringResource(R.string.submit_button_text))
+//    }
+//}
 
 fun showItemAddedToast(context: Context) {
     Toast.makeText(
@@ -220,11 +220,14 @@ private fun ColumnScope.CardContent(
 
 @Composable
 fun GroupCard(
-    titleGroupName: String, onDeleteGroupClicked: () -> Unit, modifier: Modifier
+    titleGroupName: String,
+    onDeleteGroupClicked: () -> Unit,
+//    onReorderButtonClicked: () -> Unit,
+    modifier: Modifier
 ) {
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
 
-        val (card, button) = createRefs()
+        val (card, buttonDelete) = createRefs()
 
         Card(
             elevation = ELEVATION_MEDIUM,
@@ -241,7 +244,8 @@ fun GroupCard(
                 modifier = modifier.padding(horizontal = PADDING_LARGE, vertical = PADDING_SMALL)
             )
         }
-        IconButton(onClick = onDeleteGroupClicked, modifier = modifier.constrainAs(button) {
+
+        IconButton(onClick = onDeleteGroupClicked, modifier = modifier.constrainAs(buttonDelete) {
             start.linkTo(card.end)
             top.linkTo(card.top)
             bottom.linkTo(card.bottom)
@@ -323,7 +327,7 @@ fun ItemCardsRearrange(
                 )
                 val border = animateDpAsState(
                     targetValue =
-                    if (isDragging) 2.dp else 0.dp
+                    if (isDragging) 4.dp else 0.dp
                 )
                 val borderColor = animateColorAsState(
                     targetValue =
@@ -467,6 +471,16 @@ private fun ItemCheckboxIconButton(
     onCheckboxClicked: () -> Unit,
     modifier: Modifier
 ) {
+//    TODO
+//    val (isChecked, setChecked) = remember { mutableStateOf(false) }
+//    MaterialTheme {
+//        Surface {
+//            FavoriteButton(
+//                isChecked = isChecked,
+//                onClick = { setChecked(!isChecked) }
+//            )
+//        }
+//    }
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
         IconButton(
             onClick = onCheckboxClicked, modifier = modifier.size(SIZE_ICONS_OFFICIAL)
