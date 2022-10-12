@@ -37,6 +37,8 @@ fun AllGroupsScreen(
             AppBar(onDeleteAllClicked = {
                 for (groupWithList in shoppingGroupsWithLists) {
                     sharedViewModel.deleteGroup(groupId = groupWithList.group.groupId)
+                    sharedViewModel.deleteItems(shoppingList = groupWithList.shoppingList)
+                    sharedViewModel.deleteAllListOrders(groupId = groupWithList.group.groupId)
                 }
             })
         },

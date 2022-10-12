@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.data
 
+import android.util.Log
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

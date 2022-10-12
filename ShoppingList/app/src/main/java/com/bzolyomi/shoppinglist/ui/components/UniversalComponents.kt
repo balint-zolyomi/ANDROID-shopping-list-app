@@ -391,46 +391,52 @@ fun ItemCards(
     shoppingListItems: List<ShoppingItemEntity>,
     itemPositions: List<ListOrderEntity>,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    onDeleteItemClicked: (itemId: Long?) -> Unit,
+    onDeleteItemClicked: (itemId: Long?, groupId: Long?) -> Unit,
     modifier: Modifier
 ) {
     LazyColumn(
         state = rememberLazyListState()
     ) {
-        val order = itemPositions.sortedBy {
+        val order = mutableStateOf(itemPositions.sortedBy {
             it.itemPositionInList
-        }
+        })
 
-        items(order) { listOrder ->
+        items(order.value) { listOrder ->
 
             val shoppingListItem = shoppingListItems.find { shoppingItem ->
                 shoppingItem.itemId == listOrder.itemId
             }
 
-            var isItemChecked by mutableStateOf(shoppingListItem!!.isItemChecked)
+            if (shoppingListItem != null) {
+                var isItemChecked by mutableStateOf(shoppingListItem.isItemChecked)
 
-            Card(
-                elevation = ELEVATION_SMALL,
-                shape = MaterialTheme.shapes.large,
-                modifier = modifier.padding(PADDING_SMALL)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Card(
+                    elevation = ELEVATION_SMALL,
+                    shape = MaterialTheme.shapes.large,
+                    modifier = modifier.padding(PADDING_SMALL)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
 
-                    ItemCheckboxIconButton(
-                        isItemChecked = isItemChecked, onCheckboxClicked = {
-                            onCheckboxClicked(shoppingListItem!!)
-                            isItemChecked = !isItemChecked
-                        }, modifier = modifier.padding(start = PADDING_X_SMALL)
-                    )
-                    Item(
-                        item = shoppingListItem!!,
-                        modifier = modifier
-                    )
-                    DeleteItemIconButton(
-                        item = shoppingListItem,
-                        onDeleteItemClicked = onDeleteItemClicked,
-                        modifier = modifier.padding(end = PADDING_X_SMALL)
-                    )
+                        ItemCheckboxIconButton(
+                            isItemChecked = isItemChecked, onCheckboxClicked = {
+                                onCheckboxClicked(shoppingListItem)
+                                isItemChecked = !isItemChecked
+                            }, modifier = modifier.padding(start = PADDING_X_SMALL)
+                        )
+                        Item(
+                            item = shoppingListItem,
+                            modifier = modifier
+                        )
+                        DeleteItemIconButton(
+                            onDeleteItemClicked = {
+                                onDeleteItemClicked(
+                                    shoppingListItem.itemId,
+                                    shoppingListItem.itemParentId
+                                )
+                            },
+                            modifier = modifier.padding(end = PADDING_X_SMALL)
+                        )
+                    }
                 }
             }
         }
@@ -486,11 +492,12 @@ private fun ItemCheckboxIconButton(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun DeleteItemIconButton(
-    item: ShoppingItemEntity, onDeleteItemClicked: (itemId: Long?) -> Unit, modifier: Modifier
+    onDeleteItemClicked: () -> Unit,
+    modifier: Modifier
 ) {
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
         IconButton(
-            onClick = { onDeleteItemClicked(item.itemId) },
+            onClick = onDeleteItemClicked,
             modifier = modifier.size(SIZE_ICONS_OFFICIAL)
         ) {
             Icon(

@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -222,29 +223,33 @@ class SharedViewModel
     }
 
     // DELETE
-    fun deleteGroup(groupId: Long?) { // TODO: home>deleteAll doesn't delete items?
+    fun deleteGroup(groupId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteGroup(groupId = groupId)
         }
     }
 
-    fun deleteItem(itemId: Long?, groupId: Long?) {
+    fun deleteItem(itemId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteItem(itemId = itemId)
-            repo.deleteListOrder(groupId = groupId, itemId = itemId)
         }
     }
 
-    private fun deleteItems(shoppingList: List<ShoppingItemEntity>) {
+    fun deleteItems(shoppingList: List<ShoppingItemEntity>) {
         for (item in shoppingList) {
             viewModelScope.launch(Dispatchers.IO) {
                 repo.deleteItem(itemId = item.itemId)
-                repo.deleteListOrder(groupId = item.itemParentId, itemId = item.itemId)
             }
         }
     }
 
-    private fun deleteAllListOrders(groupId: Long?) {
+    fun deleteListOrder(groupId: Long?, itemId: Long?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteListOrder(groupId =  groupId, itemId =  itemId)
+        }
+    }
+
+    fun deleteAllListOrders(groupId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteAllListOrders(groupId = groupId)
         }
@@ -270,8 +275,6 @@ class SharedViewModel
     }
 
     fun updateListOrder(orderOfItemIds: List<ListOrderEntity>) {
-//        TODO: maybe not list, just items with for?
-
         viewModelScope.launch(Dispatchers.IO) {
             repo.updateListOrder(
                 listOrder = orderOfItemIds

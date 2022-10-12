@@ -52,7 +52,7 @@ interface LocalDatabaseDao {
     suspend fun deleteItem(itemId: Long?)
 
     @Query("DELETE FROM list_order WHERE group_id=:groupId AND item_id=:itemId")
-    suspend fun deleteListOrder(groupId: Long?, itemId: Long?) {}
+    suspend fun deleteListOrder(groupId: Long?, itemId: Long?)
 
     @Query("DELETE FROM list_order WHERE group_id=:groupId")
     suspend fun deleteAllListOrders(groupId: Long?)

@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -16,6 +17,7 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_LARGE
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun ItemsOfGroupScreen(
@@ -55,10 +57,13 @@ fun ItemsOfGroupScreen(
                 onDeleteGroupConfirmed()
                 sharedViewModel.deleteGroupAndItsItems()
             },
-            onDeleteItemClicked = {
+            onDeleteItemClicked = { itemId, groupId ->
+                sharedViewModel.deleteListOrder(
+                    groupId = groupId,
+                    itemId = itemId
+                )
                 sharedViewModel.deleteItem(
-                    itemId = it,
-                    groupId = shoppingGroup.groupId
+                    itemId = itemId
                 )
             },
             onCheckboxClicked = {
@@ -66,7 +71,6 @@ fun ItemsOfGroupScreen(
             },
             onItemsOrderChange = {
                 orderOfItemIds = it
-//                sharedViewModel.updateListOrder(it)
             },
             modifier = Modifier
         )
@@ -137,7 +141,7 @@ fun ContentWithoutInput(
     listOrder: List<ListOrderEntity>,
     isRearrange: Boolean,
     onDeleteGroupConfirmed: () -> Unit,
-    onDeleteItemClicked: (itemId: Long?) -> Unit,
+    onDeleteItemClicked: (itemId: Long?, groupId: Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
     modifier: Modifier
@@ -179,7 +183,7 @@ fun ItemsList(
     listOrder: List<ListOrderEntity>,
     isRearrange: Boolean,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    onDeleteItemClicked: (itemId: Long?) -> Unit,
+    onDeleteItemClicked: (itemId: Long?, groupId: Long?) -> Unit,
     onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
     modifier: Modifier
 ) {

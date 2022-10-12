@@ -176,9 +176,6 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                         modifier = backgroundModifier
                             .fillMaxSize(),
                         sharedViewModel = sharedViewModel
-                        // onItemsRearrangedOnGUI = {
-                        // sharedViewModel.rearrangeItems(selectedGroupWithList.shoppingList, it)
-                        // }
                     )
                 }
             }
