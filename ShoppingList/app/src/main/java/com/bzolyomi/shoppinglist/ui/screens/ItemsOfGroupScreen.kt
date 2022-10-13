@@ -56,7 +56,9 @@ fun ItemsOfGroupScreen(
                 appBarDropDownTitle = stringResource(
                     R.string.delete_all_appbar_dropdown_menu_option_delete_group
                 ),
-                alertDialogMessage = stringResource(R.string.delete_group_alert_dialog_message),
+                alertDialogMessage = stringResource(
+                    R.string.delete_group_alert_dialog_message
+                ),
                 onDeleteClicked = {
                     onDeleteGroupConfirmed()
                     sharedViewModel.deleteGroup(groupId = shoppingGroup.groupId)
@@ -64,13 +66,12 @@ fun ItemsOfGroupScreen(
                     sharedViewModel.deleteAllListOrders(groupId = shoppingGroup.groupId)
                 },
                 onReorderButtonToggled = {
-                    if (isReordering) {
-                        sharedViewModel.updateListOrder(orderOfItemIds)
-                    } else {
+                    if (!isReordering) {
                         Toast.makeText(
                             context,
                             reorderHint,
-                            Toast.LENGTH_LONG).show()
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     isReordering = !isReordering
                 }
@@ -106,6 +107,7 @@ fun ItemsOfGroupScreen(
                     },
                     onItemsOrderChange = {
                         orderOfItemIds = it
+                        sharedViewModel.updateListOrder(orderOfItemIds)
                     },
                     modifier = Modifier
                 )
