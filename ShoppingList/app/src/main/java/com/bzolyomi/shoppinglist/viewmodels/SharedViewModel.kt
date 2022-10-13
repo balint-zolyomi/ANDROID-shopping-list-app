@@ -77,6 +77,10 @@ class SharedViewModel
         _itemUnit = ""
     }
 
+    fun flushGroupGUI() {
+        setGroupName("")
+    }
+
     fun clearItemsList() {
         items.clear()
     }

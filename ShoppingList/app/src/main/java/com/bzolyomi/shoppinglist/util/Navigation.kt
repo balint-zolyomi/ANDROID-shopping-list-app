@@ -22,7 +22,6 @@ import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
 import com.bzolyomi.shoppinglist.ui.theme.IntroTheme
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN
-import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_ALL
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_ENTER_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_WITH_ARG
@@ -30,6 +29,7 @@ import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_ENTER_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_WITH_ARG
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_UNSELECTED
 import com.bzolyomi.shoppinglist.util.Constants.HOME_SCREEN
 import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN
 import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_EXIT_DURATION
@@ -78,7 +78,9 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         ) {
             ShoppingListTheme {
                 AllGroupsScreen(
-                    onAddAllFABClicked = { navController.navigate(ADD_SCREEN_ALL)},
+                    onAddAllFABClicked = {
+                        navController.navigate("$ADD_SCREEN/$GROUP_UNSELECTED")
+                    },
                     onOpenGroupIconClicked = { groupId ->
                         if (groupId != null) navController.navigate("$GROUP_SCREEN/$groupId")
                     },

@@ -20,47 +20,6 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import java.time.format.TextStyle
 
 @Composable
-fun ItemInput(
-    itemName: String,
-    itemQuantity: String,
-    itemUnit: String,
-    isItemNameError: Boolean,
-    isItemQuantityError: Boolean,
-    onItemNameChange: (String) -> Unit,
-    onItemQuantityChange: (String) -> Unit,
-    onItemUnitChange: (String) -> Unit,
-    onEraseItemNameInputButtonClicked: () -> Unit,
-    onEraseItemQuantityInputButtonClicked: () -> Unit,
-    onEraseItemUnitInputButtonClicked: () -> Unit,
-    onDone: () -> Unit,
-    onNextInItemNameInputClicked: () -> Unit,
-    onNextInItemQuantityInputClicked: () -> Unit
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        ItemNameInput(
-            itemName = itemName,
-            isError = isItemNameError,
-            onItemNameChange = { onItemNameChange(it) },
-            onEraseItemNameInputButtonClicked = onEraseItemNameInputButtonClicked,
-            onNextInItemNameInputClicked = onNextInItemNameInputClicked
-        )
-        ItemQuantityInput(
-            itemQuantity = itemQuantity,
-            isError = isItemQuantityError,
-            onItemQuantityChange = { onItemQuantityChange(it) },
-            onEraseItemQuantityInputButtonClicked = onEraseItemQuantityInputButtonClicked,
-            onNextInItemQuantityInputClicked = onNextInItemQuantityInputClicked
-        )
-        ItemUnitInput(
-            itemUnit = itemUnit,
-            onItemUnitChange = { onItemUnitChange(it) },
-            onEraseItemUnitInputButtonClicked = onEraseItemUnitInputButtonClicked,
-            onDone = onDone
-        )
-    }
-}
-
-@Composable
 fun ItemNameInput(
     itemName: String,
     isError: Boolean,

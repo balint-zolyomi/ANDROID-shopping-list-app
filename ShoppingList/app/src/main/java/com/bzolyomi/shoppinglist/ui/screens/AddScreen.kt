@@ -14,10 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
-import com.bzolyomi.shoppinglist.ui.components.GroupInput
-import com.bzolyomi.shoppinglist.ui.components.ItemInput
-import com.bzolyomi.shoppinglist.ui.components.showItemAddedToast
+import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_UNSELECTED
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
@@ -30,9 +29,9 @@ fun AddAllScreen(
     modifier: Modifier
 ) {
     BackHandler {
-        if (groupId == -1L) {
+        if (groupId == GROUP_UNSELECTED) {
             navigateToHomeScreen()
-            sharedViewModel.setGroupName("")
+            sharedViewModel.flushGroupGUI()
             sharedViewModel.clearItemsList()
         } else {
             navigateToGroupScreen()
@@ -51,30 +50,18 @@ fun AddAllScreen(
     var isItemNameError by rememberSaveable { mutableStateOf(false) }
     var isItemQuantityError by rememberSaveable { mutableStateOf(false) }
 
-    fun validateGroupNameInput(groupNameInput: String) {
-        isGroupNameError = groupNameInput.isBlank()
-    }
+    val isAnyError = isItemNameError || isGroupNameError || isItemQuantityError
 
-    fun validateItemNameInput(itemNameInput: String) {
-        isItemNameError = itemNameInput.isBlank()
-    }
-
-    fun validateItemQuantityInput(itemQuantityInput: String) {
-        isItemQuantityError = try {
-            val tempQuantity = itemQuantityInput.replace(",", ".")
-            tempQuantity.toFloat()
-            false
-        } catch (e: Exception) {
-            itemQuantityInput != ""
-        }
+    fun validateAll() {
+        isGroupNameError = validateGroupNameInput(groupName)
+        isItemNameError = validateItemNameInput(itemName)
+        isItemQuantityError = validateItemQuantityInput(itemQuantity)
     }
 
     fun onSubmit() {
-        validateGroupNameInput(groupName)
-        validateItemNameInput(itemName)
-        validateItemQuantityInput(itemQuantity)
-        if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
-            if (groupId == -1L) navigateToHomeScreen() else navigateToGroupScreen()
+        validateAll()
+        if (!isAnyError) {
+            if (groupId == GROUP_UNSELECTED) navigateToHomeScreen() else navigateToGroupScreen()
             sharedViewModel.createWithCoroutines()
             showItemAddedToast(context)
         }
@@ -88,7 +75,7 @@ fun AddAllScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    if (groupId == -1L) {
+                    if (groupId == GROUP_UNSELECTED) {
                         Text(text = stringResource(R.string.top_appbar_title_add_group_and_items))
                     } else {
                         Text(
@@ -108,39 +95,52 @@ fun AddAllScreen(
                     .padding(PADDING_MEDIUM)
             ) {
                 GroupInput(
-                    groupName = groupName,
                     groupId = groupId,
+                    groupName = groupName,
                     isError = isGroupNameError,
                     onGroupNameChange = {
-                        validateGroupNameInput(it)
+                        isGroupNameError = validateGroupNameInput(it)
+                        // no error OR user wants to delete the input field with TrailingIcon
                         if (!isGroupNameError || it == "") sharedViewModel.setGroupName(it)
                     },
                     onEraseGroupNameInputButtonClicked = {
                         sharedViewModel.setGroupName("")
-                        validateGroupNameInput(sharedViewModel.groupName.value)
+                        isGroupNameError = validateGroupNameInput(sharedViewModel.groupName.value)
                     },
-                    onNextInGroupNameInputClicked = { validateGroupNameInput(groupName) }
+                    onNextInGroupNameInputClicked = {
+                        isGroupNameError = validateGroupNameInput(groupName)
+                    }
                 )
-                ItemInput(
+                ItemNameInput(
                     itemName = itemName,
-                    isItemNameError = isItemNameError,
+                    isError = isItemNameError,
                     onItemNameChange = {
-                        validateItemNameInput(it)
+                        isItemNameError = validateItemNameInput(it)
                         if (!isItemNameError || it == "") sharedViewModel.setItemName(it)
                     },
                     onEraseItemNameInputButtonClicked = {
                         sharedViewModel.setItemName("")
-                        validateItemNameInput(sharedViewModel.itemName.value)
+                        isItemNameError = validateItemNameInput(sharedViewModel.itemName.value)
                     },
-                    onNextInItemNameInputClicked = { validateItemNameInput(itemName) },
+                    onNextInItemNameInputClicked = {
+                        isItemNameError = validateItemNameInput(itemName)
+                    }
+                )
+                ItemQuantityInput(
                     itemQuantity = itemQuantity,
-                    isItemQuantityError = isItemQuantityError,
+                    isError = isItemQuantityError,
                     onItemQuantityChange = { sharedViewModel.setItemQuantity(it) },
                     onEraseItemQuantityInputButtonClicked = {
                         sharedViewModel.setItemQuantity("")
-                        validateItemQuantityInput(sharedViewModel.itemQuantity.value)
+                        isItemQuantityError = validateItemQuantityInput(
+                            sharedViewModel.itemQuantity.value
+                        )
                     },
-                    onNextInItemQuantityInputClicked = { validateItemQuantityInput(itemQuantity) },
+                    onNextInItemQuantityInputClicked = {
+                        isItemQuantityError = validateItemQuantityInput(itemQuantity)
+                    }
+                )
+                ItemUnitInput(
                     itemUnit = itemUnit,
                     onItemUnitChange = { sharedViewModel.setItemUnit(it) },
                     onEraseItemUnitInputButtonClicked = {
@@ -148,21 +148,16 @@ fun AddAllScreen(
                     },
                     onDone = { onSubmit() }
                 )
-                if (groupId == -1L) {
-                    Row(modifier = Modifier.padding(PADDING_MEDIUM)) {
-                        AddItemButton(onAddItemButtonClicked = {
-                            validateGroupNameInput(groupName)
-                            validateItemNameInput(itemName)
-                            validateItemQuantityInput(itemQuantity)
-                            if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
-                                val tempGroupName = groupName
-                                sharedViewModel.createWithCoroutines()
-                                sharedViewModel.setGroupName(tempGroupName)
-                                showItemAddedToast(context)
-                            }
-                        })
-                        Spacer(Modifier.weight(1f))
-                    }
+                if (groupId == GROUP_UNSELECTED) {
+                    AddItemButton(onAddItemButtonClicked = {
+                        validateAll()
+                        if (!isAnyError) {
+                            val tempGroupName = groupName
+                            sharedViewModel.createWithCoroutines()
+                            sharedViewModel.setGroupName(tempGroupName)
+                            showItemAddedToast(context)
+                        }
+                    })
                 }
             }
         },
@@ -174,7 +169,7 @@ fun AddAllScreen(
                 Icon(
                     imageVector = Icons.Filled.Done,
                     contentDescription = stringResource(R.string.content_description_fab),
-                    tint = FloatingActionButtonTint,
+                    tint = FloatingActionButtonTint
                 )
             }
         }
@@ -185,7 +180,8 @@ fun AddAllScreen(
 fun AddItemButton(onAddItemButtonClicked: () -> Unit) {
     Button(
         onClick = onAddItemButtonClicked,
-        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+        modifier = Modifier.padding(PADDING_MEDIUM)
     ) {
         Text(text = stringResource(R.string.add_item_button_text))
     }

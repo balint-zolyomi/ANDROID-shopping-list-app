@@ -4,7 +4,7 @@
     <string name="submit_button_text">Submit</string>
     <string name="input_label_item_name">Item name</string>
     <string name="input_label_item_quantity">Item quantity</string>
-    <string name="input_label_item_unit">Item Unit</string>
+    <string name="input_label_item_unit">Item unit</string>
     <string name="input_label_group_name">Group name</string>
     <string name="add_item_button">Add item</string>
     <string name="cancel_button">Cancel</string>

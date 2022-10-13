@@ -76,7 +76,7 @@ object Constants {
     const val HOME_SCREEN = "home"
     const val ADD_SCREEN = "add"
     const val ADD_SCREEN_WITH_ARG = "add/{groupId}"
-    const val ADD_SCREEN_ALL = "add/${-1}"
+    const val GROUP_UNSELECTED: Long = -1
     const val GROUP_SCREEN = "group"
     const val GROUP_SCREEN_WITH_ARG = "group/{groupId}"
     const val NAV_ARGUMENT_GROUP_ID = "groupId"
