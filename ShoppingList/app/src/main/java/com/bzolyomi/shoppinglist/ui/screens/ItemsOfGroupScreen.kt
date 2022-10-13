@@ -25,10 +25,17 @@ fun ItemsOfGroupScreen(
     modifier: Modifier,
     sharedViewModel: SharedViewModel
 ) {
+
+    var isReordering by remember { mutableStateOf(false) }
+
     BackHandler {
-        onNavigationBarBackButtonClicked()
-        sharedViewModel.flushItemGUI()
-        sharedViewModel.setGroupName("")
+        if (isReordering) {
+            isReordering = !isReordering
+        } else {
+            onNavigationBarBackButtonClicked()
+            sharedViewModel.flushItemGUI()
+            sharedViewModel.setGroupName("")
+        }
     }
 
     val context = LocalContext.current
@@ -42,9 +49,7 @@ fun ItemsOfGroupScreen(
 
 //    val isRearrange by remember { mutableStateOf(false) }
 
-    var orderOfItemIds: List<ListOrderEntity> = mutableListOf()
-
-    var isReordering by remember { mutableStateOf(false) }
+    var orderOfItemIds: List<ListOrderEntity>
 
     Scaffold(
         scaffoldState = scaffoldState,
