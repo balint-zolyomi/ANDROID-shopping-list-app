@@ -31,7 +31,8 @@ fun ItemCards(
     modifier: Modifier
 ) {
     LazyColumn(
-        state = rememberLazyListState()
+        state = rememberLazyListState(),
+        modifier = modifier
     ) {
         val order = mutableStateOf(listOrderById.sortedBy {
             it.itemPositionInList
@@ -49,19 +50,19 @@ fun ItemCards(
                 Card(
                     elevation = ELEVATION_SMALL,
                     shape = MaterialTheme.shapes.large,
-                    modifier = modifier.padding(PADDING_SMALL)
+                    modifier = Modifier.padding(PADDING_SMALL)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CheckboxIcon(
                             isItemChecked = isItemChecked, onCheckboxClicked = {
                                 onCheckboxClicked(shoppingListItem)
                                 isItemChecked = !isItemChecked
-                            }, modifier = modifier.padding(start = PADDING_X_SMALL)
+                            }, modifier = Modifier.padding(start = PADDING_X_SMALL)
                         )
                         Item(
                             item = shoppingListItem,
                             textDecoration = TextDecoration.None,
-                            modifier = modifier
+                            modifier = Modifier
                         )
                         DeleteItemIcon(
                             onDeleteItemClicked = {
@@ -70,7 +71,7 @@ fun ItemCards(
                                     shoppingListItem.itemParentId
                                 )
                             },
-                            modifier = modifier.padding(end = PADDING_X_SMALL)
+                            modifier = Modifier.padding(end = PADDING_X_SMALL)
                         )
                     }
                 }

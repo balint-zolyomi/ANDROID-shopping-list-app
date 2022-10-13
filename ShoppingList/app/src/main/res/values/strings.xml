@@ -17,8 +17,8 @@
     <string name="error_message_input_field">Required field, also cannot start with a space.</string>
     <string name="error_message_quantity_input_field">Must be a number greater than zero, or can be left empty.</string>
     <string name="delete_shopping_group_and_its_items_alert_dialog_message">Delete shopping group and all its items? This action cannot be undone.</string>
-    <string name="toast_message_item_added">👌💾✅</string>
-    <string name="toast_message_group_deleted">👌🗑️✅</string>
+    <string name="toast_message_item_added">💾✅</string>
+    <string name="toast_message_group_deleted">🗑️✅</string>
     <string name="content_description_fab">Add group and/or item(s)</string>
     <string name="content_description_open_dropdown_menu">Open dropdown menu</string>
     <string name="content_description_error_icon_input_field">Input field error icon</string>

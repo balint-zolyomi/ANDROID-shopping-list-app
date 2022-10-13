@@ -132,10 +132,21 @@ fun DeleteItemIcon(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DragIcon() {
-    Icon(
-        imageVector = Icons.Filled.DragIndicator,
-        contentDescription = stringResource(R.string.drag_icon_content_description)
-    )
+fun DragIcon(
+    modifier: Modifier
+) {
+    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+        IconButton(
+            onClick = {},
+            enabled = false,
+            modifier = modifier.size(SIZE_ICONS_OFFICIAL)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.DragIndicator,
+                contentDescription = stringResource(R.string.drag_icon_content_description),
+            )
+        }
+    }
 }

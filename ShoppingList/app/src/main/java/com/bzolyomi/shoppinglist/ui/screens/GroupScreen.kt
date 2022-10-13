@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -17,8 +18,9 @@ import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.ui.components.AppBarOptionMore
 import com.bzolyomi.shoppinglist.ui.components.AppBarOptionToggleReorder
 import com.bzolyomi.shoppinglist.ui.components.cards.ItemCards
-import com.bzolyomi.shoppinglist.ui.components.cards.ItemCardsRearrange
+import com.bzolyomi.shoppinglist.ui.components.cards.ItemCardsReorder
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
@@ -94,40 +96,36 @@ fun ItemsOfGroupScreen(
             Column(
                 modifier = modifier
                     .fillMaxSize()
+                    .padding(PADDING_MEDIUM)
             ) {
-                Column(
-                    modifier = modifier
-                        .fillMaxWidth()
-                ) {
-                    if (isReordering) {
-                        ItemCardsRearrange(
-                            shoppingList = shoppingList,
-                            listOrderById = listOrder,
-                            onItemsOrderChange = {
-                                orderOfItemIds = it
-                                sharedVM.updateListOrder(orderOfItemIds)
-                            },
-                            modifier = Modifier
-                        )
-                    } else {
-                        ItemCards(
-                            shoppingList = shoppingList,
-                            listOrderById = listOrder,
-                            onCheckboxClicked = {
-                                sharedVM.updateItemChecked(it)
-                            },
-                            onDeleteItemClicked = { itemId, groupId ->
-                                sharedVM.deleteListOrder(
-                                    groupId = groupId,
-                                    itemId = itemId
-                                )
-                                sharedVM.deleteItem(
-                                    itemId = itemId
-                                )
-                            },
-                            modifier = Modifier
-                        )
-                    }
+                if (isReordering) {
+                    ItemCardsReorder(
+                        shoppingList = shoppingList,
+                        listOrderById = listOrder,
+                        onItemsOrderChange = {
+                            orderOfItemIds = it
+                            sharedVM.updateListOrder(orderOfItemIds)
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    ItemCards(
+                        shoppingList = shoppingList,
+                        listOrderById = listOrder,
+                        onCheckboxClicked = {
+                            sharedVM.updateItemChecked(it)
+                        },
+                        onDeleteItemClicked = { itemId, groupId ->
+                            sharedVM.deleteListOrder(
+                                groupId = groupId,
+                                itemId = itemId
+                            )
+                            sharedVM.deleteItem(
+                                itemId = itemId
+                            )
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
             }
         },

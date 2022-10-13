@@ -18,13 +18,17 @@ import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.DragIcon
 import com.bzolyomi.shoppinglist.util.Constants
+import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
 @Composable
-fun ItemCardsRearrange(
+fun ItemCardsReorder(
     shoppingList: List<ShoppingItemEntity>,
     listOrderById: List<ListOrderEntity>,
     onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
@@ -64,19 +68,7 @@ fun ItemCardsRearrange(
             .detectReorderAfterLongPress(state = state)
     ) {
         items(itemIdsSortedByPosition, { it }) { listOrderId ->
-//            var shoppingListItem by mutableStateOf(
-//                ShoppingItemEntity(
-//                    itemId = null,
-//                    itemParentId = null,
-//                    itemName = "",
-//                    itemQuantity = null,
-//                    itemUnit = "",
-//                    isItemChecked = true
-//                )
-//            )
-//            for (i in shoppingList) {
-//                if (i.itemId == listOrderId.toLong()) shoppingListItem = i
-//            }
+
             val shoppingListItem = shoppingList.find { shoppingItem ->
                 shoppingItem.itemId == listOrderId.toLong()
             }
@@ -87,11 +79,11 @@ fun ItemCardsRearrange(
                 ReorderableItem(reorderableState = state, key = listOrderId) { isDragging ->
                     val elevation = animateDpAsState(
                         targetValue =
-                        if (isDragging) 16.dp else Constants.ELEVATION_SMALL
+                        if (isDragging) 16.dp else ELEVATION_SMALL
                     )
                     val padding = animateDpAsState(
                         targetValue =
-                        if (isDragging) Constants.PADDING_MEDIUM else Constants.PADDING_SMALL
+                        if (isDragging) PADDING_SMALL else 0.dp
                     )
                     val border = animateDpAsState(
                         targetValue =
@@ -109,25 +101,24 @@ fun ItemCardsRearrange(
                     Card(
                         elevation = elevation.value,
                         shape = MaterialTheme.shapes.large,
-                        modifier = modifier
-                            .padding(Constants.PADDING_SMALL),
+                        modifier = Modifier.padding(PADDING_SMALL),
                         border = BorderStroke(border.value, borderColor.value)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = modifier.padding(padding.value)
+                            modifier = Modifier.padding(padding.value)
                         ) {
 
                             val textDecoration = if (isItemChecked) TextDecoration.LineThrough else
                                 TextDecoration.None
 
-                            DragIcon()
+                            DragIcon(modifier = Modifier.padding(start = PADDING_X_SMALL))
                             Item(
                                 item = shoppingListItem,
                                 textDecoration = textDecoration,
-                                modifier = modifier
+                                modifier = Modifier
                             )
-                            DragIcon()
+                            DragIcon(modifier = Modifier.padding(end = PADDING_X_SMALL))
                         }
                     }
                 }
