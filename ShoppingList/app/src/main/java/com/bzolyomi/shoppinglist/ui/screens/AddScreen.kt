@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.components.*
+import com.bzolyomi.shoppinglist.ui.components.input.*
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_UNSELECTED
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
@@ -48,6 +49,7 @@ fun AddAllScreen(
     }
 
     val context = LocalContext.current
+    val itemAddedToastMessage = stringResource(R.string.toast_message_item_added)
 
     val groupName by sharedViewModel.groupName
     val itemName by sharedViewModel.itemName
@@ -71,7 +73,7 @@ fun AddAllScreen(
         if (!isAnyError) {
             if (groupId == GROUP_UNSELECTED) navigateToHomeScreen() else navigateToGroupScreen()
             sharedViewModel.createWithCoroutines()
-            showItemAddedToast(context)
+            showShortToast(context = context, message = itemAddedToastMessage)
         }
     }
 
@@ -166,7 +168,7 @@ fun AddAllScreen(
                             val tempGroupName = groupName
                             sharedViewModel.createWithCoroutines()
                             sharedViewModel.setGroupName(tempGroupName)
-                            showItemAddedToast(context)
+                            showShortToast(context = context, message = itemAddedToastMessage)
                         }
                     })
                 }

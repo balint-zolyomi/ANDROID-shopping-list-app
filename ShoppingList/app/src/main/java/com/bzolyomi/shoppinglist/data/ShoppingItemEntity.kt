@@ -10,7 +10,6 @@ import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_NAME
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_QUANTITY
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_UNIT
-import javax.annotation.concurrent.Immutable
 
 @Entity(tableName = SHOPPING_LIST_TABLE)
 data class ShoppingItemEntity(

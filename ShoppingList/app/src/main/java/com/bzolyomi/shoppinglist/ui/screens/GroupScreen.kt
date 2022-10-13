@@ -2,7 +2,9 @@ package com.bzolyomi.shoppinglist.ui.screens
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -12,8 +14,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.ListOrderEntity
-import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
-import com.bzolyomi.shoppinglist.ui.components.*
+import com.bzolyomi.shoppinglist.ui.components.AppBarOptionMore
+import com.bzolyomi.shoppinglist.ui.components.AppBarOptionToggleReorder
+import com.bzolyomi.shoppinglist.ui.components.cards.ItemCards
+import com.bzolyomi.shoppinglist.ui.components.cards.ItemCardsRearrange
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 

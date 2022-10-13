@@ -98,7 +98,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             }),
             enterTransition = {
                 slideInHorizontally(
-                    animationSpec = tween(ADD_SCREEN_ENTER_DURATION,),
+                    animationSpec = tween(ADD_SCREEN_ENTER_DURATION),
                     initialOffsetX = { it / 2 }
                 )
             },

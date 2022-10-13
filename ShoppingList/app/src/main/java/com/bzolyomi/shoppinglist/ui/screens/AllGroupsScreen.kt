@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.components.AppBarOptionMore
-import com.bzolyomi.shoppinglist.ui.components.GroupAndItemsCard
+import com.bzolyomi.shoppinglist.ui.components.cards.GroupAndItemsCard
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL

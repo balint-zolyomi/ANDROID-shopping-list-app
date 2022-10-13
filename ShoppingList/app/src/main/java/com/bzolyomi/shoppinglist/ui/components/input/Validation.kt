@@ -1,4 +1,4 @@
-package com.bzolyomi.shoppinglist.ui.components
+package com.bzolyomi.shoppinglist.ui.components.input
 
 fun validateGroupNameInput(groupNameInput: String): Boolean {
     return groupNameInput.isBlank()

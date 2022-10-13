@@ -1,4 +1,4 @@
-package com.bzolyomi.shoppinglist.ui.components
+package com.bzolyomi.shoppinglist.ui.components.input
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +16,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.bzolyomi.shoppinglist.R
+import com.bzolyomi.shoppinglist.ui.components.ErrorText
+import com.bzolyomi.shoppinglist.ui.components.EraseTrailingIcon
 
 @Composable
 fun ItemNameInput(
@@ -44,7 +46,7 @@ fun ItemNameInput(
             ),
             trailingIcon = {
                 if (itemName.isNotBlank()) {
-                    TrailingIconForErase(onEraseItemNameInputButtonClicked)
+                    EraseTrailingIcon(onEraseItemNameInputButtonClicked)
                 } else if (isError) {
                     Icon(
                         Icons.Filled.Error,
@@ -90,7 +92,7 @@ fun ItemQuantityInput(
         ),
         trailingIcon = {
             if (itemQuantity.isNotBlank()) {
-                TrailingIconForErase(onEraseItemQuantityInputButtonClicked)
+                EraseTrailingIcon(onEraseItemQuantityInputButtonClicked)
             } else if (isError) {
                 Icon(
                     Icons.Filled.Error,
@@ -129,7 +131,7 @@ fun ItemUnitInput(
         label = { Text(text = stringResource(R.string.input_label_item_unit)) },
         textStyle = inputTextStyle,
         trailingIcon = {
-            if (itemUnit.isNotBlank()) TrailingIconForErase(
+            if (itemUnit.isNotBlank()) EraseTrailingIcon(
                 onEraseItemUnitInputButtonClicked
             )
         },
