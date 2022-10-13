@@ -1,6 +1,7 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
@@ -37,6 +39,12 @@ fun AddAllScreen(
             navigateToGroupScreen()
         }
         sharedViewModel.flushItemGUI()
+    }
+
+    val inputTextStyle = if (isSystemInDarkTheme()) {
+        LocalTextStyle.current.copy(color = Color.White)
+    } else {
+        LocalTextStyle.current
     }
 
     val context = LocalContext.current
@@ -94,10 +102,11 @@ fun AddAllScreen(
                     .fillMaxSize()
                     .padding(PADDING_MEDIUM)
             ) {
-                GroupInput(
-                    groupId = groupId,
+                GroupNameInput(
                     groupName = groupName,
                     isError = isGroupNameError,
+                    isEnabled = groupId == GROUP_UNSELECTED,
+                    inputTextStyle = inputTextStyle,
                     onGroupNameChange = {
                         isGroupNameError = validateGroupNameInput(it)
                         // no error OR user wants to delete the input field with TrailingIcon
