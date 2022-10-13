@@ -70,4 +70,14 @@ object Constants {
     const val GROUP_SCREEN_EXIT_DURATION = 800
     const val ADD_SCREEN_ENTER_DURATION = 800
     const val ADD_SCREEN_EXIT_DURATION = 800
+
+    // NAVIGATION
+    const val INTRO_SCREEN = "intro"
+    const val HOME_SCREEN = "home"
+    const val ADD_SCREEN = "add"
+    const val ADD_SCREEN_WITH_ARG = "add/{groupId}"
+    const val ADD_SCREEN_ALL = "add/${-1}"
+    const val GROUP_SCREEN = "group"
+    const val GROUP_SCREEN_WITH_ARG = "group/{groupId}"
+    const val NAV_ARGUMENT_GROUP_ID = "groupId"
 }

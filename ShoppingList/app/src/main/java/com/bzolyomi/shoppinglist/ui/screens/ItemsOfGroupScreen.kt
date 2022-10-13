@@ -19,8 +19,7 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
 fun ItemsOfGroupScreen(
-    onDeleteGroupConfirmed: () -> Unit,
-    onNavigationBarBackButtonClicked: () -> Unit,
+    navigateToHomeScreen: () -> Unit,
     onAddItemFABClicked: (Long?) -> Unit,
     modifier: Modifier,
     sharedViewModel: SharedViewModel
@@ -32,7 +31,7 @@ fun ItemsOfGroupScreen(
         if (isReordering) {
             isReordering = !isReordering
         } else {
-            onNavigationBarBackButtonClicked()
+            navigateToHomeScreen()
             sharedViewModel.flushItemGUI()
             sharedViewModel.setGroupName("")
         }
@@ -40,14 +39,13 @@ fun ItemsOfGroupScreen(
 
     val context = LocalContext.current
     val reorderHint = stringResource(R.string.toast_message_reorder_hint)
+    val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
 
     val scaffoldState = rememberScaffoldState()
 
     val shoppingGroup by mutableStateOf(sharedViewModel.selectedGroupWithList.group)
     val shoppingList by sharedViewModel.selectedShoppingList.collectAsState()
     val listOrder by sharedViewModel.selectedListOrder.collectAsState()
-
-//    val isRearrange by remember { mutableStateOf(false) }
 
     var orderOfItemIds: List<ListOrderEntity>
 
@@ -65,7 +63,9 @@ fun ItemsOfGroupScreen(
                     R.string.delete_group_alert_dialog_message
                 ),
                 onDeleteClicked = {
-                    onDeleteGroupConfirmed()
+                    navigateToHomeScreen()
+                    Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT)
+                        .show()
                     sharedViewModel.deleteGroup(groupId = shoppingGroup.groupId)
                     sharedViewModel.deleteItems(shoppingList)
                     sharedViewModel.deleteAllListOrders(groupId = shoppingGroup.groupId)
@@ -90,14 +90,9 @@ fun ItemsOfGroupScreen(
                     .fillMaxSize()
             ) {
                 ContentWithoutInput(
-//                    shoppingGroup = shoppingGroup,
                     shoppingList = shoppingList,
                     listOrder = listOrder,
                     isReordering = isReordering,
-                    onDeleteGroupConfirmed = {
-                        onDeleteGroupConfirmed()
-                        sharedViewModel.deleteGroupAndItsItems()
-                    },
                     onDeleteItemClicked = { itemId, groupId ->
                         sharedViewModel.deleteListOrder(
                             groupId = groupId,
@@ -138,24 +133,15 @@ fun ItemsOfGroupScreen(
 
 @Composable
 fun ContentWithoutInput(
-//    shoppingGroup: ShoppingGroupEntity,
     shoppingList: List<ShoppingItemEntity>,
     listOrder: List<ListOrderEntity>,
     isReordering: Boolean,
-    onDeleteGroupConfirmed: () -> Unit,
     onDeleteItemClicked: (itemId: Long?, groupId: Long?) -> Unit,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
     modifier: Modifier
 ) {
-    var isAlertDialogOpen by remember { mutableStateOf(false) }
-
     Column {
-//        GroupCard(
-//            titleGroupName = shoppingGroup.groupName,
-//            onDeleteGroupClicked = { isAlertDialogOpen = true },
-//            modifier = modifier
-//        )
         ItemsList(
             shoppingListItems = shoppingList,
             listOrder = listOrder,
@@ -166,17 +152,6 @@ fun ContentWithoutInput(
             modifier = modifier
         )
     }
-
-    ShowAlertDialog(
-        title = stringResource(R.string.delete_alert_dialog_title),
-        message = stringResource(R.string.delete_shopping_group_and_its_items_alert_dialog_message),
-        isOpen = isAlertDialogOpen,
-        onConfirmClicked = {
-            isAlertDialogOpen = false
-            onDeleteGroupConfirmed()
-        },
-        onDismissClicked = { isAlertDialogOpen = false }
-    )
 }
 
 @Composable

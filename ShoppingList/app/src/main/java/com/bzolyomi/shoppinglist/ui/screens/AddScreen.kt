@@ -24,18 +24,18 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 @Composable
 fun AddAllScreen(
     groupId: Long?,
-    NavigateToHomeScreen: () -> Unit,
-    NavigateToItemsOfGroupScreen: () -> Unit,
+    navigateToHomeScreen: () -> Unit,
+    navigateToGroupScreen: () -> Unit,
     sharedViewModel: SharedViewModel,
     modifier: Modifier
 ) {
     BackHandler {
         if (groupId == -1L) {
-            NavigateToHomeScreen()
+            navigateToHomeScreen()
             sharedViewModel.setGroupName("")
             sharedViewModel.clearItemsList()
         } else {
-            NavigateToItemsOfGroupScreen()
+            navigateToGroupScreen()
         }
         sharedViewModel.flushItemGUI()
     }
@@ -74,7 +74,7 @@ fun AddAllScreen(
         validateItemNameInput(itemName)
         validateItemQuantityInput(itemQuantity)
         if (!isItemNameError && !isGroupNameError && !isItemQuantityError) {
-            if (groupId == -1L) NavigateToHomeScreen() else NavigateToItemsOfGroupScreen()
+            if (groupId == -1L) navigateToHomeScreen() else navigateToGroupScreen()
             sharedViewModel.createWithCoroutines()
             showItemAddedToast(context)
         }

@@ -1,9 +1,9 @@
 package com.bzolyomi.shoppinglist.util
 
-import android.widget.Toast
-import androidx.compose.animation.*
-import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,13 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.navArgument
-import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.screens.AddAllScreen
 import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
 import com.bzolyomi.shoppinglist.ui.screens.IntroScreen
@@ -25,13 +21,22 @@ import com.bzolyomi.shoppinglist.ui.screens.ItemsOfGroupScreen
 import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
 import com.bzolyomi.shoppinglist.ui.theme.IntroTheme
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
+import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN
+import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_ALL
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_ENTER_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_EXIT_DURATION
+import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_WITH_ARG
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_ENTER_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_EXIT_DURATION
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_WITH_ARG
+import com.bzolyomi.shoppinglist.util.Constants.HOME_SCREEN
+import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN
 import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_EXIT_DURATION
+import com.bzolyomi.shoppinglist.util.Constants.NAV_ARGUMENT_GROUP_ID
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -45,23 +50,22 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         if (isInDarkMode) Modifier.background(Color.Black)
         else Modifier.background(GradientBackground)
 
-    AnimatedNavHost(navController = navController, startDestination = "intro") {
+    AnimatedNavHost(navController = navController, startDestination = INTRO_SCREEN) {
 
         composable(
-            route = "intro",
+            route = INTRO_SCREEN,
             exitTransition = {
                 slideOutHorizontally(
-                    animationSpec = tween(INTRO_SCREEN_EXIT_DURATION),
-                    targetOffsetX = { -it / 2 }
+                    animationSpec = tween(INTRO_SCREEN_EXIT_DURATION)
                 )
             }
         ) {
             IntroTheme {
                 IntroScreen(
                     isInDarkMode = isInDarkMode,
-                    onDelayPassed = {
-                        navController.navigate("home") {
-                            popUpTo("intro") { inclusive = true }
+                    onAnimationEnded = {
+                        navController.navigate(HOME_SCREEN) {
+                            popUpTo(INTRO_SCREEN) { inclusive = true }
                         }
                     },
                     modifier = backgroundModifier.fillMaxSize()
@@ -70,13 +74,13 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         }
 
         composable(
-            route = "home"
+            route = HOME_SCREEN
         ) {
             ShoppingListTheme {
                 AllGroupsScreen(
-                    onAddAllFABClicked = { navController.navigate("add/${-1}") },
+                    onAddAllFABClicked = { navController.navigate(ADD_SCREEN_ALL)},
                     onOpenGroupIconClicked = { groupId ->
-                        if (groupId != null) navController.navigate("group/$groupId")
+                        if (groupId != null) navController.navigate("$GROUP_SCREEN/$groupId")
                     },
                     sharedViewModel = sharedViewModel,
                     modifier = backgroundModifier
@@ -86,17 +90,13 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         }
 
         composable(
-            route = "add/{groupId}",
-            arguments = listOf(navArgument("groupId") {
+            route = ADD_SCREEN_WITH_ARG,
+            arguments = listOf(navArgument(NAV_ARGUMENT_GROUP_ID) {
                 type = NavType.StringType
             }),
             enterTransition = {
                 slideInHorizontally(
-                    animationSpec = tween(
-                        ADD_SCREEN_ENTER_DURATION,
-                        0,
-                        easing = LinearOutSlowInEasing
-                    ),
+                    animationSpec = tween(ADD_SCREEN_ENTER_DURATION,),
                     initialOffsetX = { it / 2 }
                 )
             },
@@ -107,19 +107,19 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 )
             }
         ) { navBackStackEntry ->
-            val groupId = navBackStackEntry.arguments?.getString("groupId")?.toLong()
+            val groupId = navBackStackEntry.arguments?.getString(NAV_ARGUMENT_GROUP_ID)?.toLong()
 
             ShoppingListTheme {
                 AddAllScreen(
                     groupId = groupId,
-                    NavigateToHomeScreen = {
-                        navController.navigate("home") {
-                            popUpTo("home") { inclusive = true }
+                    navigateToHomeScreen = {
+                        navController.navigate(HOME_SCREEN) {
+                            popUpTo(HOME_SCREEN) { inclusive = true }
                         }
                     },
-                    NavigateToItemsOfGroupScreen = {
-                        navController.navigate("group/$groupId") {
-                            popUpTo("group/$groupId") { inclusive = true }
+                    navigateToGroupScreen = {
+                        navController.navigate("$GROUP_SCREEN/$groupId") {
+                            popUpTo("$GROUP_SCREEN/$groupId") { inclusive = true }
                         }
                     },
                     sharedViewModel = sharedViewModel,
@@ -130,18 +130,14 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         }
 
         composable(
-            route = "group/{groupId}",
-            arguments = listOf(navArgument("groupId") {
+            route = GROUP_SCREEN_WITH_ARG,
+            arguments = listOf(navArgument(NAV_ARGUMENT_GROUP_ID) {
                 type = NavType.StringType
             }),
             enterTransition = {
                 when (initialState.destination.route) {
-                    "home" -> slideInHorizontally(
-                        animationSpec = tween(
-                            GROUP_SCREEN_ENTER_DURATION,
-                            0,
-                            easing = LinearOutSlowInEasing
-                        ),
+                    HOME_SCREEN -> slideInHorizontally(
+                        animationSpec = tween(GROUP_SCREEN_ENTER_DURATION),
                         initialOffsetX = { it / 2 }
                     )
                     else -> null
@@ -149,7 +145,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             },
             exitTransition = {
                 when (targetState.destination.route) {
-                    "home" -> slideOutHorizontally(
+                    HOME_SCREEN -> slideOutHorizontally(
                         animationSpec = tween(GROUP_SCREEN_EXIT_DURATION),
                         targetOffsetX = { it / 2 }
                     )
@@ -157,7 +153,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 }
             }
         ) { navBackStackEntry ->
-            val groupId = navBackStackEntry.arguments!!.getString("groupId")
+            val groupId = navBackStackEntry.arguments!!.getString(NAV_ARGUMENT_GROUP_ID)
 
             if (groupId != null) {
                 LaunchedEffect(key1 = true) {
@@ -168,26 +164,14 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 }
 
                 ShoppingListTheme {
-                    val context = LocalContext.current
-                    val toastMessageForGroupDelete =
-                        stringResource(R.string.toast_message_group_deleted)
-
                     ItemsOfGroupScreen(
-                        onDeleteGroupConfirmed = {
-                            navController.navigate("home") {
-                                popUpTo("home") { inclusive = true }
-                            }
-
-                            Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT)
-                                .show()
-                        },
-                        onNavigationBarBackButtonClicked = {
-                            navController.navigate("home") {
-                                popUpTo("home") { inclusive = true }
+                        navigateToHomeScreen = {
+                            navController.navigate(HOME_SCREEN) {
+                                popUpTo(HOME_SCREEN) { inclusive = true }
                             }
                         },
                         onAddItemFABClicked = { groupId ->
-                            navController.navigate("add/$groupId")
+                            navController.navigate("$ADD_SCREEN/$groupId")
                         },
                         modifier = backgroundModifier
                             .fillMaxSize(),
