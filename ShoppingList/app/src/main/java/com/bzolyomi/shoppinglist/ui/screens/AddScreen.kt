@@ -60,12 +60,13 @@ fun AddAllScreen(
     var isItemNameError by rememberSaveable { mutableStateOf(false) }
     var isItemQuantityError by rememberSaveable { mutableStateOf(false) }
 
-    val isAnyError = isItemNameError || isGroupNameError || isItemQuantityError
+    var isAnyError by rememberSaveable { mutableStateOf(false) }
 
     fun validateAll() {
         isGroupNameError = validateGroupNameInput(groupName)
         isItemNameError = validateItemNameInput(itemName)
         isItemQuantityError = validateItemQuantityInput(itemQuantity)
+        isAnyError = isGroupNameError || isItemNameError || isItemQuantityError
     }
 
     fun onSubmit() {
