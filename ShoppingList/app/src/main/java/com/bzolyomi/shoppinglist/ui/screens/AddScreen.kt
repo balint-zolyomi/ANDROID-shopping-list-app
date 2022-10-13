@@ -123,6 +123,7 @@ fun AddAllScreen(
                 ItemNameInput(
                     itemName = itemName,
                     isError = isItemNameError,
+                    inputTextStyle = inputTextStyle,
                     onItemNameChange = {
                         isItemNameError = validateItemNameInput(it)
                         if (!isItemNameError || it == "") sharedViewModel.setItemName(it)
@@ -130,14 +131,14 @@ fun AddAllScreen(
                     onEraseItemNameInputButtonClicked = {
                         sharedViewModel.setItemName("")
                         isItemNameError = validateItemNameInput(sharedViewModel.itemName.value)
-                    },
-                    onNextInItemNameInputClicked = {
-                        isItemNameError = validateItemNameInput(itemName)
                     }
-                )
+                ) {
+                    isItemNameError = validateItemNameInput(itemName)
+                }
                 ItemQuantityInput(
                     itemQuantity = itemQuantity,
                     isError = isItemQuantityError,
+                    inputTextStyle = inputTextStyle,
                     onItemQuantityChange = { sharedViewModel.setItemQuantity(it) },
                     onEraseItemQuantityInputButtonClicked = {
                         sharedViewModel.setItemQuantity("")
@@ -151,6 +152,7 @@ fun AddAllScreen(
                 )
                 ItemUnitInput(
                     itemUnit = itemUnit,
+                    inputTextStyle = inputTextStyle,
                     onItemUnitChange = { sharedViewModel.setItemUnit(it) },
                     onEraseItemUnitInputButtonClicked = {
                         sharedViewModel.setItemUnit("")

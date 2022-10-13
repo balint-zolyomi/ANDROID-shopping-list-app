@@ -50,33 +50,24 @@ import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 
-//@Composable
-//fun SubmitAddAllButton(onSubmitAddAllButtonClicked: () -> Unit) {
-//    Button(
-//        onClick = onSubmitAddAllButtonClicked,
-//        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
-//    ) {
-//        Text(text = stringResource(R.string.submit_button_text))
-//    }
-//}
-//
-//@Composable
-//fun SubmitAddItemButton(onSubmitAddItemButtonClicked: () -> Unit) {
-//    Button(
-//        onClick = {
-//            onSubmitAddItemButtonClicked()
-//        }, colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
-//    ) {
-//        Text(text = stringResource(R.string.submit_button_text))
-//    }
-//}
-
 fun showItemAddedToast(context: Context) {
     Toast.makeText(
         context,
         context.getString(R.string.toast_message_item_added),
         Toast.LENGTH_SHORT
     ).show()
+}
+
+@Composable
+fun ErrorText(
+    text: String
+) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.caption,
+        color = MaterialTheme.colors.error,
+        modifier = Modifier.padding(start = PADDING_MEDIUM)
+    )
 }
 
 @Composable

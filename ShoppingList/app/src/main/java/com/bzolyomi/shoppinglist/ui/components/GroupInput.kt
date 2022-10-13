@@ -62,12 +62,7 @@ fun GroupNameInput(
             isError = isError
         )
         if (isError) {
-            Text(
-                text = stringResource(R.string.error_message_input_field),
-                style = MaterialTheme.typography.caption,
-                color = MaterialTheme.colors.error,
-                modifier = Modifier.padding(start = PADDING_MEDIUM)
-            )
+            ErrorText(text = stringResource(R.string.error_message_input_field))
         }
     }
 }
