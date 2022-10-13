@@ -39,14 +39,16 @@ fun IntroScreen(
             INTRO_SCREEN_ZOOM_ANIMATION_FINISH_SIZE else INTRO_SCREEN_ZOOM_ANIMATION_START_SIZE,
         animationSpec = tween(
             durationMillis = INTRO_SCREEN_ZOOM_ANIMATION_DURATION,
-            delayMillis = 0,
             easing = FastOutLinearInEasing
         )
     )
     val imagePositionY by animateDpAsState(
-        targetValue = if (startSpringAnimation) INTRO_SCREEN_SPRING_ANIMATION_FINISH_POSITION
-        else INTRO_SCREEN_SPRING_ANIMATION_START_POSITION, animationSpec = spring(
-            dampingRatio = Spring.DampingRatioHighBouncy, stiffness = Spring.StiffnessMedium
+        targetValue = if (startSpringAnimation)
+            INTRO_SCREEN_SPRING_ANIMATION_FINISH_POSITION
+        else INTRO_SCREEN_SPRING_ANIMATION_START_POSITION,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioHighBouncy,
+            stiffness = Spring.StiffnessMedium
         )
     )
 
@@ -66,6 +68,7 @@ fun IntroScreen(
                 .offset(x = 0.dp, y = imagePositionY)
         )
     }
+
     LaunchedEffect(true) {
         delay(INTRO_SCREEN_INITIAL_DELAY)
         startZoomAnimation = true
