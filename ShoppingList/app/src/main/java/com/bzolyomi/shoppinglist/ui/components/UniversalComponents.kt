@@ -209,47 +209,6 @@ private fun ColumnScope.CardContent(
 }
 
 @Composable
-fun GroupCard(
-    titleGroupName: String,
-    onDeleteGroupClicked: () -> Unit,
-//    onReorderButtonClicked: () -> Unit,
-    modifier: Modifier
-) {
-    ConstraintLayout(modifier = modifier.fillMaxWidth()) {
-
-        val (card, buttonDelete) = createRefs()
-
-        Card(
-            elevation = ELEVATION_MEDIUM,
-            modifier = modifier
-                .padding(vertical = PADDING_LARGE)
-                .constrainAs(card) {
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                },
-            shape = MaterialTheme.shapes.large
-        ) {
-            CardTitle(
-                titleGroupName = titleGroupName,
-                modifier = modifier.padding(horizontal = PADDING_LARGE, vertical = PADDING_SMALL)
-            )
-        }
-
-        IconButton(onClick = onDeleteGroupClicked, modifier = modifier.constrainAs(buttonDelete) {
-            start.linkTo(card.end)
-            top.linkTo(card.top)
-            bottom.linkTo(card.bottom)
-        }) {
-            Icon(
-                Icons.Filled.Delete,
-                tint = MaterialTheme.colors.primary,
-                contentDescription = stringResource(R.string.content_description_delete_group_icon)
-            )
-        }
-    }
-}
-
-@Composable
 fun ItemCardsRearrange(
     shoppingListItems: List<ShoppingItemEntity>,
     listOrderById: List<ListOrderEntity>,
@@ -569,36 +528,3 @@ fun TrailingIconForErase(callback: () -> Unit) {
     }
 }
 
-@Composable
-fun ShowAlertDialog(
-    title: String,
-    message: String,
-    isOpen: Boolean,
-    onConfirmClicked: () -> Unit,
-    onDismissClicked: () -> Unit
-) {
-    if (isOpen) {
-        AlertDialog(
-            title = { Text(text = title) },
-            text = { Text(text = message) },
-            confirmButton = {
-                Button(
-                    onClick = onConfirmClicked,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
-                ) {
-                    Text(text = stringResource(R.string.confirm_button))
-                }
-            },
-            dismissButton = {
-                OutlinedButton(
-                    onClick = onDismissClicked, colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colors.primary
-                    )
-                ) {
-                    Text(text = stringResource(R.string.cancel_button))
-                }
-            },
-            onDismissRequest = onDismissClicked
-        )
-    }
-}

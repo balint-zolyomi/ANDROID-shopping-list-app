@@ -20,9 +20,9 @@ import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 @Composable
 fun ItemsOfGroupScreen(
     navigateToHomeScreen: () -> Unit,
-    onAddItemFABClicked: (Long?) -> Unit,
+    navigateToAddItemScreen: (Long?) -> Unit,
     modifier: Modifier,
-    sharedViewModel: SharedViewModel
+    sharedVM: SharedViewModel
 ) {
 
     var isReordering by remember { mutableStateOf(false) }
@@ -32,8 +32,8 @@ fun ItemsOfGroupScreen(
             isReordering = !isReordering
         } else {
             navigateToHomeScreen()
-            sharedViewModel.flushItemGUI()
-            sharedViewModel.setGroupName("")
+            sharedVM.flushItemGUI()
+            sharedVM.setGroupName("")
         }
     }
 
@@ -43,43 +43,49 @@ fun ItemsOfGroupScreen(
 
     val scaffoldState = rememberScaffoldState()
 
-    val shoppingGroup by mutableStateOf(sharedViewModel.selectedGroupWithList.group)
-    val shoppingList by sharedViewModel.selectedShoppingList.collectAsState()
-    val listOrder by sharedViewModel.selectedListOrder.collectAsState()
+    val shoppingGroup by mutableStateOf(sharedVM.selectedGroupWithList.group)
+    val shoppingList by sharedVM.selectedShoppingList.collectAsState()
+    val listOrder by sharedVM.selectedListOrder.collectAsState()
 
     var orderOfItemIds: List<ListOrderEntity>
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
-            AppBar(
-                appBarTitle = shoppingGroup.groupName,
-                isShowingReorderIcon = true,
-                isReordering = isReordering,
-                appBarDropDownTitle = stringResource(
-                    R.string.delete_all_appbar_dropdown_menu_option_delete_group
-                ),
-                alertDialogMessage = stringResource(
-                    R.string.delete_group_alert_dialog_message
-                ),
-                onDeleteClicked = {
-                    navigateToHomeScreen()
-                    Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT)
-                        .show()
-                    sharedViewModel.deleteGroup(groupId = shoppingGroup.groupId)
-                    sharedViewModel.deleteItems(shoppingList)
-                    sharedViewModel.deleteAllListOrders(groupId = shoppingGroup.groupId)
+            TopAppBar(
+                title = { Text(text = shoppingGroup.groupName) },
+                actions = {
+                    AppBarOptionToggleReorder(
+                        isReordering = isReordering,
+                        onReorderButtonToggled = {
+                            if (!isReordering) {
+                                Toast.makeText(
+                                    context,
+                                    reorderHint,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            isReordering = !isReordering
+                        }
+                    )
+                    AppBarOptionMore(
+                        dropdownItemTitle = stringResource(
+                            R.string.delete_all_appbar_dropdown_menu_option_delete_group
+                        ),
+                        alertDialogMessage = stringResource(
+                            R.string.delete_group_alert_dialog_message
+                        ),
+                        onConfirmClicked = {
+                            navigateToHomeScreen()
+                            Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT)
+                                .show()
+                            sharedVM.deleteGroup(groupId = shoppingGroup.groupId)
+                            sharedVM.deleteItems(shoppingList)
+                            sharedVM.deleteAllListOrders(groupId = shoppingGroup.groupId)
+                        }
+                    )
                 },
-                onReorderButtonToggled = {
-                    if (!isReordering) {
-                        Toast.makeText(
-                            context,
-                            reorderHint,
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    isReordering = !isReordering
-                }
+                backgroundColor = MaterialTheme.colors.background
             )
         },
         modifier = modifier
@@ -94,20 +100,20 @@ fun ItemsOfGroupScreen(
                     listOrder = listOrder,
                     isReordering = isReordering,
                     onDeleteItemClicked = { itemId, groupId ->
-                        sharedViewModel.deleteListOrder(
+                        sharedVM.deleteListOrder(
                             groupId = groupId,
                             itemId = itemId
                         )
-                        sharedViewModel.deleteItem(
+                        sharedVM.deleteItem(
                             itemId = itemId
                         )
                     },
                     onCheckboxClicked = {
-                        sharedViewModel.updateItemChecked(it)
+                        sharedVM.updateItemChecked(it)
                     },
                     onItemsOrderChange = {
                         orderOfItemIds = it
-                        sharedViewModel.updateListOrder(orderOfItemIds)
+                        sharedVM.updateListOrder(orderOfItemIds)
                     },
                     modifier = Modifier
                 )
@@ -116,8 +122,8 @@ fun ItemsOfGroupScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    sharedViewModel.setGroupName(shoppingGroup.groupName)
-                    onAddItemFABClicked(shoppingGroup.groupId)
+                    sharedVM.setGroupName(shoppingGroup.groupName)
+                    navigateToAddItemScreen(shoppingGroup.groupId)
                 },
                 backgroundColor = MaterialTheme.colors.primary
             ) {

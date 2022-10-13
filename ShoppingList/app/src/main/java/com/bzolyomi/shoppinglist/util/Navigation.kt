@@ -78,13 +78,13 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         ) {
             ShoppingListTheme {
                 AllGroupsScreen(
-                    onAddAllFABClicked = {
+                    navigateToAddScreen = {
                         navController.navigate("$ADD_SCREEN/$GROUP_UNSELECTED")
                     },
-                    onOpenGroupIconClicked = { groupId ->
+                    navigateToGroupScreen = { groupId ->
                         if (groupId != null) navController.navigate("$GROUP_SCREEN/$groupId")
                     },
-                    sharedViewModel = sharedViewModel,
+                    sharedVM = sharedViewModel,
                     modifier = backgroundModifier
                         .fillMaxSize()
                 )
@@ -172,12 +172,12 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                                 popUpTo(HOME_SCREEN) { inclusive = true }
                             }
                         },
-                        onAddItemFABClicked = { groupId ->
+                        navigateToAddItemScreen = { groupId ->
                             navController.navigate("$ADD_SCREEN/$groupId")
                         },
                         modifier = backgroundModifier
                             .fillMaxSize(),
-                        sharedViewModel = sharedViewModel
+                        sharedVM = sharedViewModel
                     )
                 }
             }

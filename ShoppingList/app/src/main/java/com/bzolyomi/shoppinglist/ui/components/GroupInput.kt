@@ -59,7 +59,8 @@ fun GroupNameInput(
                 }
             },
             singleLine = true,
-            isError = isError
+            isError = isError,
+            modifier = Modifier.fillMaxWidth()
         )
         if (isError) {
             ErrorText(text = stringResource(R.string.error_message_input_field))
