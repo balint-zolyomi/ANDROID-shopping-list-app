@@ -33,7 +33,7 @@ fun ItemsOfGroupScreen(
         } else {
             navigateToHomeScreen()
             sharedVM.flushItemGUI()
-            sharedVM.setGroupName("")
+            sharedVM.flushGroupGUI()
         }
     }
 
@@ -41,13 +41,13 @@ fun ItemsOfGroupScreen(
     val reorderHint = stringResource(R.string.toast_message_reorder_hint)
     val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
 
-    val scaffoldState = rememberScaffoldState()
-
     val shoppingGroup by mutableStateOf(sharedVM.selectedGroupWithList.group)
     val shoppingList by sharedVM.selectedShoppingList.collectAsState()
     val listOrder by sharedVM.selectedListOrder.collectAsState()
 
     var orderOfItemIds: List<ListOrderEntity>
+
+    val scaffoldState = rememberScaffoldState()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -59,11 +59,7 @@ fun ItemsOfGroupScreen(
                         isReordering = isReordering,
                         onReorderButtonToggled = {
                             if (!isReordering) {
-                                Toast.makeText(
-                                    context,
-                                    reorderHint,
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                Toast.makeText(context, reorderHint, Toast.LENGTH_LONG).show()
                             }
                             isReordering = !isReordering
                         }
@@ -80,7 +76,7 @@ fun ItemsOfGroupScreen(
                             Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT)
                                 .show()
                             sharedVM.deleteGroup(groupId = shoppingGroup.groupId)
-                            sharedVM.deleteItems(shoppingList)
+                            sharedVM.deleteItems(shoppingList = shoppingList)
                             sharedVM.deleteAllListOrders(groupId = shoppingGroup.groupId)
                         }
                     )
@@ -95,28 +91,40 @@ fun ItemsOfGroupScreen(
                 modifier = modifier
                     .fillMaxSize()
             ) {
-                ContentWithoutInput(
-                    shoppingList = shoppingList,
-                    listOrder = listOrder,
-                    isReordering = isReordering,
-                    onDeleteItemClicked = { itemId, groupId ->
-                        sharedVM.deleteListOrder(
-                            groupId = groupId,
-                            itemId = itemId
+                Column(
+                    modifier = modifier
+                        .fillMaxWidth()
+                ) {
+                    if (isReordering) {
+                        ItemCardsRearrange(
+                            shoppingList = shoppingList,
+                            listOrderById = listOrder,
+                            onItemsOrderChange = {
+                                orderOfItemIds = it
+                                sharedVM.updateListOrder(orderOfItemIds)
+                            },
+                            modifier = Modifier
                         )
-                        sharedVM.deleteItem(
-                            itemId = itemId
+                    } else {
+                        ItemCards(
+                            shoppingList = shoppingList,
+                            listOrderById = listOrder,
+                            onCheckboxClicked = {
+                                sharedVM.updateItemChecked(it)
+                            },
+                            onDeleteItemClicked = { itemId, groupId ->
+                                sharedVM.deleteListOrder(
+                                    groupId = groupId,
+                                    itemId = itemId
+                                )
+                                sharedVM.deleteItem(
+                                    itemId = itemId
+                                )
+                            },
+                            modifier = Modifier
                         )
-                    },
-                    onCheckboxClicked = {
-                        sharedVM.updateItemChecked(it)
-                    },
-                    onItemsOrderChange = {
-                        orderOfItemIds = it
-                        sharedVM.updateListOrder(orderOfItemIds)
-                    },
-                    modifier = Modifier
-                )
+                    }
+                }
             }
         },
         floatingActionButton = {
@@ -135,60 +143,4 @@ fun ItemsOfGroupScreen(
             }
         }
     )
-}
-
-@Composable
-fun ContentWithoutInput(
-    shoppingList: List<ShoppingItemEntity>,
-    listOrder: List<ListOrderEntity>,
-    isReordering: Boolean,
-    onDeleteItemClicked: (itemId: Long?, groupId: Long?) -> Unit,
-    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
-    modifier: Modifier
-) {
-    Column {
-        ItemsList(
-            shoppingListItems = shoppingList,
-            listOrder = listOrder,
-            isReordering = isReordering,
-            onDeleteItemClicked = onDeleteItemClicked,
-            onCheckboxClicked = onCheckboxClicked,
-            onItemsOrderChange = onItemsOrderChange,
-            modifier = modifier
-        )
-    }
-}
-
-@Composable
-fun ItemsList(
-    shoppingListItems: List<ShoppingItemEntity>,
-    listOrder: List<ListOrderEntity>,
-    isReordering: Boolean,
-    onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    onDeleteItemClicked: (itemId: Long?, groupId: Long?) -> Unit,
-    onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
-    modifier: Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        if (isReordering) {
-            ItemCardsRearrange(
-                shoppingListItems = shoppingListItems,
-                listOrderById = listOrder,
-                onItemsOrderChange = onItemsOrderChange,
-                modifier = modifier
-            )
-        } else {
-            ItemCards(
-                shoppingListItems = shoppingListItems,
-                itemPositions = listOrder,
-                onCheckboxClicked = onCheckboxClicked,
-                onDeleteItemClicked = onDeleteItemClicked,
-                modifier = modifier
-            )
-        }
-    }
 }

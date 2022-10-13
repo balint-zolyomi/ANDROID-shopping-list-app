@@ -26,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
@@ -210,7 +209,7 @@ private fun ColumnScope.CardContent(
 
 @Composable
 fun ItemCardsRearrange(
-    shoppingListItems: List<ShoppingItemEntity>,
+    shoppingList: List<ShoppingItemEntity>,
     listOrderById: List<ListOrderEntity>,
     onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
     modifier: Modifier
@@ -259,7 +258,7 @@ fun ItemCardsRearrange(
                     isItemChecked = true
                 )
             )
-            for (i in shoppingListItems) {
+            for (i in shoppingList) {
                 if (i.itemId == listOrderId.toLong()) shoppingListItem = i
             }
 
@@ -341,8 +340,8 @@ fun DragIcon() {
 
 @Composable
 fun ItemCards(
-    shoppingListItems: List<ShoppingItemEntity>,
-    itemPositions: List<ListOrderEntity>,
+    shoppingList: List<ShoppingItemEntity>,
+    listOrderById: List<ListOrderEntity>,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
     onDeleteItemClicked: (itemId: Long?, groupId: Long?) -> Unit,
     modifier: Modifier
@@ -350,13 +349,13 @@ fun ItemCards(
     LazyColumn(
         state = rememberLazyListState()
     ) {
-        val order = mutableStateOf(itemPositions.sortedBy {
+        val order = mutableStateOf(listOrderById.sortedBy {
             it.itemPositionInList
         })
 
         items(order.value) { listOrder ->
 
-            val shoppingListItem = shoppingListItems.find { shoppingItem ->
+            val shoppingListItem = shoppingList.find { shoppingItem ->
                 shoppingItem.itemId == listOrder.itemId
             }
 
