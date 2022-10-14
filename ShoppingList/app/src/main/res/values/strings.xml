@@ -14,8 +14,9 @@
     <string name="delete_alert_dialog_title">Warning</string>
     <string name="delete_all_alert_dialog_message">Delete all shopping groups? This action cannot be undone.</string>
     <string name="delete_all_appbar_dropdown_menu_option_delete_all">Delete all</string>
-    <string name="error_message_input_field">Required field, also cannot start with a space.</string>
-    <string name="error_message_quantity_input_field">Must be a number greater than zero, or can be left empty.</string>
+    <string name="error_message_input_field">Required field, also cannot start with a space (max 25 characters).</string>
+    <string name="error_message_quantity_input_field">Must be a number greater than zero (max 25 characters), or can be left empty.</string>
+    <string name="error_message_unit_input_field">Max 25 characters.</string>
     <string name="delete_shopping_group_and_its_items_alert_dialog_message">Delete shopping group and all its items? This action cannot be undone.</string>
     <string name="toast_message_item_added">💾✅</string>
     <string name="toast_message_group_deleted">🗑️✅</string>
@@ -36,8 +37,10 @@
     <string name="top_appbar_title_add_group_and_items">Add group and/or item(s)</string>
     <string name="top_appbar_title_add_items">Add item to group</string>
     <string name="delete_all_appbar_dropdown_menu_option_delete_group">Delete group</string>
-    <string name="delete_group_alert_dialog_message">Delete shopping group and its item(s)? This action cannot be undone.</string>
+    <string name="alert_dialog_message_delete_group">Delete shopping group and its item(s)? This action cannot be undone.</string>
+
     <string name="content_description_toggle_on_reorder_items_icon">Toggle reorder items on icon</string>
     <string name="content_description_toggle_off_reorder_icon">Toggle reorder items off icon</string>
+
     <string name="toast_message_reorder_hint">Long press item and drag to reorder</string>
 </resources>

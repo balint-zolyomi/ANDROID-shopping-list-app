@@ -12,6 +12,8 @@ import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
 import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
+import com.bzolyomi.shoppinglist.util.Constants.MORE_VERT_ICON_ROTATION_ANIMATION_END_DEGREES
+import com.bzolyomi.shoppinglist.util.Constants.MORE_VERT_ICON_ROTATION_ANIMATION_START_DEGREES
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_ICONS_OFFICIAL
 
 @Composable
@@ -19,7 +21,11 @@ fun MoreVertIcon(
     isExpanded: Boolean
 ) {
     val moreVertIconAngle: Float by animateFloatAsState(
-        targetValue = if (isExpanded) -90f else 0f
+        targetValue = if (isExpanded) {
+            MORE_VERT_ICON_ROTATION_ANIMATION_END_DEGREES
+        } else {
+            MORE_VERT_ICON_ROTATION_ANIMATION_START_DEGREES
+        }
     )
 
     Icon(
@@ -90,16 +96,6 @@ fun CheckboxIcon(
     onCheckboxClicked: () -> Unit,
     modifier: Modifier
 ) {
-//    TODO
-//    val (isChecked, setChecked) = remember { mutableStateOf(false) }
-//    MaterialTheme {
-//        Surface {
-//            FavoriteButton(
-//                isChecked = isChecked,
-//                onClick = { setChecked(!isChecked) }
-//            )
-//        }
-//    }
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
         IconButton(
             onClick = onCheckboxClicked,

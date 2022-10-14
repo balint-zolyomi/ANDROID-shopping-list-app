@@ -21,7 +21,11 @@ import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.components.input.*
 import com.bzolyomi.shoppinglist.ui.components.showShortToast
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_NAME_MAX_LENGTH
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_UNSELECTED
+import com.bzolyomi.shoppinglist.util.Constants.ITEM_NAME_MAX_LENGTH
+import com.bzolyomi.shoppinglist.util.Constants.ITEM_QUANTITY_MAX_LENGTH
+import com.bzolyomi.shoppinglist.util.Constants.ITEM_UNIT_MAX_LENGTH
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
@@ -61,6 +65,7 @@ fun AddAllScreen(
     var isGroupNameError by rememberSaveable { mutableStateOf(false) }
     var isItemNameError by rememberSaveable { mutableStateOf(false) }
     var isItemQuantityError by rememberSaveable { mutableStateOf(false) }
+    var isItemUnitError by rememberSaveable { mutableStateOf(false) }
 
     var isAnyError by rememberSaveable { mutableStateOf(false) }
 
@@ -68,7 +73,8 @@ fun AddAllScreen(
         isGroupNameError = validateGroupNameInput(groupName)
         isItemNameError = validateItemNameInput(itemName)
         isItemQuantityError = validateItemQuantityInput(itemQuantity)
-        isAnyError = isGroupNameError || isItemNameError || isItemQuantityError
+        isItemUnitError = validateItemUnitInput(itemUnit)
+        isAnyError = isGroupNameError || isItemNameError || isItemQuantityError || isItemUnitError
     }
 
     fun onSubmit() {
@@ -114,8 +120,10 @@ fun AddAllScreen(
                     inputTextStyle = inputTextStyle,
                     onGroupNameChange = {
                         isGroupNameError = validateGroupNameInput(it)
-                        // no error OR user wants to delete the input field with TrailingIcon
-                        if (!isGroupNameError || it == "") sharedViewModel.setGroupName(it)
+                        // it == "" -> user wants to delete the input field with TrailingIcon
+                        if (!isGroupNameError || it == "" || it.length == GROUP_NAME_MAX_LENGTH) {
+                            sharedViewModel.setGroupName(it)
+                        }
                     },
                     onEraseGroupNameInputButtonClicked = {
                         sharedViewModel.setGroupName("")
@@ -131,20 +139,29 @@ fun AddAllScreen(
                     inputTextStyle = inputTextStyle,
                     onItemNameChange = {
                         isItemNameError = validateItemNameInput(it)
-                        if (!isItemNameError || it == "") sharedViewModel.setItemName(it)
+                        if (!isItemNameError || it == "" || it.length == ITEM_NAME_MAX_LENGTH) {
+                            sharedViewModel.setItemName(it)
+                        }
                     },
                     onEraseItemNameInputButtonClicked = {
                         sharedViewModel.setItemName("")
                         isItemNameError = validateItemNameInput(sharedViewModel.itemName.value)
-                    }
-                ) {
-                    isItemNameError = validateItemNameInput(itemName)
-                }
+                    },
+                    onNextInItemNameInputClicked = {
+                        isItemNameError = validateItemNameInput(itemName)
+                    },
+                )
                 ItemQuantityInput(
                     itemQuantity = itemQuantity,
                     isError = isItemQuantityError,
                     inputTextStyle = inputTextStyle,
-                    onItemQuantityChange = { sharedViewModel.setItemQuantity(it) },
+                    onItemQuantityChange = {
+                        isItemQuantityError = validateItemQuantityInput(it)
+                        if (!isItemQuantityError || it == ""
+                            || it.length == ITEM_QUANTITY_MAX_LENGTH) {
+                            sharedViewModel.setItemQuantity(it)
+                        }
+                    },
                     onEraseItemQuantityInputButtonClicked = {
                         sharedViewModel.setItemQuantity("")
                         isItemQuantityError = validateItemQuantityInput(
@@ -157,10 +174,17 @@ fun AddAllScreen(
                 )
                 ItemUnitInput(
                     itemUnit = itemUnit,
+                    isError = isItemUnitError,
                     inputTextStyle = inputTextStyle,
-                    onItemUnitChange = { sharedViewModel.setItemUnit(it) },
+                    onItemUnitChange = {
+                        isItemUnitError = validateItemUnitInput(it)
+                        if (!isItemUnitError || it == "" || it.length == ITEM_UNIT_MAX_LENGTH) {
+                            sharedViewModel.setItemUnit(it)
+                        }
+                    },
                     onEraseItemUnitInputButtonClicked = {
                         sharedViewModel.setItemUnit("")
+                        isItemUnitError = validateItemUnitInput(sharedViewModel.itemUnit.value)
                     },
                     onDone = { onSubmit() }
                 )

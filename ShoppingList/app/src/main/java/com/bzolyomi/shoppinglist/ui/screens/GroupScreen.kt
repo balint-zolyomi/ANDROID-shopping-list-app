@@ -74,7 +74,7 @@ fun ItemsOfGroupScreen(
                             R.string.delete_all_appbar_dropdown_menu_option_delete_group
                         ),
                         alertDialogMessage = stringResource(
-                            R.string.delete_group_alert_dialog_message
+                            R.string.alert_dialog_message_delete_group
                         ),
                         onConfirmClicked = {
                             navigateToHomeScreen()

@@ -115,6 +115,7 @@ fun ItemQuantityInput(
 @Composable
 fun ItemUnitInput(
     itemUnit: String,
+    isError: Boolean,
     inputTextStyle: TextStyle,
     onItemUnitChange: (String) -> Unit,
     onEraseItemUnitInputButtonClicked: () -> Unit,
@@ -135,6 +136,12 @@ fun ItemUnitInput(
                 onEraseItemUnitInputButtonClicked
             )
         },
-        singleLine = true
+        singleLine = true,
+        isError = isError
     )
+    if (isError) {
+        ErrorText(
+            text = stringResource(R.string.error_message_unit_input_field)
+        )
+    }
 }

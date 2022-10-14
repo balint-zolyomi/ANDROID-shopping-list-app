@@ -57,6 +57,10 @@ object Constants {
     const val EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES = 0f
     const val EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES = -180f
 
+        // More vert icon
+    const val MORE_VERT_ICON_ROTATION_ANIMATION_START_DEGREES = 0f
+    const val MORE_VERT_ICON_ROTATION_ANIMATION_END_DEGREES = -90f
+
         // Intro screen
     const val INTRO_SCREEN_INITIAL_DELAY: Long = 0
     const val INTRO_SCREEN_ZOOM_ANIMATION_DURATION: Int = 400
@@ -84,4 +88,10 @@ object Constants {
     const val GROUP_SCREEN = "group"
     const val GROUP_SCREEN_WITH_ARG = "group/{groupId}"
     const val NAV_ARGUMENT_GROUP_ID = "groupId"
+
+    // INPUT VALIDATION
+    const val GROUP_NAME_MAX_LENGTH = 25
+    const val ITEM_NAME_MAX_LENGTH = 25
+    const val ITEM_QUANTITY_MAX_LENGTH = 25
+    const val ITEM_UNIT_MAX_LENGTH = 25
 }

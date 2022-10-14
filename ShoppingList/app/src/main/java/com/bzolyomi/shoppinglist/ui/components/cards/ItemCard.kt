@@ -54,10 +54,12 @@ fun ItemCards(
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CheckboxIcon(
-                            isItemChecked = isItemChecked, onCheckboxClicked = {
+                            isItemChecked = isItemChecked,
+                            onCheckboxClicked = {
                                 onCheckboxClicked(shoppingListItem)
                                 isItemChecked = !isItemChecked
-                            }, modifier = Modifier.padding(start = PADDING_X_SMALL)
+                            },
+                            modifier = Modifier.padding(start = PADDING_X_SMALL)
                         )
                         Item(
                             item = shoppingListItem,
