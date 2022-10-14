@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -72,6 +73,7 @@ private fun DoneRatio(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun GroupAndItemsCard(
     titleGroupName: String,
@@ -91,7 +93,8 @@ fun GroupAndItemsCard(
         modifier = modifier
             .alpha(cardAlpha)
             .padding(PADDING_SMALL),
-        shape = MaterialTheme.shapes.large
+        shape = MaterialTheme.shapes.large,
+        onClick = { isExpanded = !isExpanded }
     ) {
         Column {
             Row(
