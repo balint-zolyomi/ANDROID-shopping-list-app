@@ -19,11 +19,7 @@ fun AppBarOptionMore(
     var isAlertDialogOpen by remember { mutableStateOf(false) }
 
     IconButton(onClick = { isExpanded = true }) {
-        Icon(
-            imageVector = Icons.Filled.MoreVert,
-            contentDescription = stringResource(R.string.content_description_open_dropdown_menu),
-            tint = MaterialTheme.colors.onBackground
-        )
+        MoreVertIcon(isExpanded = isExpanded)
         DropdownMenu(
             expanded = isExpanded,
             onDismissRequest = { isExpanded = false }

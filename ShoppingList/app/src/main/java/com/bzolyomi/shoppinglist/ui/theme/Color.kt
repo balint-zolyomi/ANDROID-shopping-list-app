@@ -29,8 +29,11 @@ val Accent = Color(0xFFE040FB)
 val Secondary = Color(0xFF8BC34A)
 val Text = Color(0xFF212121)
 val TextOnDark = Color(0xFFDEDEDE)
+
+val GroupDoneCardColor = Color(0xFFBDBDBD)
+val GroupDoneCardColorDark = Color(0xFF111111)
 val SecondaryText = Color(0xFF757575)
-val Divider = Color(0xFFBDBDBD)
+
 val FloatingActionButtonTint = Color.White
 
 val GradientBackground = Brush.linearGradient(

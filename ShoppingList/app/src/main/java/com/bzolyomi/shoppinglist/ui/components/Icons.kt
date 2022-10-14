@@ -1,15 +1,11 @@
 package com.bzolyomi.shoppinglist.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
@@ -17,7 +13,22 @@ import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
 import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
 import com.bzolyomi.shoppinglist.util.Constants.SIZE_ICONS_OFFICIAL
-import com.bzolyomi.shoppinglist.util.Constants.SIZE_MEDIUM
+
+@Composable
+fun MoreVertIcon(
+    isExpanded: Boolean
+) {
+    val moreVertIconAngle: Float by animateFloatAsState(
+        targetValue = if (isExpanded) -90f else 0f
+    )
+
+    Icon(
+        imageVector = Icons.Filled.MoreVert,
+        contentDescription = stringResource(R.string.content_description_open_dropdown_menu),
+        tint = MaterialTheme.colors.onBackground,
+        modifier = Modifier.rotate(moreVertIconAngle)
+    )
+}
 
 @Composable
 fun ExpandIcon(
@@ -30,21 +41,17 @@ fun ExpandIcon(
         else EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
     )
 
-    Column {
-        IconButton(
-            onClick = onExpandIconClicked
-        ) {
-            Surface(shape = CircleShape, modifier = modifier.size(SIZE_MEDIUM)) {
-                Icon(
-                    imageVector = Icons.Filled.ExpandMore,
-                    contentDescription = stringResource(
-                        R.string.content_description_expand_group_icon
-                    ),
-                    tint = MaterialTheme.colors.primary,
-                    modifier = modifier.rotate(expandIconAngle)
-                )
-            }
-        }
+    IconButton(
+        onClick = onExpandIconClicked
+    ) {
+        Icon(
+            imageVector = Icons.Filled.ExpandMore,
+            contentDescription = stringResource(
+                R.string.content_description_expand_group_icon
+            ),
+            tint = MaterialTheme.colors.primary,
+            modifier = modifier.rotate(expandIconAngle)
+        )
     }
 }
 
@@ -52,11 +59,15 @@ fun ExpandIcon(
 fun OpenInNewIcon(
     onOpenGroupIconClicked: () -> Unit
 ) {
-    IconButton(onClick = onOpenGroupIconClicked) {
+    IconButton(
+        onClick = onOpenGroupIconClicked
+    ) {
         Icon(
-            imageVector = Icons.Filled.OpenInNew, contentDescription = stringResource(
+            imageVector = Icons.Filled.OpenInNew,
+            contentDescription = stringResource(
                 R.string.content_description_go_to_items_of_group_screen_icon
-            ), tint = MaterialTheme.colors.primary
+            ),
+            tint = MaterialTheme.colors.primary
         )
     }
 }

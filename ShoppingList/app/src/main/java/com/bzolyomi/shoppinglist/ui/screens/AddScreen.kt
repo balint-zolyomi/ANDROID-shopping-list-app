@@ -2,7 +2,9 @@ package com.bzolyomi.shoppinglist.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
@@ -16,8 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
-import com.bzolyomi.shoppinglist.ui.components.*
 import com.bzolyomi.shoppinglist.ui.components.input.*
+import com.bzolyomi.shoppinglist.ui.components.showShortToast
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_UNSELECTED
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM

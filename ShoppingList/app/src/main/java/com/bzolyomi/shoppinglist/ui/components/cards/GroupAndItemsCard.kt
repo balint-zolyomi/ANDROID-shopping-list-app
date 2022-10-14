@@ -10,17 +10,23 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.ExpandIcon
 import com.bzolyomi.shoppinglist.ui.components.OpenInNewIcon
+import com.bzolyomi.shoppinglist.ui.theme.GroupDoneCardColorDark
+import com.bzolyomi.shoppinglist.ui.theme.SecondaryText
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_FADE_IN_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_FADE_IN_INITIAL_ALPHA
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_FADE_OUT_DURATION
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_ITEMS_DONE_ALPHA
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_CARD_NORMAL_ALPHA
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_LARGE
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
@@ -48,7 +54,9 @@ private fun CardTitle(
 
 @Composable
 private fun DoneRatio(
-    shoppingList: List<ShoppingItemEntity>, modifier: Modifier
+    shoppingList: List<ShoppingItemEntity>,
+    onAllItemDone: () -> Unit,
+    modifier: Modifier
 ) {
     var itemsTotal = 0
     var itemsDone = 0
@@ -56,6 +64,9 @@ private fun DoneRatio(
         itemsTotal++
         if (item.isItemChecked) itemsDone++
     }
+
+    if (itemsDone == itemsTotal) onAllItemDone()
+
     Text(
         text = "$itemsDone/$itemsTotal", modifier = modifier, style = MaterialTheme.typography.body1
     )
@@ -71,11 +82,15 @@ fun GroupAndItemsCard(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val titleBottomPaddingDp by animateDpAsState(if (isExpanded) PADDING_ZERO else PADDING_MEDIUM)
-    val cardElevation = if (isExpanded) ELEVATION_MEDIUM else ELEVATION_SMALL
+    var isAllItemsDone by remember { mutableStateOf(false) }
+    val cardElevation = if (isExpanded && !isAllItemsDone) ELEVATION_MEDIUM else ELEVATION_SMALL
+    val cardAlpha = if (isAllItemsDone) GROUP_CARD_ITEMS_DONE_ALPHA else GROUP_CARD_NORMAL_ALPHA
 
     Card(
         elevation = cardElevation,
-        modifier = modifier.padding(PADDING_SMALL),
+        modifier = modifier
+            .alpha(cardAlpha)
+            .padding(PADDING_SMALL),
         shape = MaterialTheme.shapes.large
     ) {
         Column {
@@ -96,7 +111,9 @@ fun GroupAndItemsCard(
                     titleGroupName = titleGroupName, modifier = modifier.weight(1f)
                 )
                 DoneRatio(
-                    shoppingList = shoppingList, modifier = modifier.padding(end = PADDING_SMALL)
+                    shoppingList = shoppingList,
+                    onAllItemDone = { isAllItemsDone = true },
+                    modifier = modifier.padding(end = PADDING_SMALL)
                 )
             }
             CardContent(

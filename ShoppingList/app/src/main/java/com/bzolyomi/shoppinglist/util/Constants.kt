@@ -40,8 +40,12 @@ object Constants {
     val ELEVATION_MEDIUM = 8.dp
 
         // Size
-    val SIZE_MEDIUM = 25.dp
+//    val SIZE_MEDIUM = 25.dp
     val SIZE_ICONS_OFFICIAL = 48.dp
+
+        // Alpha
+    const val GROUP_CARD_NORMAL_ALPHA = 1f
+    const val GROUP_CARD_ITEMS_DONE_ALPHA = 0.6f
 
     // ANIMATION
         // Group card
