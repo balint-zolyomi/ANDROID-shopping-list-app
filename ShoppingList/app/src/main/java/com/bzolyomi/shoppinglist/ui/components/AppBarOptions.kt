@@ -3,7 +3,6 @@ package com.bzolyomi.shoppinglist.ui.components
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChangeCircle
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.ChangeCircle
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.stringResource
@@ -35,7 +34,7 @@ fun AppBarOptionMore(
 
     if (isAlertDialogOpen) {
         AlertDialog(
-            title = { Text(text = stringResource(R.string.delete_alert_dialog_title)) },
+            title = { Text(text = stringResource(R.string.alert_dialog_title_delete)) },
             text = { Text(text = alertDialogMessage) },
             confirmButton = {
                 Button(
@@ -47,7 +46,7 @@ fun AppBarOptionMore(
                         backgroundColor = MaterialTheme.colors.primary
                     )
                 ) {
-                    Text(text = stringResource(R.string.confirm_button))
+                    Text(text = stringResource(R.string.button_confirm_text))
                 }
             },
             dismissButton = {
@@ -57,7 +56,7 @@ fun AppBarOptionMore(
                         contentColor = MaterialTheme.colors.primary
                     )
                 ) {
-                    Text(text = stringResource(R.string.cancel_button))
+                    Text(text = stringResource(R.string.button_cancel_text))
                 }
             },
             onDismissRequest = { isAlertDialogOpen = false }
@@ -75,7 +74,7 @@ fun AppBarOptionToggleReorder(
             Icon(
                 imageVector = Icons.Outlined.ChangeCircle,
                 contentDescription = stringResource(
-                    R.string.content_description_toggle_on_reorder_items_icon
+                    R.string.content_description_icon_toggle_on_reorder
                 ),
                 tint = MaterialTheme.colors.onBackground
             )
@@ -83,7 +82,7 @@ fun AppBarOptionToggleReorder(
             Icon(
                 imageVector = Icons.Filled.ChangeCircle,
                 contentDescription = stringResource(
-                    R.string.content_description_toggle_off_reorder_icon
+                    R.string.content_description_icon_toggle_off_reorder
                 ),
                 tint = MaterialTheme.colors.onBackground
             )

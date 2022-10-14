@@ -95,11 +95,11 @@ fun AddAllScreen(
             TopAppBar(
                 title = {
                     if (groupId == GROUP_UNSELECTED) {
-                        Text(text = stringResource(R.string.top_appbar_title_add_group_and_items))
+                        Text(text = stringResource(R.string.appbar_title_add_group_and_items))
                     } else {
                         Text(
                             text = stringResource(
-                                R.string.top_appbar_title_add_items
+                                R.string.appbar_title_add_item
                             )
                         )
                     }
@@ -208,7 +208,9 @@ fun AddAllScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Done,
-                    contentDescription = stringResource(R.string.content_description_fab),
+                    contentDescription = stringResource(
+                        R.string.content_description_fab_confirm_add
+                    ),
                     tint = FloatingActionButtonTint
                 )
             }
@@ -223,6 +225,6 @@ fun AddItemButton(onAddItemButtonClicked: () -> Unit) {
         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
         modifier = Modifier.padding(PADDING_MEDIUM)
     ) {
-        Text(text = stringResource(R.string.add_item_button_text))
+        Text(text = stringResource(R.string.button_add_item_text))
     }
 }

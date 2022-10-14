@@ -71,7 +71,7 @@ fun ItemsOfGroupScreen(
                     )
                     AppBarOptionMore(
                         dropdownItemTitle = stringResource(
-                            R.string.delete_all_appbar_dropdown_menu_option_delete_group
+                            R.string.appbar_dropdown_menu_option_delete_group
                         ),
                         alertDialogMessage = stringResource(
                             R.string.alert_dialog_message_delete_group
@@ -138,7 +138,7 @@ fun ItemsOfGroupScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(R.string.fab_add_item),
+                    contentDescription = stringResource(R.string.content_description_fab_add_item),
                     tint = FloatingActionButtonTint,
                 )
             }

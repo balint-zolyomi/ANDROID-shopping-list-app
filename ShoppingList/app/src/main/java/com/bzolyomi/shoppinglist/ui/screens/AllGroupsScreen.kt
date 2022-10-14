@@ -33,14 +33,14 @@ fun AllGroupsScreen(
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(R.string.all_groups_screen_appbar_title)) },
+                title = { Text(text = stringResource(R.string.appbar_title_all_groups_screen)) },
                 actions = {
                     AppBarOptionMore(
                         dropdownItemTitle = stringResource(
-                            R.string.delete_all_appbar_dropdown_menu_option_delete_all
+                            R.string.appbar_dropdown_menu_option_delete_all
                         ),
                         alertDialogMessage = stringResource(
-                            R.string.delete_all_alert_dialog_message
+                            R.string.alert_dialog_message_delete_all
                         ),
                         onConfirmClicked = {
                             for (groupWithList in shoppingGroupsWithLists) {
@@ -96,7 +96,9 @@ fun AllGroupsScreen(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(R.string.content_description_fab),
+                    contentDescription = stringResource(
+                        R.string.content_description_fab_add_group_and_item
+                    ),
                     tint = FloatingActionButtonTint,
                 )
             }

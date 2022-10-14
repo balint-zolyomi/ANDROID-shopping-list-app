@@ -30,7 +30,7 @@ fun MoreVertIcon(
 
     Icon(
         imageVector = Icons.Filled.MoreVert,
-        contentDescription = stringResource(R.string.content_description_open_dropdown_menu),
+        contentDescription = stringResource(R.string.content_description_icon_open_dropdown_menu),
         tint = MaterialTheme.colors.onBackground,
         modifier = Modifier.rotate(moreVertIconAngle)
     )
@@ -53,7 +53,7 @@ fun ExpandIcon(
         Icon(
             imageVector = Icons.Filled.ExpandMore,
             contentDescription = stringResource(
-                R.string.content_description_expand_group_icon
+                R.string.content_description_icon_expand_group
             ),
             tint = MaterialTheme.colors.primary,
             modifier = modifier.rotate(expandIconAngle)
@@ -71,7 +71,7 @@ fun OpenInNewIcon(
         Icon(
             imageVector = Icons.Filled.OpenInNew,
             contentDescription = stringResource(
-                R.string.content_description_go_to_items_of_group_screen_icon
+                R.string.content_description_icon_open_in_new
             ),
             tint = MaterialTheme.colors.primary
         )
@@ -83,7 +83,7 @@ fun EraseTrailingIcon(callback: () -> Unit) {
     IconButton(onClick = callback) {
         Icon(
             imageVector = Icons.Filled.Close,
-            contentDescription = stringResource(R.string.content_description_erase_input_field),
+            contentDescription = stringResource(R.string.content_description_icon_erase_input_field),
             tint = MaterialTheme.colors.primary
         )
     }
@@ -105,14 +105,14 @@ fun CheckboxIcon(
                 Icon(
                     imageVector = Icons.Filled.CheckBox,
                     contentDescription = stringResource(
-                        R.string.content_description_checkbox_done_item
+                        R.string.content_description_icon_checkbox_item_done
                     )
                 )
             } else {
                 Icon(
                     imageVector = Icons.Filled.CheckBoxOutlineBlank,
                     contentDescription = stringResource(
-                        R.string.content_description_checkbox_item_not_done
+                        R.string.content_description_icon_checkbox_item_not_done
                     )
                 )
             }
@@ -133,7 +133,7 @@ fun DeleteItemIcon(
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = stringResource(R.string.delete_item_icon)
+                contentDescription = stringResource(R.string.content_description_icon_delete_item)
             )
         }
     }
@@ -152,7 +152,7 @@ fun DragIcon(
         ) {
             Icon(
                 imageVector = Icons.Filled.DragIndicator,
-                contentDescription = stringResource(R.string.drag_icon_content_description),
+                contentDescription = stringResource(R.string.content_description_icon_drag),
             )
         }
     }

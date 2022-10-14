@@ -51,7 +51,7 @@ fun ItemNameInput(
                     Icon(
                         Icons.Filled.Error,
                         contentDescription = stringResource(
-                            id = R.string.content_description_error_icon_input_field
+                            id = R.string.content_description_icon_error_input_field
                         )
                     )
                 }
@@ -60,7 +60,7 @@ fun ItemNameInput(
             isError = isError
         )
         if (isError) {
-            ErrorText(text = stringResource(R.string.error_message_input_field))
+            ErrorText(text = stringResource(R.string.error_message_name_input_field))
         }
     }
 }
@@ -97,7 +97,7 @@ fun ItemQuantityInput(
                 Icon(
                     Icons.Filled.Error,
                     contentDescription = stringResource(
-                        id = R.string.content_description_error_icon_input_field
+                        id = R.string.content_description_icon_error_input_field
                     )
                 )
             }
