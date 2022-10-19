@@ -1,12 +1,17 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
@@ -55,20 +60,17 @@ fun AllGroupsScreen(
             )
         },
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         content = {
             LazyColumn(
-                contentPadding = WindowInsets.systemBars
-                    .only(WindowInsetsSides.Vertical)
-                    .add(
-                        WindowInsets(
-                            left = PADDING_SMALL,
-                            right = PADDING_SMALL,
-                            top = PADDING_MEDIUM,
-                            bottom = PADDING_XX_LARGE
-                        )
-                    )
-                    .asPaddingValues(),
+                contentPadding = PaddingValues(
+                    start = PADDING_SMALL,
+                    end = PADDING_SMALL,
+                    top = PADDING_MEDIUM,
+                    bottom = PADDING_XX_LARGE
+                ),
                 modifier = modifier
                     .fillMaxSize()
             ) {

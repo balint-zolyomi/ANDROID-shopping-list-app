@@ -3,6 +3,7 @@ package com.bzolyomi.shoppinglist.ui.components.cards
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,10 +18,9 @@ import androidx.compose.ui.unit.dp
 import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.DragIcon
-import com.bzolyomi.shoppinglist.util.Constants
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
-import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_XX_LARGE
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -65,7 +65,13 @@ fun ItemCardsReorder(
         state = state.listState,
         modifier = modifier
             .reorderable(state = state)
-            .detectReorderAfterLongPress(state = state)
+            .detectReorderAfterLongPress(state = state),
+        contentPadding = PaddingValues(
+            start = PADDING_SMALL,
+            end = PADDING_SMALL,
+            top = PADDING_SMALL,
+            bottom = PADDING_XX_LARGE
+        )
     ) {
         items(itemIdsSortedByPosition, { it }) { listOrderId ->
 

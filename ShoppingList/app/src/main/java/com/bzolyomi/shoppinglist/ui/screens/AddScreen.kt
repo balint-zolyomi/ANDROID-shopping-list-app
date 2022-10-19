@@ -2,9 +2,7 @@ package com.bzolyomi.shoppinglist.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
@@ -89,7 +87,11 @@ fun AddAllScreen(
 
     Scaffold(
         scaffoldState = scaffoldState,
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .imePadding(),
         topBar = {
             TopAppBar(
                 title = {

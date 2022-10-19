@@ -4,7 +4,8 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -19,7 +20,6 @@ import com.bzolyomi.shoppinglist.ui.components.AppBarOptionToggleReorder
 import com.bzolyomi.shoppinglist.ui.components.cards.ItemCards
 import com.bzolyomi.shoppinglist.ui.components.cards.ItemCardsReorder
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
-import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
@@ -90,12 +90,13 @@ fun ItemsOfGroupScreen(
             )
         },
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         content = {
             Column(
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(PADDING_MEDIUM)
             ) {
                 if (isReordering) {
                     ItemCardsReorder(
@@ -129,18 +130,20 @@ fun ItemsOfGroupScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    sharedVM.setGroupName(shoppingGroup.groupName)
-                    navigateToAddItemScreen(shoppingGroup.groupId)
-                },
-                backgroundColor = MaterialTheme.colors.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(R.string.content_description_fab_add_item),
-                    tint = FloatingActionButtonTint,
-                )
+            if (!isReordering){
+                FloatingActionButton(
+                    onClick = {
+                        sharedVM.setGroupName(shoppingGroup.groupName)
+                        navigateToAddItemScreen(shoppingGroup.groupId)
+                    },
+                    backgroundColor = MaterialTheme.colors.primary
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = stringResource(R.string.content_description_fab_add_item),
+                        tint = FloatingActionButtonTint,
+                    )
+                }
             }
         }
     )

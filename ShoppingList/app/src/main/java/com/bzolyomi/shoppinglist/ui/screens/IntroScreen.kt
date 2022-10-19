@@ -3,10 +3,7 @@ package com.bzolyomi.shoppinglist.ui.screens
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +52,9 @@ fun IntroScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(if (isInDarkMode) Color.Black else Color.White),
+            .background(if (isInDarkMode) Color.Black else Color.White)
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         Image(

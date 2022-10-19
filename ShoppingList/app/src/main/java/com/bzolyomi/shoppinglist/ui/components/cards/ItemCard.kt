@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.components.cards
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,6 +21,7 @@ import com.bzolyomi.shoppinglist.ui.components.CheckboxIcon
 import com.bzolyomi.shoppinglist.ui.components.DeleteItemIcon
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_XX_LARGE
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 
 @Composable
@@ -32,7 +34,13 @@ fun ItemCards(
 ) {
     LazyColumn(
         state = rememberLazyListState(),
-        modifier = modifier
+        modifier = modifier,
+        contentPadding = PaddingValues(
+            start = PADDING_SMALL,
+            end = PADDING_SMALL,
+            top = PADDING_SMALL,
+            bottom = PADDING_XX_LARGE
+        )
     ) {
         val order = mutableStateOf(listOrderById.sortedBy {
             it.itemPositionInList

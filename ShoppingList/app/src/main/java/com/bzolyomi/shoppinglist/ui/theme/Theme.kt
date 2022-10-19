@@ -56,17 +56,6 @@ fun ShoppingListTheme(
         systemUiController.setNavigationBarColor(color = LightSecondary, darkIcons = true)
     }
 
-//    if (!view.isInEditMode) {
-//        SideEffect {
-//            val window = (view.context as Activity).window
-//            val insets = WindowCompat.getInsetsController(window, view)
-//            window.statusBarColor = Color.Transparent.toArgb() // choose a status bar color
-//            window.navigationBarColor = Color.Transparent.toArgb() // choose a navigation bar color
-//            insets.isAppearanceLightStatusBars = !darkTheme
-//            insets.isAppearanceLightNavigationBars = !darkTheme
-//        }
-//    }
-
     MaterialTheme(
         colors = colors,
         typography = Typography,
