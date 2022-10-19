@@ -26,7 +26,8 @@ fun GroupNameInput(
     inputTextStyle: TextStyle,
     onGroupNameChange: (String) -> Unit,
     onEraseGroupNameInputButtonClicked: () -> Unit,
-    onNextInGroupNameInputClicked: () -> Unit
+    onNextInGroupNameInputClicked: () -> Unit,
+    modifier: Modifier
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         OutlinedTextField(
@@ -59,7 +60,7 @@ fun GroupNameInput(
             },
             singleLine = true,
             isError = isError,
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier.fillMaxWidth()
         )
         if (isError) {
             ErrorText(text = stringResource(R.string.error_message_name_input_field))

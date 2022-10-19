@@ -26,11 +26,12 @@ fun ItemNameInput(
     inputTextStyle: TextStyle,
     onItemNameChange: (String) -> Unit,
     onEraseItemNameInputButtonClicked: () -> Unit,
-    onNextInItemNameInputClicked: () -> Unit
+    onNextInItemNameInputClicked: () -> Unit,
+    modifier: Modifier
 ) {
     Column {
         OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             value = itemName,
             onValueChange = { onItemNameChange(it) },
             label = { Text(text = stringResource(R.string.input_label_item_name)) },
