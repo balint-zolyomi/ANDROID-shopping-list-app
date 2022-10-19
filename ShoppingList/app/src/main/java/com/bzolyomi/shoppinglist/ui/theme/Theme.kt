@@ -43,15 +43,11 @@ fun ShoppingListTheme(
         LightColorPalette
     }
 
-    val view = LocalView.current
-    val window = (view.context as Activity).window
     val systemUiController = rememberSystemUiController()
 
     if (darkTheme) {
-        window.statusBarColor = Color.Black.toArgb()
+        systemUiController.setStatusBarColor(color = Color.Black, darkIcons = false)
     } else {
-//        window.statusBarColor = Primary.toArgb()
-//        window.navigationBarColor = LightPrimary.toArgb()
         systemUiController.setStatusBarColor(color = LightSecondary, darkIcons = true)
         systemUiController.setNavigationBarColor(color = LightSecondary, darkIcons = true)
     }
@@ -79,14 +75,14 @@ fun IntroTheme(
     val window = (view.context as Activity).window
     val systemUiController = rememberSystemUiController()
 
-    window.setBackgroundDrawable(ColorDrawable(R.color.black))
-
     if (darkTheme) {
         window.statusBarColor = Color.Black.toArgb()
     } else {
         systemUiController.setStatusBarColor(color = Color.White, darkIcons = true)
         systemUiController.setNavigationBarColor(color = Color.White, darkIcons = true)
     }
+
+    window.setBackgroundDrawable(ColorDrawable(R.color.black))
 
     MaterialTheme(
         colors = colors,
