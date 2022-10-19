@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.viewmodels
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -105,18 +104,25 @@ class SharedViewModel
                     itemId = null,
                     itemParentId = null,
                     itemName = _itemName.trim(),
-                    itemQuantity = if (_itemQuantity.isBlank()) {
-                        null
-                    } else {
-                        _itemQuantity = _itemQuantity.replace(",", ".").trim()
-                        _itemQuantity.toFloat()
-                    },
+                    itemQuantity = sanitizeItemQuantityInput(),
                     itemUnit = _itemUnit.trim(),
                     isItemChecked = false
                 )
             )
         }
         flushItemGUI()
+    }
+
+    private fun sanitizeItemQuantityInput(): Float? {
+        var sanitizedInput: Float? = null
+        _itemQuantity = _itemQuantity
+            .replace(oldValue = ",", newValue = ".")
+            .trim()
+        if (_itemQuantity.isNotEmpty() && _itemQuantity != "0") {
+            sanitizedInput = _itemQuantity.toFloat()
+            sanitizedInput = if (sanitizedInput == 0F) null else sanitizedInput
+        }
+        return sanitizedInput
     }
 
     // COROUTINES and their functions
