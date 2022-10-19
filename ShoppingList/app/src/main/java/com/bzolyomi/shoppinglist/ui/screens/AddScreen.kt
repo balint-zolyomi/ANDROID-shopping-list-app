@@ -3,17 +3,23 @@ package com.bzolyomi.shoppinglist.ui.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.ui.components.input.*
 import com.bzolyomi.shoppinglist.ui.components.showShortToast
@@ -26,6 +32,7 @@ import com.bzolyomi.shoppinglist.util.Constants.ITEM_UNIT_MAX_LENGTH
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddAllScreen(
     groupId: Long?,
@@ -66,6 +73,13 @@ fun AddAllScreen(
 
     var isAnyError by rememberSaveable { mutableStateOf(false) }
 
+    val focusManager = LocalFocusManager.current
+    val focusRequester = FocusRequester()
+
+    LaunchedEffect(true) {
+        focusRequester.requestFocus()
+    }
+
     fun validateAll() {
         isGroupNameError = validateGroupNameInput(groupName)
         isItemNameError = validateItemNameInput(itemName)
@@ -77,6 +91,7 @@ fun AddAllScreen(
     fun onSubmit() {
         validateAll()
         if (!isAnyError) {
+            focusManager.clearFocus()
             if (groupId == GROUP_UNSELECTED) navigateToHomeScreen() else navigateToGroupScreen()
             sharedViewModel.createWithCoroutines()
             showShortToast(context = context, message = itemAddedToastMessage)
@@ -109,12 +124,6 @@ fun AddAllScreen(
             )
         },
         content = {
-            val focusRequester = FocusRequester()
-
-            LaunchedEffect(true) {
-                focusRequester.requestFocus()
-            }
-
             Column(
                 modifier = modifier
                     .fillMaxSize()
@@ -175,7 +184,8 @@ fun AddAllScreen(
                     onItemQuantityChange = {
                         isItemQuantityError = validateItemQuantityInput(it)
                         if (!isItemQuantityError || it == ""
-                            || it.length == ITEM_QUANTITY_MAX_LENGTH) {
+                            || it.length == ITEM_QUANTITY_MAX_LENGTH
+                        ) {
                             sharedViewModel.setItemQuantity(it)
                         }
                     },
