@@ -16,7 +16,7 @@ fun Item(
     modifier: Modifier
 ) {
     val itemQuantityToDisplay = if (item.itemQuantity == null) {
-        ""
+        if (item.itemUnit.isEmpty()) "" else " "
     } else {
         " -- " + item.itemQuantity.toString().dropLastWhile { it == '0' }
             .dropLastWhile { it == '.' } + " "
