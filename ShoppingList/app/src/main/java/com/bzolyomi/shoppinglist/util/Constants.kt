@@ -53,6 +53,9 @@ object Constants {
     const val GROUP_CARD_FADE_IN_DURATION = 200
     const val GROUP_CARD_FADE_OUT_DURATION = 100
 
+        // Item card
+    const val ITEM_CARD_ON_DELETE_FADE_OUT_DURATION = 400L
+
         // Expand icon
     const val EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES = 0f
     const val EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES = -180f

@@ -1,5 +1,8 @@
 package com.bzolyomi.shoppinglist.ui.components.cards
 
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -8,21 +11,23 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextDecoration
 import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.CheckboxIcon
 import com.bzolyomi.shoppinglist.ui.components.DeleteItemIcon
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
+import com.bzolyomi.shoppinglist.util.Constants.ITEM_CARD_ON_DELETE_FADE_OUT_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_XX_LARGE
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ItemCards(
@@ -55,10 +60,23 @@ fun ItemCards(
             if (shoppingListItem != null) {
                 var isItemChecked by mutableStateOf(shoppingListItem.isItemChecked)
 
+                var startFadeOutAnimation by remember { mutableStateOf(false) }
+                val cardAlpha by animateFloatAsState(
+                    targetValue = if (startFadeOutAnimation)
+                        0.0F else 1F,
+                    animationSpec = tween(
+                        durationMillis = ITEM_CARD_ON_DELETE_FADE_OUT_DURATION.toInt(),
+                        easing = FastOutLinearInEasing
+                    )
+                )
+                val scope = rememberCoroutineScope()
+
                 Card(
                     elevation = ELEVATION_SMALL,
                     shape = MaterialTheme.shapes.large,
-                    modifier = Modifier.padding(PADDING_SMALL)
+                    modifier = Modifier
+                        .padding(PADDING_SMALL)
+                        .alpha(cardAlpha)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CheckboxIcon(
@@ -76,10 +94,14 @@ fun ItemCards(
                         )
                         DeleteItemIcon(
                             onDeleteItemClicked = {
-                                onDeleteItemClicked(
-                                    shoppingListItem.itemId,
-                                    shoppingListItem.itemParentId
-                                )
+                                startFadeOutAnimation = true
+                                scope.launch(Dispatchers.IO) {
+                                    delay(ITEM_CARD_ON_DELETE_FADE_OUT_DURATION)
+                                    onDeleteItemClicked(
+                                        shoppingListItem.itemId,
+                                        shoppingListItem.itemParentId
+                                    )
+                                }
                             },
                             modifier = Modifier.padding(end = PADDING_X_SMALL)
                         )
