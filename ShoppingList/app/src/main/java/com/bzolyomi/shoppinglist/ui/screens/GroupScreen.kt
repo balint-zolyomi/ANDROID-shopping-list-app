@@ -2,6 +2,11 @@ package com.bzolyomi.shoppinglist.ui.screens
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -11,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
@@ -20,6 +26,7 @@ import com.bzolyomi.shoppinglist.ui.components.AppBarOptionToggleReorder
 import com.bzolyomi.shoppinglist.ui.components.cards.ItemCards
 import com.bzolyomi.shoppinglist.ui.components.cards.ItemCardsReorder
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
+import com.bzolyomi.shoppinglist.util.Constants.ITEM_CARDS_REORDER_TOGGLE_CROSSFADE_ANIMATION_DURATION
 import com.bzolyomi.shoppinglist.viewmodels.SharedViewModel
 
 @Composable
@@ -98,39 +105,44 @@ fun ItemsOfGroupScreen(
                 modifier = modifier
                     .fillMaxSize()
             ) {
-                if (isReordering) {
-                    ItemCardsReorder(
-                        shoppingList = shoppingList,
-                        listOrderById = listOrder,
-                        onItemsOrderChange = {
-                            orderOfItemIds = it
-                            sharedVM.updateListOrder(orderOfItemIds)
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    ItemCards(
-                        shoppingList = shoppingList,
-                        listOrderById = listOrder,
-                        onCheckboxClicked = {
-                            sharedVM.updateItemChecked(it)
-                        },
-                        onDeleteItemClicked = { itemId, groupId ->
-                            sharedVM.deleteListOrder(
-                                groupId = groupId,
-                                itemId = itemId
-                            )
-                            sharedVM.deleteItem(
-                                itemId = itemId
-                            )
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )
+                Crossfade(
+                    targetState = isReordering,
+                    animationSpec = tween(ITEM_CARDS_REORDER_TOGGLE_CROSSFADE_ANIMATION_DURATION)
+                ) { isReordering ->
+                    if (!isReordering) {
+                        ItemCards(
+                            shoppingList = shoppingList,
+                            listOrderById = listOrder,
+                            onCheckboxClicked = {
+                                sharedVM.updateItemChecked(it)
+                            },
+                            onDeleteItemClicked = { itemId, groupId ->
+                                sharedVM.deleteListOrder(
+                                    groupId = groupId,
+                                    itemId = itemId
+                                )
+                                sharedVM.deleteItem(
+                                    itemId = itemId
+                                )
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        ItemCardsReorder(
+                            shoppingList = shoppingList,
+                            listOrderById = listOrder,
+                            onItemsOrderChange = {
+                                orderOfItemIds = it
+                                sharedVM.updateListOrder(orderOfItemIds)
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
             }
         },
         floatingActionButton = {
-            if (!isReordering){
+            if (!isReordering) {
                 FloatingActionButton(
                     onClick = {
                         sharedVM.setGroupName(shoppingGroup.groupName)

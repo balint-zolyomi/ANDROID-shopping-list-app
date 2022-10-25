@@ -53,6 +53,9 @@ object Constants {
     const val GROUP_CARD_FADE_IN_DURATION = 200
     const val GROUP_CARD_FADE_OUT_DURATION = 100
 
+        // Item cards
+    const val ITEM_CARDS_REORDER_TOGGLE_CROSSFADE_ANIMATION_DURATION = 800
+
         // Item card
     const val ITEM_CARD_ON_DELETE_FADE_OUT_DURATION = 400L
 

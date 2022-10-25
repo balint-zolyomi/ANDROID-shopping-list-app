@@ -20,8 +20,8 @@
     <string name="alert_dialog_message_delete_all">Delete all shopping groups? This action cannot be undone.</string>
     <string name="alert_dialog_message_delete_group">Delete shopping group and its item(s)? This action cannot be undone.</string>
 
-    <string name="toast_message_item_added">💾✅</string>
-    <string name="toast_message_group_deleted">🗑️✅</string>
+    <string name="toast_message_item_added">💾 ✅</string>
+    <string name="toast_message_group_deleted">🗑️ ✅</string>
     <string name="toast_message_reorder_hint">Long press item and drag to reorder</string>
 
     <string name="button_add_item_text">Add item</string>
