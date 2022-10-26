@@ -15,7 +15,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.bzolyomi.shoppinglist.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -64,9 +64,22 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
+    // Navigation
+    def nav_version = "2.5.2"
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+
     // Dagger-Hilt
     implementation 'com.google.dagger:hilt-android:2.43.2'
     kapt 'com.google.dagger:hilt-compiler:2.43.2'
+
+    // Testing
+        // Robolectric
+    testImplementation 'com.google.dagger:hilt-android-testing:2.44'
+    kaptTest 'com.google.dagger:hilt-android-compiler:2.44'
+
+        // Instrumented
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.44'
+    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.44'
 
     // Room
     def room_version = "2.4.3"
@@ -85,10 +98,6 @@ dependencies {
     // Accompanist
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.21.2-beta"
     implementation 'com.google.accompanist:accompanist-navigation-animation:0.26.5-rc'
-
-    // Navigation
-    def nav_version = "2.5.2"
-    implementation "androidx.navigation:navigation-compose:$nav_version"
 
     // Constraint layout
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
