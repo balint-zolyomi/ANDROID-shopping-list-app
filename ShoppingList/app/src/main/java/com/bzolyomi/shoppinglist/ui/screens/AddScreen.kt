@@ -73,12 +73,12 @@ fun AddAllScreen(
 
     var isAnyError by rememberSaveable { mutableStateOf(false) }
 
-    val focusManager = LocalFocusManager.current
-    val focusRequester = FocusRequester()
-
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
+//    val focusManager = LocalFocusManager.current
+//    val focusRequester = FocusRequester()
+//
+//    LaunchedEffect(true) {
+//        focusRequester.requestFocus()
+//    }
 
     fun validateAll() {
         isGroupNameError = validateGroupNameInput(groupName)
@@ -91,7 +91,7 @@ fun AddAllScreen(
     fun onSubmit() {
         validateAll()
         if (!isAnyError) {
-            focusManager.clearFocus()
+//            focusManager.clearFocus()
             if (groupId == GROUP_UNSELECTED) navigateToHomeScreen() else navigateToGroupScreen()
             sharedViewModel.createWithCoroutines()
             showShortToast(context = context, message = itemAddedToastMessage)
@@ -149,7 +149,8 @@ fun AddAllScreen(
                         isGroupNameError = validateGroupNameInput(groupName)
                     },
                     modifier = if (groupId == GROUP_UNSELECTED) {
-                        Modifier.focusRequester(focusRequester)
+//                        Modifier.focusRequester(focusRequester)
+                        Modifier
                     } else {
                         Modifier
                     }
@@ -172,7 +173,8 @@ fun AddAllScreen(
                         isItemNameError = validateItemNameInput(itemName)
                     },
                     modifier = if (groupId != GROUP_UNSELECTED) {
-                        Modifier.focusRequester(focusRequester)
+//                        Modifier.focusRequester(focusRequester)
+                        Modifier
                     } else {
                         Modifier
                     }
