@@ -1,9 +1,20 @@
 package com.bzolyomi.shoppinglist.data
 
-import dagger.hilt.android.scopes.ViewModelScoped
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-@ViewModelScoped
+//@ViewModelScoped
 class Repository @Inject constructor(
     private val dao: DAO) {
+
+    suspend fun createGroup(group: ShoppingGroupEntity) {
+        dao.createGroup(group = group)
+    }
+
+    suspend fun createItem(item: ShoppingItemEntity) {
+        dao.createItem(item = item)
+    }
+
+    val allGroupsWithLists: Flow<List<GroupWithList>> = dao.getAll()
+
 }
