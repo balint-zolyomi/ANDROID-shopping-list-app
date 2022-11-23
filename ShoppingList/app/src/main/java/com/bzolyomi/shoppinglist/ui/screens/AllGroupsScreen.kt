@@ -51,7 +51,6 @@ fun AllGroupsScreen(
                             for (groupWithList in shoppingGroupsWithLists) {
                                 sharedVM.deleteGroup(groupWithList.group.groupId)
                                 sharedVM.deleteItems(shoppingList = groupWithList.shoppingList)
-                                sharedVM.deleteAllListOrders(groupId = groupWithList.group.groupId)
                             }
                         }
                     )
@@ -81,7 +80,6 @@ fun AllGroupsScreen(
                         GroupAndItemsCard(
                             titleGroupName = shoppingGroupWithList.group.groupName,
                             shoppingList = shoppingGroupWithList.shoppingList,
-                            listOrder = shoppingGroupWithList.listOrder,
                             onOpenGroupIconClicked = {
                                 navigateToGroupScreen(shoppingGroupWithList.group.groupId)
                             },

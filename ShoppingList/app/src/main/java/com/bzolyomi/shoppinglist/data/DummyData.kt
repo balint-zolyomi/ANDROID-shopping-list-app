@@ -1,6 +1,6 @@
 package com.bzolyomi.shoppinglist.data
-//
-//object DummyData {
+
+object DummyData {
 //    val groupsWithList = createDummyData()
 //
 //    private fun createDummyData(): List<GroupWithList> {
@@ -48,4 +48,4 @@ package com.bzolyomi.shoppinglist.data
 //
 //        return listOf(groupWithList1, groupWithList2)
 //    }
-//}
+}

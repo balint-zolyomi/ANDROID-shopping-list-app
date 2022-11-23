@@ -162,7 +162,6 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                     sharedViewModel.selectedGroupWithList =
                         sharedViewModel.getSelectedGroupWithListCoroutine(groupId = groupId)
                     sharedViewModel.getSelectedShoppingListCoroutine(groupId = groupId)
-                    sharedViewModel.getSelectedListOrderCoroutine(groupId = groupId)
                 }
 
                 ShoppingListTheme {

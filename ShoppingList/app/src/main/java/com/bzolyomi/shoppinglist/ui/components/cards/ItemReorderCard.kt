@@ -15,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.DragIcon
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
@@ -30,18 +29,17 @@ import org.burnoutcrew.reorderable.reorderable
 @Composable
 fun ItemCardsReorder(
     shoppingList: List<ShoppingItemEntity>,
-    listOrderById: List<ListOrderEntity>,
-    onItemsOrderChange: (List<ListOrderEntity>) -> Unit,
+    onItemsOrderChange: (List<ShoppingItemEntity>) -> Unit,
     modifier: Modifier
 ) {
-    var listOrderByPosition = listOrderById.sortedBy {
+    var shoppingListByPosition = shoppingList.sortedBy {
         it.itemPositionInList
     }
 
     var itemIdsSortedByPosition by remember {
         mutableStateOf(
-            List(listOrderByPosition.size) {
-                listOrderByPosition[it].itemId.toString()
+            List(shoppingListByPosition.size) {
+                shoppingListByPosition[it].itemId.toString()
             }
         )
     }
@@ -51,14 +49,14 @@ fun ItemCardsReorder(
             add(to.index, removeAt(from.index))
         }
 
-        listOrderByPosition = listOrderByPosition.toMutableList().apply {
+        shoppingListByPosition = shoppingListByPosition.toMutableList().apply {
             add(to.index, removeAt(from.index))
         }
-        for ((i, item) in listOrderByPosition.withIndex()) {
+        for ((i, item) in shoppingListByPosition.withIndex()) {
             item.itemPositionInList = i
         }
 
-        onItemsOrderChange(listOrderByPosition)
+        onItemsOrderChange(shoppingListByPosition)
     })
 
     LazyColumn(

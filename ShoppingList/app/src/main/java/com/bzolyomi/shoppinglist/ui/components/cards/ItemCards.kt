@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextDecoration
-import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.CheckboxIcon
 import com.bzolyomi.shoppinglist.ui.components.DeleteItemIcon
@@ -32,9 +31,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ItemCards(
     shoppingList: List<ShoppingItemEntity>,
-    listOrderById: List<ListOrderEntity>,
     onCheckboxClicked: (ShoppingItemEntity) -> Unit,
-    onDeleteItemClicked: (itemId: Long?, groupId: Long?) -> Unit,
+    onDeleteItemClicked: (itemId: Long?) -> Unit,
     modifier: Modifier
 ) {
     LazyColumn(
@@ -47,7 +45,7 @@ fun ItemCards(
             bottom = PADDING_XX_LARGE
         )
     ) {
-        val order = mutableStateOf(listOrderById.sortedBy {
+        val order = mutableStateOf(shoppingList.sortedBy {
             it.itemPositionInList
         })
 
@@ -97,10 +95,7 @@ fun ItemCards(
                                 startFadeOutAnimation = true
                                 scope.launch(Dispatchers.IO) {
                                     delay(ITEM_CARD_ON_DELETE_FADE_OUT_DURATION)
-                                    onDeleteItemClicked(
-                                        shoppingListItem.itemId,
-                                        shoppingListItem.itemParentId
-                                    )
+                                    onDeleteItemClicked(shoppingListItem.itemId)
                                 }
                             },
                             modifier = Modifier.padding(end = PADDING_X_SMALL)

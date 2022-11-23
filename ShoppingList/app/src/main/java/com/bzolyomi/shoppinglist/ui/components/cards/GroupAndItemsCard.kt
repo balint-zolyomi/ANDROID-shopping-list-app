@@ -15,7 +15,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.ExpandIcon
 import com.bzolyomi.shoppinglist.ui.components.OpenInNewIcon
@@ -78,7 +77,6 @@ private fun DoneRatio(
 fun GroupAndItemsCard(
     titleGroupName: String,
     shoppingList: List<ShoppingItemEntity>,
-    listOrder: List<ListOrderEntity>,
     onOpenGroupIconClicked: () -> Unit,
     modifier: Modifier
 ) {
@@ -122,7 +120,6 @@ fun GroupAndItemsCard(
             CardContent(
                 isExpanded = isExpanded,
                 shoppingList = shoppingList,
-                listOrder = listOrder,
                 onOpenGroupIconClicked = onOpenGroupIconClicked,
                 modifier = modifier
             )
@@ -134,7 +131,6 @@ fun GroupAndItemsCard(
 private fun ColumnScope.CardContent(
     isExpanded: Boolean,
     shoppingList: List<ShoppingItemEntity>,
-    listOrder: List<ListOrderEntity>,
     onOpenGroupIconClicked: () -> Unit,
     modifier: Modifier
 ) {
@@ -158,7 +154,7 @@ private fun ColumnScope.CardContent(
             OpenInNewIcon(onOpenGroupIconClicked = onOpenGroupIconClicked)
 
             Column {
-                val order = listOrder.sortedBy {
+                val order = shoppingList.sortedBy {
                     it.itemPositionInList
                 }
 

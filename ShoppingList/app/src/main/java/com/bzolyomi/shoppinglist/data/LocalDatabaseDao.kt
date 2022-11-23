@@ -13,9 +13,6 @@ interface LocalDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun createItem(item: ShoppingItemEntity)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun createListOrder(listOrder: ListOrderEntity)
-
     // READ
     @Transaction
     @Query("SELECT * FROM shopping_group")
@@ -29,10 +26,6 @@ interface LocalDatabaseDao {
     @Query("SELECT * FROM shopping_list SL WHERE SL.parent_id=:groupId")
     fun getShoppingList(groupId: Long?): Flow<List<ShoppingItemEntity>>
 
-    @Transaction
-    @Query("SELECT * FROM list_order LO WHERE LO.group_id=:groupId")
-    fun getListOrder(groupId: Long?): Flow<List<ListOrderEntity>>
-
         // Special
     @Query("SELECT SG.group_id FROM shopping_group SG WHERE SG.group_name=:groupName")
     suspend fun getGroupId(groupName: String): Long?
@@ -42,7 +35,7 @@ interface LocalDatabaseDao {
     suspend fun updateItem(item: ShoppingItemEntity)
 
     @Update
-    suspend fun updateListOrder(listOrder: List<ListOrderEntity>)
+    suspend fun updateShoppingListOrder(shoppingList: List<ShoppingItemEntity>)
 
     // DELETE
     @Query("DELETE FROM shopping_group WHERE group_id=:groupId")
@@ -50,10 +43,4 @@ interface LocalDatabaseDao {
 
     @Query("DELETE FROM shopping_list WHERE item_id=:itemId")
     suspend fun deleteItem(itemId: Long?)
-
-    @Query("DELETE FROM list_order WHERE group_id=:groupId AND item_id=:itemId")
-    suspend fun deleteListOrder(groupId: Long?, itemId: Long?)
-
-    @Query("DELETE FROM list_order WHERE group_id=:groupId")
-    suspend fun deleteAllListOrders(groupId: Long?)
 }

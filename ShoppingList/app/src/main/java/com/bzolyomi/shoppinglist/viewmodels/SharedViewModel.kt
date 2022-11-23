@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzolyomi.shoppinglist.data.*
+import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_EMPTY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +40,6 @@ class SharedViewModel
     var selectedGroupWithList by mutableStateOf(
         GroupWithList(
             ShoppingGroupEntity(null, ""),
-            emptyList(),
             emptyList()
         )
     )
@@ -47,10 +47,6 @@ class SharedViewModel
     private val _selectedShoppingList = MutableStateFlow<List<ShoppingItemEntity>>(emptyList())
     val selectedShoppingList: StateFlow<List<ShoppingItemEntity>>
         get() = _selectedShoppingList
-
-    private val _selectedListOrder = MutableStateFlow<List<ListOrderEntity>>(emptyList())
-    val selectedListOrder: StateFlow<List<ListOrderEntity>>
-        get() = _selectedListOrder
 
     private var items: MutableList<ShoppingItemEntity> = mutableListOf() // TODO
 
@@ -106,7 +102,8 @@ class SharedViewModel
                     itemName = _itemName.trim(),
                     itemQuantity = sanitizeItemQuantityInput(),
                     itemUnit = _itemUnit.trim(),
-                    isItemChecked = false
+                    isItemChecked = false,
+                    itemPositionInList = null
                 )
             )
         }
@@ -147,15 +144,6 @@ class SharedViewModel
         }
     }
 
-    fun getSelectedListOrderCoroutine(groupId: String?) {
-        val id = groupId?.toLong()
-        viewModelScope.launch {
-            repo.getListOrder(id).collect {
-                _selectedListOrder.value = it
-            }
-        }
-    }
-
     private suspend fun getGroupIdCoroutine(): Long? = coroutineScope {
         val groupId = async { getGroupId() }
         groupId.await()
@@ -166,30 +154,47 @@ class SharedViewModel
     }
 
     // CREATE
-    fun createWithCoroutines() = runBlocking {
+    fun createWithCoroutines() = runBlocking { // TODO
         var groupId = getGroupIdCoroutine()
 
         if (groupId == null) {
             createGroupCoroutine()
             groupId = getGroupIdCoroutine()
-            createItems(groupId = groupId) // TODO
+            createItems(groupId = groupId, startingPosition = SHOPPING_LIST_TABLE_EMPTY)
         } else {
-            createItems(groupId = groupId) // TODO
+            val groupWithList = getSelectedGroupWithListCoroutine(groupId = groupId.toString())
+            val nextPosition = getNextStartingPosition(groupWithList = groupWithList)
+            createItems(groupId = groupId, startingPosition = nextPosition)
         }
 
         flushGroupGUI()
     }
 
-    private suspend fun createItems(groupId: Long?) = coroutineScope {
+    private fun getNextStartingPosition(groupWithList: GroupWithList) : Int {
+        var maxItemPosition = 0
+        for (item in groupWithList.shoppingList) {
+            if (item.itemPositionInList!! > maxItemPosition) {
+                maxItemPosition = item.itemPositionInList!!
+            }
+        }
+        return maxItemPosition
+    }
+
+    private suspend fun createItems(groupId: Long?, startingPosition: Int) = coroutineScope {
         addItemFromGUIToItemList()
+
+        var itemPositionInList = startingPosition
+
         for (item in items) {
             item.itemParentId = groupId
+            item.itemPositionInList = itemPositionInList
             repo.createItem(item = item)
+            itemPositionInList++
         }
         flushItemGUI()
         items.clear()
 
-        updateListOrderCoroutine(groupId = groupId)
+//        updateListOrderCoroutine(groupId = groupId)
     }
 
     private suspend fun createGroupCoroutine() = coroutineScope {
@@ -227,26 +232,16 @@ class SharedViewModel
         }
     }
 
-    fun deleteAllListOrders(groupId: Long?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteAllListOrders(groupId = groupId)
-        }
-    }
-
-    fun deleteListOrder(groupId: Long?, itemId: Long?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.deleteListOrder(groupId =  groupId, itemId =  itemId)
-        }
-    }
-
-    private suspend fun deleteAllListOrdersAsync(groupId: Long?) {
-        repo.deleteAllListOrders(groupId = groupId)
-    }
-
-//    fun deleteGroupAndItsItems() {
-//        deleteItems(shoppingList = selectedGroupWithList.shoppingList)
-//        deleteGroup(groupId = selectedGroupWithList.group.groupId)
-//        deleteAllListOrders(groupId = selectedGroupWithList.group.groupId)
+//    fun deleteAllListOrders(groupId: Long?) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repo.deleteAllListOrders(groupId = groupId)
+//        }
+//    }
+//
+//    fun deleteListOrder(groupId: Long?, itemId: Long?) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            repo.deleteListOrder(groupId =  groupId, itemId =  itemId)
+//        }
 //    }
 
     // UPDATE
@@ -258,33 +253,10 @@ class SharedViewModel
         }
     }
 
-    fun updateListOrder(orderOfItemIds: List<ListOrderEntity>) {
+    fun updateShoppingListOrder(shoppingList: List<ShoppingItemEntity>) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.updateListOrder(
-                listOrder = orderOfItemIds
-            )
-        }
-    }
-
-    private suspend fun updateListOrderCoroutine(groupId: Long?) = coroutineScope {
-        selectedGroupWithList = getSelectedGroupWithListCoroutine(groupId = groupId.toString())
-        val deleteDone = async {
-            deleteAllListOrdersAsync(groupId = selectedGroupWithList.group.groupId)
-        }
-        deleteDone.await()
-        val createListOrder = async { updateListOrder() }
-        createListOrder.await()
-    }
-
-    private suspend fun updateListOrder() {
-        for ((itemPosition, item) in selectedGroupWithList.shoppingList.withIndex()){
-            repo.createListOrder(
-                ListOrderEntity(
-                    listOrderId = null,
-                    groupId = selectedGroupWithList.group.groupId,
-                    itemId = item.itemId,
-                    itemPositionInList = itemPosition
-                )
+            repo.updateShoppingListOrder(
+                shoppingList = shoppingList
             )
         }
     }

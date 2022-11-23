@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [ShoppingItemEntity::class, ShoppingGroupEntity::class, ListOrderEntity::class],
+    entities = [ShoppingItemEntity::class, ShoppingGroupEntity::class],
     version = 1,
     exportSchema = true // TODO
 )

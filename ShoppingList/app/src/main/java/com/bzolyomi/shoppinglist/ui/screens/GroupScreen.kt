@@ -3,9 +3,6 @@ package com.bzolyomi.shoppinglist.ui.screens
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,11 +13,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
-import com.bzolyomi.shoppinglist.data.ListOrderEntity
 import com.bzolyomi.shoppinglist.ui.components.AppBarOptionMore
 import com.bzolyomi.shoppinglist.ui.components.AppBarOptionToggleReorder
 import com.bzolyomi.shoppinglist.ui.components.cards.ItemCards
@@ -55,9 +50,6 @@ fun ItemsOfGroupScreen(
 
     val shoppingGroup by mutableStateOf(sharedVM.selectedGroupWithList.group)
     val shoppingList by sharedVM.selectedShoppingList.collectAsState()
-    val listOrder by sharedVM.selectedListOrder.collectAsState()
-
-    var orderOfItemIds: List<ListOrderEntity>
 
     val scaffoldState = rememberScaffoldState()
 
@@ -89,7 +81,6 @@ fun ItemsOfGroupScreen(
                                 .show()
                             sharedVM.deleteGroup(groupId = shoppingGroup.groupId)
                             sharedVM.deleteItems(shoppingList = shoppingList)
-                            sharedVM.deleteAllListOrders(groupId = shoppingGroup.groupId)
                         }
                     )
                 },
@@ -112,15 +103,10 @@ fun ItemsOfGroupScreen(
                     if (!isReordering) {
                         ItemCards(
                             shoppingList = shoppingList,
-                            listOrderById = listOrder,
                             onCheckboxClicked = {
                                 sharedVM.updateItemChecked(it)
                             },
-                            onDeleteItemClicked = { itemId, groupId ->
-                                sharedVM.deleteListOrder(
-                                    groupId = groupId,
-                                    itemId = itemId
-                                )
+                            onDeleteItemClicked = { itemId ->
                                 sharedVM.deleteItem(
                                     itemId = itemId
                                 )
@@ -130,10 +116,8 @@ fun ItemsOfGroupScreen(
                     } else {
                         ItemCardsReorder(
                             shoppingList = shoppingList,
-                            listOrderById = listOrder,
                             onItemsOrderChange = {
-                                orderOfItemIds = it
-                                sharedVM.updateListOrder(orderOfItemIds)
+                                sharedVM.updateShoppingListOrder(it)
                             },
                             modifier = Modifier.fillMaxSize()
                         )
