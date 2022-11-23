@@ -46,49 +46,11 @@ class SharedViewModel @Inject constructor(
     }
 
     private fun createDummyData() {
-        val group1 = ShoppingGroupEntity(
-            groupId = 1,
-            groupName = "Spar"
-        )
-        val group2 = ShoppingGroupEntity(
-            groupId = 2,
-            groupName = "Lidl"
-        )
-        val item1 =
-            ShoppingItemEntity(
-                1,
-                1,
-                "cheese",
-                2F,
-                "kg",
-                false,
-                1
-            )
-        val item2 =
-            ShoppingItemEntity(
-                2,
-                1,
-                "beer",
-                5F,
-                "l",
-                false,
-                2
-            )
-        val item3 =
-            ShoppingItemEntity(
-                3,
-                2,
-                "pasta",
-                2F,
-                "kg",
-                false,
-                1
-            )
-
-        createItemCoroutine(item1)
-        createItemCoroutine(item2)
-        createItemCoroutine(item3)
-        createGroupCoroutine(group1)
-        createGroupCoroutine(group2)
+        DummyData.groupsWithList.forEach { groupWithList ->
+            createGroupCoroutine(groupWithList.group)
+            for (item in groupWithList.shoppingList) {
+                createItemCoroutine(item)
+            }
+        }
     }
 }
