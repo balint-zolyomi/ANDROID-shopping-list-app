@@ -15,4 +15,8 @@ interface DAO {
     @Transaction
     @Query("SELECT * FROM shopping_group")
     fun getAll(): Flow<List<GroupWithList>>
+
+    @Transaction
+    @Query("SELECT * FROM shopping_group SG WHERE SG.group_id=:groupId")
+    suspend fun getGroupWithList(groupId: Long?): GroupWithList
 }

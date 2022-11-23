@@ -1,5 +1,8 @@
 package com.bzolyomi.shoppinglist
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bzolyomi.shoppinglist.data.*
@@ -18,11 +21,29 @@ class SharedViewModel @Inject constructor(
     val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
         get() = _shoppingGroupsWithLists
 
+    var selectedGroupWithList by mutableStateOf(
+        GroupWithList(
+            ShoppingGroupEntity(null, ""),
+            emptyList()
+        )
+    )
+
     init {
-        createDummyDataIfNotExistCoroutine()
+        createDummyDataIfNotExistsCoroutine()
     }
 
-    private fun createDummyDataIfNotExistCoroutine() {
+    suspend fun getSelectedGroupWithListCoroutine(groupId: String): GroupWithList =
+        coroutineScope {
+            val groupWithList = async { getSelectedGroupWithList(groupId = groupId) }
+            groupWithList.await()
+        }
+
+    private suspend fun getSelectedGroupWithList(groupId: String): GroupWithList {
+        val id = groupId.toLong()
+        return repo.getGroupWithList(groupId = id)
+    }
+
+    private fun createDummyDataIfNotExistsCoroutine() {
         viewModelScope.launch(Dispatchers.IO) {
             repo.allGroupsWithLists.collect {
                 _shoppingGroupsWithLists.value = it

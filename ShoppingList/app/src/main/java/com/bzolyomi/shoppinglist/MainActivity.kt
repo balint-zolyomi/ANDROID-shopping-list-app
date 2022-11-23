@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.bzolyomi.shoppinglist.di.ShoppingListApplication
+import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -28,12 +29,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ShoppingListTheme {
-                val groupsWithLists by sharedViewModel.shoppingGroupsWithLists.collectAsState()
-                Column {
-                    for (groupWithList in groupsWithLists) {
-                        Text(text = groupWithList.toString())
-                    }
-                }
+                NavigationController(sharedViewModel = sharedViewModel)
             }
         }
     }

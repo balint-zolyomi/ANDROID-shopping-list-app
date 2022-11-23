@@ -17,4 +17,7 @@ class Repository @Inject constructor(
 
     val allGroupsWithLists: Flow<List<GroupWithList>> = dao.getAll()
 
+    suspend fun getGroupWithList(groupId: Long?): GroupWithList {
+        return dao.getGroupWithList(groupId)
+    }
 }
