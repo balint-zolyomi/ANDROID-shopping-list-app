@@ -2,7 +2,9 @@ package com.bzolyomi.shoppinglist
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.bzolyomi.shoppinglist.data.DummyData
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -29,5 +31,13 @@ class ComposeInstrumentedTest {
         DummyData.groupsWithList.forEach{
             composeTestRule.onNodeWithText(it.toString()).assertIsDisplayed()
         }
+    }
+
+    @Test
+    fun testComposeNavigationToGroupScreen() {
+        composeTestRule.onAllNodesWithText("To GroupScreen")[0].performClick()
+        composeTestRule.onNodeWithText(
+            "Screen: GroupScreen of group: ${DummyData.groupsWithList[0].group.groupName}"
+        ).assertIsDisplayed()
     }
 }
