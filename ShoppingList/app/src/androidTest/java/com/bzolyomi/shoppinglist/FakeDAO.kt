@@ -1,15 +1,5 @@
 package com.bzolyomi.shoppinglist
 
-import com.bzolyomi.shoppinglist.data.*
-import com.bzolyomi.shoppinglist.di.HiltModule
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.components.SingletonComponent
-import dagger.hilt.testing.TestInstallIn
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
-import javax.inject.Singleton
-
 //@TestInstallIn(
 //    components = [SingletonComponent::class],
 //    replaces = [HiltModule::class]
