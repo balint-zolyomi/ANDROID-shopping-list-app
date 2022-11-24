@@ -13,6 +13,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.util.Constants
+import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
+import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
 
 @Composable
 fun MoreVertIcon(
@@ -41,8 +43,8 @@ fun ExpandIcon(
     modifier: Modifier
 ) {
     val expandIconAngle: Float by animateFloatAsState(
-        targetValue = if (isExpanded) Constants.EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
-        else Constants.EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
+        targetValue = if (isExpanded) EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
+        else EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
     )
 
     IconButton(

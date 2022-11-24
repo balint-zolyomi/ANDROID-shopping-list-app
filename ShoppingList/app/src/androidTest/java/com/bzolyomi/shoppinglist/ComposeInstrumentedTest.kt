@@ -8,6 +8,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.bzolyomi.shoppinglist.data.DummyData
 import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
 import com.bzolyomi.shoppinglist.util.Constants
+import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_FULL_DURATION
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -137,9 +138,9 @@ class ComposeInstrumentedTest {
         var isIntroScreenDone = false
         composeTestRule.waitUntil(
             condition = {
-                Timer().schedule(Constants.INTRO_SCREEN_FULL_DURATION) { isIntroScreenDone = true }
+                Timer().schedule(INTRO_SCREEN_FULL_DURATION) { isIntroScreenDone = true }
                 isIntroScreenDone
-            }, timeoutMillis = Constants.INTRO_SCREEN_FULL_DURATION + 2000
+            }, timeoutMillis = INTRO_SCREEN_FULL_DURATION + 2000
         )
     }
 

@@ -132,7 +132,7 @@ fun AddScreen(
                     inputTextStyle = inputTextStyle,
                     onGroupNameChange = {
                         isGroupNameError = validateGroupNameInput(it)
-                        // it == "" -> user wants to delete the input field with TrailingIcon
+                        // it == "" case means that user wants to delete the input field with TrailingIcon
                         if (!isGroupNameError || it == "" || it.length == GROUP_NAME_MAX_LENGTH) {
                             sharedViewModel.setGroupName(it)
                         }
