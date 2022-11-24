@@ -94,6 +94,7 @@ fun EraseTrailingIcon(callback: () -> Unit) {
 fun CheckboxIcon(
     isItemChecked: Boolean,
     onCheckboxClicked: () -> Unit,
+    itemName: String,
     modifier: Modifier
 ) {
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
@@ -106,14 +107,14 @@ fun CheckboxIcon(
                     imageVector = Icons.Filled.CheckBox,
                     contentDescription = stringResource(
                         R.string.content_description_icon_checkbox_item_done
-                    )
+                    ) + " (item: $itemName)"
                 )
             } else {
                 Icon(
                     imageVector = Icons.Filled.CheckBoxOutlineBlank,
                     contentDescription = stringResource(
                         R.string.content_description_icon_checkbox_item_not_done
-                    )
+                    ) + " (item: $itemName)"
                 )
             }
         }
@@ -124,6 +125,7 @@ fun CheckboxIcon(
 @Composable
 fun DeleteItemIcon(
     onDeleteItemClicked: () -> Unit,
+    itemName: String,
     modifier: Modifier
 ) {
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
@@ -133,7 +135,7 @@ fun DeleteItemIcon(
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = stringResource(R.string.content_description_icon_delete_item)
+                contentDescription = stringResource(R.string.content_description_icon_delete_item) + " $itemName"
             )
         }
     }

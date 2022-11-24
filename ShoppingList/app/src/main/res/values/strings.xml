@@ -44,8 +44,8 @@
 
     <string name="content_description_icon_toggle_on_reorder">Button: Toggle reorder shopping items on</string>
     <string name="content_description_icon_toggle_off_reorder">Button: Toggle reorder shopping items off</string>
-    <string name="content_description_icon_checkbox_item_done">Checkbox: shopping item done</string>
-    <string name="content_description_icon_checkbox_item_not_done">Checkbox: shopping item not done</string>
+    <string name="content_description_icon_checkbox_item_done">Checkbox: mark as not done</string>
+    <string name="content_description_icon_checkbox_item_not_done">Checkbox: mark as done</string>
     <string name="content_description_icon_delete_item">Button: Delete shopping item</string>
     <string name="content_description_icon_drag">Icon: Press and hold to reorder shopping item</string>
 </resources>

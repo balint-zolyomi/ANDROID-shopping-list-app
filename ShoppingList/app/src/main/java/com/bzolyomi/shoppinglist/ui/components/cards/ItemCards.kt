@@ -83,6 +83,7 @@ fun ItemCards(
                                 onCheckboxClicked(shoppingListItem)
                                 isItemChecked = !isItemChecked
                             },
+                            itemName = shoppingListItem.itemName,
                             modifier = Modifier.padding(start = PADDING_X_SMALL)
                         )
                         Item(
@@ -98,6 +99,7 @@ fun ItemCards(
                                     onDeleteItemClicked(shoppingListItem.itemId)
                                 }
                             },
+                            itemName = shoppingListItem.itemName,
                             modifier = Modifier.padding(end = PADDING_X_SMALL)
                         )
                     }

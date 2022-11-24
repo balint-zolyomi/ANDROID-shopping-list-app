@@ -193,8 +193,6 @@ class SharedViewModel
         }
         flushItemGUI()
         items.clear()
-
-//        updateListOrderCoroutine(groupId = groupId)
     }
 
     private suspend fun createGroupCoroutine() = coroutineScope {
@@ -231,18 +229,6 @@ class SharedViewModel
             repo.deleteItem(itemId = itemId)
         }
     }
-
-//    fun deleteAllListOrders(groupId: Long?) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.deleteAllListOrders(groupId = groupId)
-//        }
-//    }
-//
-//    fun deleteListOrder(groupId: Long?, itemId: Long?) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repo.deleteListOrder(groupId =  groupId, itemId =  itemId)
-//        }
-//    }
 
     // UPDATE
     fun updateItemChecked(shoppingListItem: ShoppingItemEntity) {
