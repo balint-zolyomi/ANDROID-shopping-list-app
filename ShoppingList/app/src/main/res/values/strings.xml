@@ -1,3 +1,51 @@
 <resources>
     <string name="app_name">Shopping List</string>
+
+    <string name="appbar_title_all_groups_screen">Shopping groups</string>
+    <string name="appbar_title_add_group_and_items">Add group and/or item(s)</string>
+    <string name="appbar_title_add_item">Add item to group</string>
+    <string name="appbar_dropdown_menu_option_delete_all">Delete all</string>
+    <string name="appbar_dropdown_menu_option_delete_group">Delete group</string>
+
+    <string name="input_label_group_name">Group name</string>
+    <string name="input_label_item_name">Item name</string>
+    <string name="input_label_item_quantity">Item quantity</string>
+    <string name="input_label_item_unit">Item unit</string>
+
+    <string name="error_message_name_input_field">Required field, also cannot start with a space (max 25 characters).</string>
+    <string name="error_message_quantity_input_field">Must be a number greater than zero (max 25 characters), or can be left empty.</string>
+    <string name="error_message_unit_input_field">Max 25 characters allowed.</string>
+
+    <string name="alert_dialog_title_delete">Warning</string>
+    <string name="alert_dialog_message_delete_all">Delete all shopping groups? This action cannot be undone.</string>
+    <string name="alert_dialog_message_delete_group">Delete shopping group and its item(s)? This action cannot be undone.</string>
+
+    <string name="toast_message_item_added">💾 ✅</string>
+    <string name="toast_message_group_deleted">🗑️ ✅</string>
+    <string name="toast_message_reorder_hint">Long press item and drag to reorder</string>
+
+    <string name="button_add_item_text">Add item</string>
+    <string name="button_confirm_text">Confirm</string>
+    <string name="button_cancel_text">Cancel</string>
+
+    <string name="content_description_application_logo">Application logo</string>
+
+    <string name="content_description_fab_add_group_and_item">Button: Add shopping group and/or shopping item(s)</string>
+    <string name="content_description_fab_add_item">Button: Add shopping item</string>
+    <string name="content_description_fab_confirm_add">Button: Confirm add</string>
+    <string name="content_description_button_add_item">Button: Add shopping item</string>
+
+    <string name="content_description_icon_open_dropdown_menu">Button: Open dropdown menu</string>
+    <string name="content_description_icon_expand_group">Button: Expand shopping group</string>
+    <string name="content_description_icon_open_in_new">Button: Open shopping group screen</string>
+
+    <string name="content_description_icon_erase_input_field">Button: Erase input field</string>
+    <string name="content_description_icon_error_input_field">Icon: Input field error</string>
+
+    <string name="content_description_icon_toggle_on_reorder">Button: Toggle reorder shopping items on</string>
+    <string name="content_description_icon_toggle_off_reorder">Button: Toggle reorder shopping items off</string>
+    <string name="content_description_icon_checkbox_item_done">Checkbox: mark as not done</string>
+    <string name="content_description_icon_checkbox_item_not_done">Checkbox: mark as done</string>
+    <string name="content_description_icon_delete_item">Button: Delete shopping item</string>
+    <string name="content_description_icon_drag">Icon: Press and hold to reorder shopping item</string>
 </resources>
