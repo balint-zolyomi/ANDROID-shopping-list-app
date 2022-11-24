@@ -23,6 +23,11 @@ class Repository @Inject constructor(
         return dao.getGroupWithList(groupId)
     }
 
+        // Special
+    suspend fun getGroupId(groupName: String): Long? {
+        return dao.getGroupId(groupName = groupName)
+    }
+
     // DELETE
     suspend fun deleteGroup(groupId: Long?) {
         dao.deleteGroup(groupId = groupId)

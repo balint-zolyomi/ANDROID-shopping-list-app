@@ -1,6 +1,9 @@
 package com.bzolyomi.shoppinglist
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +18,11 @@ import com.bzolyomi.shoppinglist.ui.screens.AddScreen
 import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
 import com.bzolyomi.shoppinglist.ui.screens.GroupScreen
 import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
+import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
+import com.bzolyomi.shoppinglist.util.Constants
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN
+import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_ENTER_DURATION
+import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_WITH_ARG
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_WITH_ARG
@@ -60,8 +67,39 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             arguments = listOf(navArgument(NAV_ARGUMENT_GROUP_ID) {
                 type = NavType.StringType
             }),
-        ) {
-            AddScreen()
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(ADD_SCREEN_ENTER_DURATION),
+                    initialOffsetX = { it / 2 }
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(ADD_SCREEN_EXIT_DURATION),
+                    targetOffsetX = { it / 2 }
+                )
+            }
+        ) { navBackStackEntry ->
+            val groupId = navBackStackEntry.arguments?.getString(NAV_ARGUMENT_GROUP_ID)?.toLong()
+
+            ShoppingListTheme {
+                AddScreen(
+                    groupId = groupId,
+                    navigateToHomeScreen = {
+                        navController.navigate(HOME_SCREEN) {
+                            popUpTo(HOME_SCREEN) { inclusive = true }
+                        }
+                    },
+                    navigateToGroupScreen = {
+                        navController.navigate("$GROUP_SCREEN/$groupId") {
+                            popUpTo("$GROUP_SCREEN/$groupId") { inclusive = true }
+                        }
+                    },
+                    sharedViewModel = sharedViewModel,
+                    modifier = backgroundModifier
+                        .fillMaxSize()
+                )
+            }
         }
 
         composable(

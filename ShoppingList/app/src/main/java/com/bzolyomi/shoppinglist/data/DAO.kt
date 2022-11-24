@@ -22,6 +22,10 @@ interface DAO {
     @Query("SELECT * FROM shopping_group SG WHERE SG.group_id=:groupId")
     suspend fun getGroupWithList(groupId: Long?): GroupWithList
 
+        // Special
+    @Query("SELECT SG.group_id FROM shopping_group SG WHERE SG.group_name=:groupName")
+    suspend fun getGroupId(groupName: String): Long?
+
     // DELETE
     @Query("DELETE FROM shopping_group WHERE group_id=:groupId")
     suspend fun deleteGroup(groupId: Long?)

@@ -22,5 +22,5 @@ data class ShoppingItemEntity(
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_QUANTITY) var itemQuantity: Float?,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_UNIT) val itemUnit: String,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_CHECKED) var isItemChecked: Boolean,
-    @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_POSITION_IN_LIST) var itemPositionInList: Int
+    @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_POSITION_IN_LIST) var itemPositionInList: Int?
 )

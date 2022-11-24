@@ -26,7 +26,7 @@ class ComposeInstrumentedTest {
     @Before
     fun setup() {
         hiltTestRule.inject()
-//        createDummyData()
+        createDummyData()
     }
 
     @Test

@@ -5,6 +5,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.OpenInNew
@@ -73,6 +74,17 @@ fun OpenInNewIcon(
             contentDescription = stringResource(
                 R.string.content_description_icon_open_in_new
             ),
+            tint = MaterialTheme.colors.primary
+        )
+    }
+}
+
+@Composable
+fun EraseTrailingIcon(callback: () -> Unit) {
+    IconButton(onClick = callback) {
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = stringResource(R.string.content_description_icon_erase_input_field),
             tint = MaterialTheme.colors.primary
         )
     }
