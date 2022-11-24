@@ -8,7 +8,7 @@ import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_GROUP
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_CHECKED
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_ID
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_NAME
-import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_POSITION
+import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_POSITION_IN_LIST
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_QUANTITY
 import com.bzolyomi.shoppinglist.util.Constants.SHOPPING_LIST_TABLE_COLUMN_ITEM_UNIT
 
@@ -22,5 +22,5 @@ data class ShoppingItemEntity(
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_QUANTITY) var itemQuantity: Float?,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_UNIT) val itemUnit: String,
     @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_CHECKED) var isItemChecked: Boolean,
-    @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_POSITION) var itemPositionInList: Int
+    @ColumnInfo(name = SHOPPING_LIST_TABLE_COLUMN_ITEM_POSITION_IN_LIST) var itemPositionInList: Int
 )

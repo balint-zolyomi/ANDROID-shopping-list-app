@@ -1,14 +1,20 @@
 package com.bzolyomi.shoppinglist
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.bzolyomi.shoppinglist.ui.screens.AddScreen
 import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
 import com.bzolyomi.shoppinglist.ui.screens.GroupScreen
+import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_WITH_ARG
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN
@@ -26,6 +32,11 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
 
     val navController: NavHostController = rememberAnimatedNavController()
 
+    val isInDarkMode = isSystemInDarkTheme()
+    val backgroundModifier: Modifier =
+        if (isInDarkMode) Modifier.background(Color.Black)
+        else Modifier.background(GradientBackground)
+
     AnimatedNavHost(navController = navController, startDestination = HOME_SCREEN) {
 
         composable(
@@ -38,7 +49,9 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 navigateToGroupScreen = { groupId ->
                     if (groupId != null) navController.navigate("$GROUP_SCREEN/$groupId")
                 },
-                sharedVM = sharedViewModel
+                sharedVM = sharedViewModel,
+                modifier = backgroundModifier
+                    .fillMaxSize()
             )
         }
 

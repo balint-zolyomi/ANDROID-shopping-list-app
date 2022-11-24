@@ -32,6 +32,7 @@ class SharedViewModel @Inject constructor(
         createDummyDataIfNotExistsCoroutine()
     }
 
+    // READ
     suspend fun getSelectedGroupWithListCoroutine(groupId: String): GroupWithList =
         coroutineScope {
             val groupWithList = async { getSelectedGroupWithList(groupId = groupId) }
@@ -43,6 +44,7 @@ class SharedViewModel @Inject constructor(
         return repo.getGroupWithList(groupId = id)
     }
 
+    // CREATE
     private fun createDummyDataIfNotExistsCoroutine() {
         viewModelScope.launch(Dispatchers.IO) {
             repo.allGroupsWithLists.collect {
@@ -71,6 +73,21 @@ class SharedViewModel @Inject constructor(
             createGroupCoroutine(groupWithList.group)
             for (item in groupWithList.shoppingList) {
                 createItemCoroutine(item)
+            }
+        }
+    }
+
+    // DELETE
+    fun deleteGroup(groupId: Long?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteGroup(groupId = groupId)
+        }
+    }
+
+    fun deleteItems(shoppingList: List<ShoppingItemEntity>) {
+        for (item in shoppingList) {
+            viewModelScope.launch(Dispatchers.IO) {
+                repo.deleteItem(itemId = item.itemId)
             }
         }
     }
