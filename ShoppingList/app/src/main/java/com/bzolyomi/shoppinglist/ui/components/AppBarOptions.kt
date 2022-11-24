@@ -63,3 +63,29 @@ fun AppBarOptionMore(
         )
     }
 }
+
+@Composable
+fun AppBarOptionToggleReorder(
+    isReordering: Boolean,
+    onReorderButtonToggled: () -> Unit
+) {
+    IconButton(onClick = onReorderButtonToggled) {
+        if (!isReordering) {
+            Icon(
+                imageVector = Icons.Outlined.ChangeCircle,
+                contentDescription = stringResource(
+                    R.string.content_description_icon_toggle_on_reorder
+                ),
+                tint = MaterialTheme.colors.onBackground
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Filled.ChangeCircle,
+                contentDescription = stringResource(
+                    R.string.content_description_icon_toggle_off_reorder
+                ),
+                tint = MaterialTheme.colors.onBackground
+            )
+        }
+    }
+}

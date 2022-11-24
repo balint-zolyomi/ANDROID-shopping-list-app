@@ -1,15 +1,12 @@
 package com.bzolyomi.shoppinglist.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -87,5 +84,76 @@ fun EraseTrailingIcon(callback: () -> Unit) {
             contentDescription = stringResource(R.string.content_description_icon_erase_input_field),
             tint = MaterialTheme.colors.primary
         )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun CheckboxIcon(
+    isItemChecked: Boolean,
+    onCheckboxClicked: () -> Unit,
+    itemName: String,
+    modifier: Modifier
+) {
+    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+        IconButton(
+            onClick = onCheckboxClicked,
+            modifier = modifier.size(Constants.SIZE_ICONS_OFFICIAL)
+        ) {
+            if (isItemChecked) {
+                Icon(
+                    imageVector = Icons.Filled.CheckBox,
+                    contentDescription = stringResource(
+                        R.string.content_description_icon_checkbox_item_done
+                    ) + " (item: $itemName)"
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.CheckBoxOutlineBlank,
+                    contentDescription = stringResource(
+                        R.string.content_description_icon_checkbox_item_not_done
+                    ) + " (item: $itemName)"
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun DeleteItemIcon(
+    onDeleteItemClicked: () -> Unit,
+    itemName: String,
+    modifier: Modifier
+) {
+    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+        IconButton(
+            onClick = onDeleteItemClicked,
+            modifier = modifier.size(Constants.SIZE_ICONS_OFFICIAL)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = stringResource(R.string.content_description_icon_delete_item) + " $itemName"
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun DragIcon(
+    modifier: Modifier
+) {
+    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
+        IconButton(
+            onClick = {},
+            enabled = false,
+            modifier = modifier.size(Constants.SIZE_ICONS_OFFICIAL)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.DragIndicator,
+                contentDescription = stringResource(R.string.content_description_icon_drag),
+            )
+        }
     }
 }

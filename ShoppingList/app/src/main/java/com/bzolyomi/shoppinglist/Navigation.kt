@@ -106,7 +106,25 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             route = GROUP_SCREEN_WITH_ARG,
             arguments = listOf(navArgument(NAV_ARGUMENT_GROUP_ID) {
                 type = NavType.StringType
-            })
+            }),
+            enterTransition = {
+                when (initialState.destination.route) {
+                    HOME_SCREEN -> slideInHorizontally(
+                        animationSpec = tween(Constants.GROUP_SCREEN_ENTER_DURATION),
+                        initialOffsetX = { it / 2 }
+                    )
+                    else -> null
+                }
+            },
+            exitTransition = {
+                when (targetState.destination.route) {
+                    HOME_SCREEN -> slideOutHorizontally(
+                        animationSpec = tween(Constants.GROUP_SCREEN_EXIT_DURATION),
+                        targetOffsetX = { it / 2 }
+                    )
+                    else -> null
+                }
+            }
         ) { navBackStackEntry ->
             val groupId = navBackStackEntry.arguments!!.getString(NAV_ARGUMENT_GROUP_ID)
 
@@ -114,11 +132,24 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
                 LaunchedEffect(key1 = true) {
                     sharedViewModel.selectedGroupWithList =
                         sharedViewModel.getSelectedGroupWithListCoroutine(groupId = groupId)
+                    sharedViewModel.getSelectedShoppingListCoroutine(groupId = groupId)
                 }
 
-                GroupScreen(
-                    groupWithList = sharedViewModel.selectedGroupWithList
-                )
+                ShoppingListTheme {
+                    GroupScreen(
+                        navigateToHomeScreen = {
+                            navController.navigate(HOME_SCREEN) {
+                                popUpTo(HOME_SCREEN) { inclusive = true }
+                            }
+                        },
+                        navigateToAddItemScreen = { groupId ->
+                            navController.navigate("$ADD_SCREEN/$groupId")
+                        },
+                        modifier = backgroundModifier
+                            .fillMaxSize(),
+                        sharedVM = sharedViewModel
+                    )
+                }
             }
         }
     }

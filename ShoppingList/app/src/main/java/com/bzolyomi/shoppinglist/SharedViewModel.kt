@@ -41,6 +41,10 @@ class SharedViewModel @Inject constructor(
     val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
         get() = _shoppingGroupsWithLists
 
+    private val _selectedShoppingList = MutableStateFlow<List<ShoppingItemEntity>>(emptyList())
+    val selectedShoppingList: StateFlow<List<ShoppingItemEntity>>
+        get() = _selectedShoppingList
+
     var selectedGroupWithList by mutableStateOf(
         GroupWithList(
             ShoppingGroupEntity(null, ""),
@@ -133,6 +137,15 @@ class SharedViewModel @Inject constructor(
         return repo.getGroupWithList(groupId = id)
     }
 
+    fun getSelectedShoppingListCoroutine(groupId: String?) {
+        val id = groupId?.toLong()
+        viewModelScope.launch {
+            repo.getShoppingList(id).collect {
+                _selectedShoppingList.value = it
+            }
+        }
+    }
+
     private suspend fun getGroupIdCoroutine(): Long? = coroutineScope {
         val groupId = async { getGroupId() }
         groupId.await()
@@ -198,6 +211,23 @@ class SharedViewModel @Inject constructor(
         )
     }
 
+    // UPDATE
+    fun updateItemChecked(shoppingListItem: ShoppingItemEntity) {
+        shoppingListItem.isItemChecked = !shoppingListItem.isItemChecked
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.updateItem(item = shoppingListItem)
+        }
+    }
+
+    fun updateShoppingListOrder(shoppingList: List<ShoppingItemEntity>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.updateShoppingListOrder(
+                shoppingList = shoppingList
+            )
+        }
+    }
+
     // DELETE
     fun deleteGroup(groupId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -210,6 +240,12 @@ class SharedViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 repo.deleteItem(itemId = item.itemId)
             }
+        }
+    }
+
+    fun deleteItem(itemId: Long?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteItem(itemId = itemId)
         }
     }
 }

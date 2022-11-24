@@ -23,9 +23,22 @@ class Repository @Inject constructor(
         return dao.getGroupWithList(groupId)
     }
 
+    fun getShoppingList(groupId: Long?): Flow<List<ShoppingItemEntity>> {
+        return dao.getShoppingList(groupId)
+    }
+
         // Special
     suspend fun getGroupId(groupName: String): Long? {
         return dao.getGroupId(groupName = groupName)
+    }
+
+    // UPDATE
+    suspend fun updateItem(item: ShoppingItemEntity) {
+        dao.updateItem(item = item)
+    }
+
+    suspend fun updateShoppingListOrder(shoppingList: List<ShoppingItemEntity>) {
+        dao.updateShoppingListOrder(shoppingList = shoppingList)
     }
 
     // DELETE
