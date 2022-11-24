@@ -3,23 +3,20 @@ package com.bzolyomi.shoppinglist.ui.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.SharedViewModel
 import com.bzolyomi.shoppinglist.ui.components.input.*
@@ -72,12 +69,12 @@ fun AddScreen(
 
     var isAnyError by rememberSaveable { mutableStateOf(false) }
 
-//    val focusManager = LocalFocusManager.current
-//    val focusRequester = FocusRequester()
-//
-//    LaunchedEffect(true) {
-//        focusRequester.requestFocus()
-//    }
+    val focusManager = LocalFocusManager.current
+    val focusRequester = FocusRequester()
+
+    LaunchedEffect(true) {
+        focusRequester.requestFocus()
+    }
 
     fun validateAll() {
         isGroupNameError = validateGroupNameInput(groupName)
@@ -90,7 +87,7 @@ fun AddScreen(
     fun onSubmit() {
         validateAll()
         if (!isAnyError) {
-//            focusManager.clearFocus()
+            focusManager.clearFocus()
             if (groupId == GROUP_UNSELECTED) navigateToHomeScreen() else navigateToGroupScreen()
             sharedViewModel.createWithCoroutines()
             showShortToast(context = context, message = itemAddedToastMessage)
@@ -148,8 +145,8 @@ fun AddScreen(
                         isGroupNameError = validateGroupNameInput(groupName)
                     },
                     modifier = if (groupId == GROUP_UNSELECTED) {
-//                        Modifier.focusRequester(focusRequester)
-                        Modifier
+                        Modifier.focusRequester(focusRequester)
+//                        Modifier
                     } else {
                         Modifier
                     }
@@ -172,8 +169,8 @@ fun AddScreen(
                         isItemNameError = validateItemNameInput(itemName)
                     },
                     modifier = if (groupId != GROUP_UNSELECTED) {
-//                        Modifier.focusRequester(focusRequester)
-                        Modifier
+                        Modifier.focusRequester(focusRequester)
+//                        Modifier
                     } else {
                         Modifier
                     }
@@ -224,6 +221,9 @@ fun AddScreen(
                             sharedViewModel.createWithCoroutines()
                             sharedViewModel.setGroupName(tempGroupName)
                             showShortToast(context = context, message = itemAddedToastMessage)
+                            focusManager.clearFocus()
+                            focusManager.moveFocus(FocusDirection.Down)
+                            focusManager.moveFocus(FocusDirection.Down)
                         }
                     })
                 }
