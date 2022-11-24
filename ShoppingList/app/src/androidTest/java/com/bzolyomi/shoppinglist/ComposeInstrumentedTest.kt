@@ -7,11 +7,14 @@ import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import com.bzolyomi.shoppinglist.data.DummyData
 import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
+import com.bzolyomi.shoppinglist.util.Constants
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
+import kotlin.concurrent.schedule
 
 @HiltAndroidTest
 class ComposeInstrumentedTest {
@@ -26,6 +29,7 @@ class ComposeInstrumentedTest {
     @Before
     fun setup() {
         hiltTestRule.inject()
+        waitUntilIntroScreenIsDone()
         createDummyData()
     }
 
@@ -126,6 +130,17 @@ class ComposeInstrumentedTest {
             ).assertIsDisplayed()
             Espresso.pressBack()
         }
+    }
+
+    // Util
+    private fun waitUntilIntroScreenIsDone() {
+        var isIntroScreenDone = false
+        composeTestRule.waitUntil(
+            condition = {
+                Timer().schedule(Constants.INTRO_SCREEN_FULL_DURATION) { isIntroScreenDone = true }
+                isIntroScreenDone
+            }, timeoutMillis = Constants.INTRO_SCREEN_FULL_DURATION + 2000
+        )
     }
 
     // Aggregated actions

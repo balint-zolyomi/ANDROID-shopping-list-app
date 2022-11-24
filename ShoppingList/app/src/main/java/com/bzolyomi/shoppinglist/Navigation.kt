@@ -17,17 +17,22 @@ import androidx.navigation.navArgument
 import com.bzolyomi.shoppinglist.ui.screens.AddScreen
 import com.bzolyomi.shoppinglist.ui.screens.AllGroupsScreen
 import com.bzolyomi.shoppinglist.ui.screens.GroupScreen
+import com.bzolyomi.shoppinglist.ui.screens.IntroScreen
 import com.bzolyomi.shoppinglist.ui.theme.GradientBackground
+import com.bzolyomi.shoppinglist.ui.theme.IntroTheme
 import com.bzolyomi.shoppinglist.ui.theme.ShoppingListTheme
-import com.bzolyomi.shoppinglist.util.Constants
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_ENTER_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.ADD_SCREEN_WITH_ARG
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_ENTER_DURATION
+import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_SCREEN_WITH_ARG
 import com.bzolyomi.shoppinglist.util.Constants.GROUP_UNSELECTED
 import com.bzolyomi.shoppinglist.util.Constants.HOME_SCREEN
+import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN
+import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_EXIT_DURATION
 import com.bzolyomi.shoppinglist.util.Constants.NAV_ARGUMENT_GROUP_ID
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -44,22 +49,45 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
         if (isInDarkMode) Modifier.background(Color.Black)
         else Modifier.background(GradientBackground)
 
-    AnimatedNavHost(navController = navController, startDestination = HOME_SCREEN) {
+    AnimatedNavHost(navController = navController, startDestination = INTRO_SCREEN) {
+
+        composable(
+            route = INTRO_SCREEN,
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(INTRO_SCREEN_EXIT_DURATION)
+                )
+            }
+        ) {
+            IntroTheme {
+                IntroScreen(
+                    isInDarkMode = isInDarkMode,
+                    onAnimationEnded = {
+                        navController.navigate(HOME_SCREEN) {
+                            popUpTo(INTRO_SCREEN) { inclusive = true }
+                        }
+                    },
+                    modifier = backgroundModifier.fillMaxSize()
+                )
+            }
+        }
 
         composable(
             route = HOME_SCREEN
         ) {
-            AllGroupsScreen(
-                navigateToAddScreen = {
-                    navController.navigate("$ADD_SCREEN/$GROUP_UNSELECTED")
-                },
-                navigateToGroupScreen = { groupId ->
-                    if (groupId != null) navController.navigate("$GROUP_SCREEN/$groupId")
-                },
-                sharedVM = sharedViewModel,
-                modifier = backgroundModifier
-                    .fillMaxSize()
-            )
+            ShoppingListTheme {
+                AllGroupsScreen(
+                    navigateToAddScreen = {
+                        navController.navigate("$ADD_SCREEN/$GROUP_UNSELECTED")
+                    },
+                    navigateToGroupScreen = { groupId ->
+                        if (groupId != null) navController.navigate("$GROUP_SCREEN/$groupId")
+                    },
+                    sharedVM = sharedViewModel,
+                    modifier = backgroundModifier
+                        .fillMaxSize()
+                )
+            }
         }
 
         composable(
@@ -110,7 +138,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             enterTransition = {
                 when (initialState.destination.route) {
                     HOME_SCREEN -> slideInHorizontally(
-                        animationSpec = tween(Constants.GROUP_SCREEN_ENTER_DURATION),
+                        animationSpec = tween(GROUP_SCREEN_ENTER_DURATION),
                         initialOffsetX = { it / 2 }
                     )
                     else -> null
@@ -119,7 +147,7 @@ fun NavigationController(sharedViewModel: SharedViewModel) {
             exitTransition = {
                 when (targetState.destination.route) {
                     HOME_SCREEN -> slideOutHorizontally(
-                        animationSpec = tween(Constants.GROUP_SCREEN_EXIT_DURATION),
+                        animationSpec = tween(GROUP_SCREEN_EXIT_DURATION),
                         targetOffsetX = { it / 2 }
                     )
                     else -> null
