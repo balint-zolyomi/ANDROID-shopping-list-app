@@ -1,8 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.components.cards
 
-import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -45,64 +43,59 @@ fun ItemCards(
             bottom = PADDING_XX_LARGE
         )
     ) {
-        val order = mutableStateOf(shoppingList.sortedBy {
+        val sortedByPosition = shoppingList.sortedBy {
             it.itemPositionInList
-        })
+        }
 
-        items(order.value) { listOrder ->
+        items(sortedByPosition) { item ->
 
-            val shoppingListItem = shoppingList.find { shoppingItem ->
-                shoppingItem.itemId == listOrder.itemId
-            }
+            var isItemChecked by mutableStateOf(item.isItemChecked)
 
-            if (shoppingListItem != null) {
-                var isItemChecked by mutableStateOf(shoppingListItem.isItemChecked)
-
-                var startFadeOutAnimation by remember { mutableStateOf(false) }
-                val cardAlpha by animateFloatAsState(
-                    targetValue = if (startFadeOutAnimation)
-                        0.0F else 1F,
-                    animationSpec = tween(
-                        durationMillis = ITEM_CARD_ON_DELETE_FADE_OUT_DURATION.toInt(),
-                        easing = FastOutLinearInEasing
-                    )
+            var startFadeOutAnimation by remember { mutableStateOf(false) }
+            val cardAlpha by animateFloatAsState(
+                targetValue = if (startFadeOutAnimation)
+                    0.0F else 1F,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessHigh
                 )
-                val scope = rememberCoroutineScope()
+            )
+            val scope = rememberCoroutineScope()
 
-                Card(
-                    elevation = ELEVATION_SMALL,
-                    shape = MaterialTheme.shapes.large,
-                    modifier = Modifier
-                        .padding(PADDING_SMALL)
-                        .alpha(cardAlpha)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        CheckboxIcon(
-                            isItemChecked = isItemChecked,
-                            onCheckboxClicked = {
-                                onCheckboxClicked(shoppingListItem)
-                                isItemChecked = !isItemChecked
-                            },
-                            itemName = shoppingListItem.itemName,
-                            modifier = Modifier.padding(start = PADDING_X_SMALL)
-                        )
-                        Item(
-                            item = shoppingListItem,
-                            textDecoration = TextDecoration.None,
-                            modifier = Modifier
-                        )
-                        DeleteItemIcon(
-                            onDeleteItemClicked = {
-                                startFadeOutAnimation = true
-                                scope.launch(Dispatchers.IO) {
-                                    delay(ITEM_CARD_ON_DELETE_FADE_OUT_DURATION)
-                                    onDeleteItemClicked(shoppingListItem.itemId)
-                                }
-                            },
-                            itemName = shoppingListItem.itemName,
-                            modifier = Modifier.padding(end = PADDING_X_SMALL)
-                        )
-                    }
+            Card(
+                elevation = ELEVATION_SMALL,
+                shape = MaterialTheme.shapes.large,
+                modifier = Modifier
+                    .padding(PADDING_SMALL)
+                    .alpha(cardAlpha)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CheckboxIcon(
+                        isItemChecked = isItemChecked,
+                        onCheckboxClicked = {
+                            onCheckboxClicked(item)
+                            isItemChecked = !isItemChecked
+                        },
+                        itemName = item.itemName,
+                        modifier = Modifier.padding(start = PADDING_X_SMALL)
+                    )
+                    Item(
+                        item = item,
+                        textDecoration = TextDecoration.None,
+                        modifier = Modifier
+                    )
+                    DeleteItemIcon(
+                        onDeleteItemClicked = {
+                            startFadeOutAnimation = true
+                            scope.launch(Dispatchers.IO) {
+                                delay(ITEM_CARD_ON_DELETE_FADE_OUT_DURATION)
+                                startFadeOutAnimation = false
+                                onDeleteItemClicked(item.itemId)
+                            }
+                        },
+                        itemName = item.itemName,
+                        modifier = Modifier.padding(end = PADDING_X_SMALL)
+                    )
                 }
             }
         }

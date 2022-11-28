@@ -1,20 +1,32 @@
 package com.bzolyomi.shoppinglist.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.RippleAlpha
+import androidx.compose.material.ripple.RippleTheme
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.bzolyomi.shoppinglist.R
-import com.bzolyomi.shoppinglist.util.Constants
 import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
 import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
+import com.bzolyomi.shoppinglist.util.Constants.MORE_VERT_ICON_ROTATION_ANIMATION_END_DEGREES
+import com.bzolyomi.shoppinglist.util.Constants.MORE_VERT_ICON_ROTATION_ANIMATION_START_DEGREES
+import com.bzolyomi.shoppinglist.util.Constants.SIZE_ICONS_OFFICIAL
 
 @Composable
 fun MoreVertIcon(
@@ -22,9 +34,9 @@ fun MoreVertIcon(
 ) {
     val moreVertIconAngle: Float by animateFloatAsState(
         targetValue = if (isExpanded) {
-            Constants.MORE_VERT_ICON_ROTATION_ANIMATION_END_DEGREES
+            MORE_VERT_ICON_ROTATION_ANIMATION_END_DEGREES
         } else {
-            Constants.MORE_VERT_ICON_ROTATION_ANIMATION_START_DEGREES
+            MORE_VERT_ICON_ROTATION_ANIMATION_START_DEGREES
         }
     )
 
@@ -100,7 +112,7 @@ fun CheckboxIcon(
     CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
         IconButton(
             onClick = onCheckboxClicked,
-            modifier = modifier.size(Constants.SIZE_ICONS_OFFICIAL)
+            modifier = modifier.size(SIZE_ICONS_OFFICIAL)
         ) {
             if (isItemChecked) {
                 Icon(
@@ -121,24 +133,22 @@ fun CheckboxIcon(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DeleteItemIcon(
     onDeleteItemClicked: () -> Unit,
     itemName: String,
     modifier: Modifier
 ) {
-    CompositionLocalProvider(LocalMinimumTouchTargetEnforcement provides false) {
         IconButton(
             onClick = onDeleteItemClicked,
-            modifier = modifier.size(Constants.SIZE_ICONS_OFFICIAL)
+            modifier = modifier
+                .size(SIZE_ICONS_OFFICIAL)
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
                 contentDescription = stringResource(R.string.content_description_icon_delete_item) + " $itemName"
             )
         }
-    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -150,7 +160,7 @@ fun DragIcon(
         IconButton(
             onClick = {},
             enabled = false,
-            modifier = modifier.size(Constants.SIZE_ICONS_OFFICIAL)
+            modifier = modifier.size(SIZE_ICONS_OFFICIAL)
         ) {
             Icon(
                 imageVector = Icons.Filled.DragIndicator,

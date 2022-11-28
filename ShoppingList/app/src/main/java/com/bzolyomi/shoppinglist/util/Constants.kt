@@ -54,7 +54,7 @@ object Constants {
     const val ITEM_CARDS_REORDER_TOGGLE_CROSSFADE_ANIMATION_DURATION = 800
 
     // Item card
-    const val ITEM_CARD_ON_DELETE_FADE_OUT_DURATION = 400L
+    const val ITEM_CARD_ON_DELETE_FADE_OUT_DURATION = 600L
 
     // Expand icon
     const val EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES = 0f
