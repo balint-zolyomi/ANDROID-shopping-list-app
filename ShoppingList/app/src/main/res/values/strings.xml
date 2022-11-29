@@ -23,6 +23,7 @@
     <string name="toast_message_item_added">💾 ✅</string>
     <string name="toast_message_group_deleted">🗑️ ✅</string>
     <string name="toast_message_reorder_hint">Long press item and drag to reorder</string>
+    <string name="toast_message_reorder_confirmed">🔃 ✅</string>
 
     <string name="button_add_item_text">Add item</string>
     <string name="button_confirm_text">Confirm</string>
@@ -33,6 +34,7 @@
     <string name="content_description_fab_add_group_and_item">Button: Add shopping group and/or shopping item(s)</string>
     <string name="content_description_fab_add_item">Button: Add shopping item</string>
     <string name="content_description_fab_confirm_add">Button: Confirm add</string>
+    <string name="content_description_fab_confirm_reorder">Button: Confirm reorder</string>
     <string name="content_description_button_add_item">Button: Add shopping item</string>
 
     <string name="content_description_icon_open_dropdown_menu">Button: Open dropdown menu</string>

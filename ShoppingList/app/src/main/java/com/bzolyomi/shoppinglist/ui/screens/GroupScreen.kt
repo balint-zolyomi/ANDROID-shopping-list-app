@@ -23,6 +23,7 @@ import com.bzolyomi.shoppinglist.ui.components.cards.ItemCardsReorder
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
 import com.bzolyomi.shoppinglist.util.Constants.ITEM_CARDS_REORDER_TOGGLE_CROSSFADE_ANIMATION_DURATION
 import com.bzolyomi.shoppinglist.SharedViewModel
+import com.bzolyomi.shoppinglist.ui.components.showShortToast
 
 @Composable
 fun GroupScreen(
@@ -33,9 +34,16 @@ fun GroupScreen(
 ) {
 
     var isReordering by remember { mutableStateOf(false) }
+    var isReorderConfirmed by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val toastMessageReorderHint = stringResource(R.string.toast_message_reorder_hint)
+    val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
+    val toastMessageForReorderConfirmed = stringResource(R.string.toast_message_reorder_confirmed)
 
     BackHandler {
         if (isReordering) {
+            isReorderConfirmed = true
             isReordering = !isReordering
         } else {
             navigateToHomeScreen()
@@ -43,10 +51,6 @@ fun GroupScreen(
             sharedVM.flushGroupGUI()
         }
     }
-
-    val context = LocalContext.current
-    val reorderHint = stringResource(R.string.toast_message_reorder_hint)
-    val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
 
     val shoppingGroup by mutableStateOf(sharedVM.selectedGroupWithList.group)
     val shoppingList by sharedVM.selectedShoppingList.collectAsState()
@@ -62,8 +66,12 @@ fun GroupScreen(
                     AppBarOptionToggleReorder(
                         isReordering = isReordering,
                         onReorderButtonToggled = {
-                            if (!isReordering) {
-                                Toast.makeText(context, reorderHint, Toast.LENGTH_LONG).show()
+                            isReorderConfirmed = if (!isReordering) {
+                                Toast.makeText(context, toastMessageReorderHint, Toast.LENGTH_LONG)
+                                    .show()
+                                false
+                            } else {
+                                true
                             }
                             isReordering = !isReordering
                         }
@@ -77,8 +85,7 @@ fun GroupScreen(
                         ),
                         onConfirmClicked = {
                             navigateToHomeScreen()
-                            Toast.makeText(context, toastMessageForGroupDelete, Toast.LENGTH_SHORT)
-                                .show()
+                            showShortToast(context, toastMessageForGroupDelete)
                             sharedVM.deleteGroup(groupId = shoppingGroup.groupId)
                             sharedVM.deleteItems(shoppingList = shoppingList)
                         }
@@ -99,8 +106,8 @@ fun GroupScreen(
                 Crossfade(
                     targetState = isReordering,
                     animationSpec = tween(ITEM_CARDS_REORDER_TOGGLE_CROSSFADE_ANIMATION_DURATION)
-                ) { isReordering ->
-                    if (!isReordering) {
+                ) { isReorderingCards ->
+                    if (!isReorderingCards) {
                         ItemCards(
                             shoppingList = shoppingList,
                             onCheckboxClicked = {
@@ -116,8 +123,11 @@ fun GroupScreen(
                     } else {
                         ItemCardsReorder(
                             shoppingList = shoppingList,
+                            isReorderConfirmed = isReorderConfirmed,
                             onItemsOrderChange = {
                                 sharedVM.updateShoppingListOrder(it)
+                                showShortToast(context, toastMessageForReorderConfirmed)
+                                isReordering = false
                             },
                             modifier = Modifier.fillMaxSize()
                         )

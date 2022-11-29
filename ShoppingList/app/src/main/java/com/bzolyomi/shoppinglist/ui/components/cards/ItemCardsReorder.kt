@@ -29,11 +29,16 @@ import org.burnoutcrew.reorderable.reorderable
 @Composable
 fun ItemCardsReorder(
     shoppingList: List<ShoppingItemEntity>,
+    isReorderConfirmed: Boolean,
     onItemsOrderChange: (List<ShoppingItemEntity>) -> Unit,
     modifier: Modifier
 ) {
     var shoppingListByPosition = shoppingList.sortedBy {
         it.itemPositionInList
+    }
+
+    if (isReorderConfirmed) {
+        onItemsOrderChange(shoppingListByPosition)
     }
 
     var itemIdsSortedByPosition by remember {
@@ -55,8 +60,6 @@ fun ItemCardsReorder(
         for ((i, item) in shoppingListByPosition.withIndex()) {
             item.itemPositionInList = i
         }
-
-        onItemsOrderChange(shoppingListByPosition)
     })
 
     LazyColumn(
