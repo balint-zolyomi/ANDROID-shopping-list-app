@@ -41,7 +41,7 @@ class SharedViewModel @Inject constructor(
     val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
         get() = _shoppingGroupsWithLists
 
-    private val _selectedShoppingList = MutableStateFlow<List<ShoppingItemEntity>>(emptyList())
+    private var _selectedShoppingList = MutableStateFlow<List<ShoppingItemEntity>>(emptyList())
     val selectedShoppingList: StateFlow<List<ShoppingItemEntity>>
         get() = _selectedShoppingList
 
@@ -61,10 +61,15 @@ class SharedViewModel @Inject constructor(
         _itemName = ""
         _itemQuantity = ""
         _itemUnit = ""
+        _selectedShoppingList = MutableStateFlow(emptyList())
     }
 
     fun flushGroupGUI() {
         setGroupName("")
+        selectedGroupWithList = GroupWithList(
+            ShoppingGroupEntity(null, ""),
+            emptyList()
+        )
     }
 
     fun clearItemsList() {
