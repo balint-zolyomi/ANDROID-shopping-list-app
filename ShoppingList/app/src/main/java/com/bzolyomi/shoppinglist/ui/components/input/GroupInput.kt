@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.components.input
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -43,8 +44,8 @@ fun GroupNameInput(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
+                    if (!validateGroupNameInput(groupName)) defaultKeyboardAction(ImeAction.Next)
                     onNextInGroupNameInputClicked()
-                    if (!isError) defaultKeyboardAction(ImeAction.Next)
                 }),
             trailingIcon = {
                 if (groupName.isNotBlank() && isEnabled) {

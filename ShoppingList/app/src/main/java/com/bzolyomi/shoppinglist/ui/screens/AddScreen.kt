@@ -1,5 +1,6 @@
 package com.bzolyomi.shoppinglist.ui.screens
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*

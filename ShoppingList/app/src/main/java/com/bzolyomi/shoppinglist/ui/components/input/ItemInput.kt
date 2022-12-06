@@ -41,8 +41,8 @@ fun ItemNameInput(
             ),
             keyboardActions = KeyboardActions(
                 onNext = {
+                    if (!validateItemNameInput(itemName)) defaultKeyboardAction(ImeAction.Next)
                     onNextInItemNameInputClicked()
-                    if (!isError) defaultKeyboardAction(ImeAction.Next)
                 }
             ),
             trailingIcon = {
