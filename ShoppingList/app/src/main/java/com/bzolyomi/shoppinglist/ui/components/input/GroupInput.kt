@@ -1,6 +1,5 @@
 package com.bzolyomi.shoppinglist.ui.components.input
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardActions
@@ -16,8 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import com.bzolyomi.shoppinglist.R
-import com.bzolyomi.shoppinglist.ui.components.ErrorText
 import com.bzolyomi.shoppinglist.ui.components.EraseTrailingIcon
+import com.bzolyomi.shoppinglist.ui.components.ErrorText
 
 @Composable
 fun GroupNameInput(
@@ -49,7 +48,7 @@ fun GroupNameInput(
                 }),
             trailingIcon = {
                 if (groupName.isNotBlank() && isEnabled) {
-                    EraseTrailingIcon(onEraseGroupNameInputButtonClicked)
+                    EraseTrailingIcon(onEraseTrailingIconClicked = onEraseGroupNameInputButtonClicked)
                 } else if (isError) {
                     Icon(
                         Icons.Filled.Error,

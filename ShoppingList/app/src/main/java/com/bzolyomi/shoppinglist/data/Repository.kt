@@ -3,7 +3,6 @@ package com.bzolyomi.shoppinglist.data
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-//@ViewModelScoped
 class Repository @Inject constructor(
     private val dao: DAO) {
 
@@ -20,11 +19,11 @@ class Repository @Inject constructor(
     val allGroupsWithLists: Flow<List<GroupWithList>> = dao.getAll()
 
     suspend fun getGroupWithList(groupId: Long?): GroupWithList {
-        return dao.getGroupWithList(groupId)
+        return dao.getGroupWithList(groupId =  groupId)
     }
 
     fun getShoppingList(groupId: Long?): Flow<List<ShoppingItemEntity>> {
-        return dao.getShoppingList(groupId)
+        return dao.getShoppingList(groupId = groupId)
     }
 
         // Special

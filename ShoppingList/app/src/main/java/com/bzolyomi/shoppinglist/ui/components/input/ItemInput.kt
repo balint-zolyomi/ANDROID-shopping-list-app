@@ -47,7 +47,7 @@ fun ItemNameInput(
             ),
             trailingIcon = {
                 if (itemName.isNotBlank()) {
-                    EraseTrailingIcon(onEraseItemNameInputButtonClicked)
+                    EraseTrailingIcon(onEraseTrailingIconClicked = onEraseItemNameInputButtonClicked)
                 } else if (isError) {
                     Icon(
                         Icons.Filled.Error,
@@ -93,7 +93,7 @@ fun ItemQuantityInput(
         ),
         trailingIcon = {
             if (itemQuantity.isNotBlank()) {
-                EraseTrailingIcon(onEraseItemQuantityInputButtonClicked)
+                EraseTrailingIcon(onEraseTrailingIconClicked = onEraseItemQuantityInputButtonClicked)
             } else if (isError) {
                 Icon(
                     Icons.Filled.Error,
@@ -134,7 +134,7 @@ fun ItemUnitInput(
         textStyle = inputTextStyle,
         trailingIcon = {
             if (itemUnit.isNotBlank()) EraseTrailingIcon(
-                onEraseItemUnitInputButtonClicked
+                onEraseTrailingIconClicked = onEraseItemUnitInputButtonClicked
             )
         },
         singleLine = true,

@@ -38,10 +38,6 @@ private fun CardTitle(
         modifier = modifier
     ) {
         Text(
-            // However sometimes you need to deviate slightly from the selection of
-            // colors and font styles. In those situations it's better to base your
-            // color or style on an existing one.
-            // For this, you can modify a predefined style by using the copy function.
             text = titleGroupName, style = MaterialTheme.typography.h5.copy(
                 fontWeight = FontWeight.Bold
             )
@@ -52,7 +48,7 @@ private fun CardTitle(
 @Composable
 private fun DoneRatio(
     shoppingList: List<ShoppingItemEntity>,
-    onAllItemDone: () -> Unit,
+    onAllItemsDone: () -> Unit,
     modifier: Modifier
 ) {
     var itemsTotal = 0
@@ -62,7 +58,7 @@ private fun DoneRatio(
         if (item.isItemChecked) itemsDone++
     }
 
-    if (itemsDone == itemsTotal) onAllItemDone()
+    if (itemsDone == itemsTotal) onAllItemsDone()
 
     Text(
         text = "$itemsDone/$itemsTotal", modifier = modifier, style = MaterialTheme.typography.body1
@@ -110,7 +106,7 @@ fun GroupAndItemsCard(
                 )
                 DoneRatio(
                     shoppingList = shoppingList,
-                    onAllItemDone = { isAllItemsDone = true },
+                    onAllItemsDone = { isAllItemsDone = true },
                     modifier = modifier.padding(end = PADDING_SMALL)
                 )
             }
@@ -151,25 +147,20 @@ private fun ColumnScope.CardContent(
             OpenInNewIcon(onOpenGroupIconClicked = onOpenGroupIconClicked)
 
             Column {
-                val order = shoppingList.sortedBy {
+                val shoppingListByItemPosition = shoppingList.sortedBy {
                     it.itemPositionInList
                 }
 
-                for (position in order) {
-                    val item = shoppingList.find { shoppingItem ->
-                        shoppingItem.itemId == position.itemId
-                    }
+                for (item in shoppingListByItemPosition) {
 
-                    if (item != null) {
-                        val textDecoration = if (item.isItemChecked) TextDecoration.LineThrough else
-                            TextDecoration.None
+                    val textDecoration = if (item.isItemChecked) TextDecoration.LineThrough else
+                        TextDecoration.None
 
-                        Item(
-                            item = item,
-                            textDecoration = textDecoration,
-                            modifier = modifier
-                        )
-                    }
+                    Item(
+                        item = item,
+                        textDecoration = textDecoration,
+                        modifier = modifier
+                    )
                 }
             }
             Spacer(modifier = modifier.weight(1f))

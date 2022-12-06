@@ -1,26 +1,16 @@
 package com.bzolyomi.shoppinglist.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.material.ripple.RippleAlpha
-import androidx.compose.material.ripple.RippleTheme
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.bzolyomi.shoppinglist.R
 import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_END_DEGREES
 import com.bzolyomi.shoppinglist.util.Constants.EXPAND_ICON_ROTATION_ANIMATION_START_DEGREES
@@ -91,8 +81,8 @@ fun OpenInNewIcon(
 }
 
 @Composable
-fun EraseTrailingIcon(callback: () -> Unit) {
-    IconButton(onClick = callback) {
+fun EraseTrailingIcon(onEraseTrailingIconClicked: () -> Unit) {
+    IconButton(onClick = onEraseTrailingIconClicked) {
         Icon(
             imageVector = Icons.Filled.Close,
             contentDescription = stringResource(R.string.content_description_icon_erase_input_field),

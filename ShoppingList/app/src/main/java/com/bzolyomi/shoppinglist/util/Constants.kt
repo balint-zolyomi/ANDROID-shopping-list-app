@@ -35,6 +35,11 @@ object Constants {
     // Elevation
     val ELEVATION_SMALL = 2.dp
     val ELEVATION_MEDIUM = 8.dp
+    val ELEVATION_ITEM_DRAGGING = 16.dp
+
+    // Border
+    val BORDER_ZERO = 0.dp
+    val BORDER_ITEM_DRAGGING = 4.dp
 
     // Size
 //    val SIZE_MEDIUM = 25.dp

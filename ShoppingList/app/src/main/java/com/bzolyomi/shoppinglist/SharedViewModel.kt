@@ -35,7 +35,7 @@ class SharedViewModel @Inject constructor(
     val itemUnit: State<String>
         get() = mutableStateOf(_itemUnit)
 
-    private var items: MutableList<ShoppingItemEntity> = mutableListOf() // TODO
+    private var items: MutableList<ShoppingItemEntity> = mutableListOf()
 
     private val _shoppingGroupsWithLists = MutableStateFlow<List<GroupWithList>>(emptyList())
     val shoppingGroupsWithLists: StateFlow<List<GroupWithList>>
@@ -161,7 +161,7 @@ class SharedViewModel @Inject constructor(
     }
 
     // CREATE
-    fun createWithCoroutines() = runBlocking { // TODO
+    fun createWithCoroutines() = runBlocking {
         var groupId = getGroupIdCoroutine()
 
         if (groupId == null) {

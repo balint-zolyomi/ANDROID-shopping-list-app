@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
-import com.bzolyomi.shoppinglist.util.Constants
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
 
 @Composable

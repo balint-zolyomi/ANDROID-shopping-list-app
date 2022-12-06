@@ -7,7 +7,6 @@ import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import com.bzolyomi.shoppinglist.data.DummyData
 import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
-import com.bzolyomi.shoppinglist.util.Constants
 import com.bzolyomi.shoppinglist.util.Constants.INTRO_SCREEN_FULL_DURATION
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

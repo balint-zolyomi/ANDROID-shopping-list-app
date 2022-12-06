@@ -14,13 +14,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.dp
 import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.ui.components.DragIcon
+import com.bzolyomi.shoppinglist.util.Constants.BORDER_ITEM_DRAGGING
+import com.bzolyomi.shoppinglist.util.Constants.BORDER_ZERO
+import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_ITEM_DRAGGING
 import com.bzolyomi.shoppinglist.util.Constants.ELEVATION_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_XX_LARGE
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_X_SMALL
+import com.bzolyomi.shoppinglist.util.Constants.PADDING_ZERO
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -33,18 +36,18 @@ fun ItemCardsReorder(
     onItemsOrderChange: (List<ShoppingItemEntity>) -> Unit,
     modifier: Modifier
 ) {
-    var shoppingListByPosition = shoppingList.sortedBy {
+    var shoppingListByItemPosition = shoppingList.sortedBy {
         it.itemPositionInList
     }
 
     if (isReorderConfirmed) {
-        onItemsOrderChange(shoppingListByPosition)
+        onItemsOrderChange(shoppingListByItemPosition)
     }
 
     var itemIdsSortedByPosition by remember {
         mutableStateOf(
-            List(shoppingListByPosition.size) {
-                shoppingListByPosition[it].itemId.toString()
+            List(shoppingListByItemPosition.size) {
+                shoppingListByItemPosition[it].itemId.toString()
             }
         )
     }
@@ -54,10 +57,10 @@ fun ItemCardsReorder(
             add(to.index, removeAt(from.index))
         }
 
-        shoppingListByPosition = shoppingListByPosition.toMutableList().apply {
+        shoppingListByItemPosition = shoppingListByItemPosition.toMutableList().apply {
             add(to.index, removeAt(from.index))
         }
-        for ((i, item) in shoppingListByPosition.withIndex()) {
+        for ((i, item) in shoppingListByItemPosition.withIndex()) {
             item.itemPositionInList = i
         }
     })
@@ -86,15 +89,15 @@ fun ItemCardsReorder(
                 ReorderableItem(reorderableState = state, key = listOrderId) { isDragging ->
                     val elevation = animateDpAsState(
                         targetValue =
-                        if (isDragging) 16.dp else ELEVATION_SMALL
+                        if (isDragging) ELEVATION_ITEM_DRAGGING else ELEVATION_SMALL
                     )
                     val padding = animateDpAsState(
                         targetValue =
-                        if (isDragging) PADDING_SMALL else 0.dp
+                        if (isDragging) PADDING_SMALL else PADDING_ZERO
                     )
                     val border = animateDpAsState(
                         targetValue =
-                        if (isDragging) 4.dp else 0.dp
+                        if (isDragging) BORDER_ITEM_DRAGGING else BORDER_ZERO
                     )
                     val borderColor = animateColorAsState(
                         targetValue =

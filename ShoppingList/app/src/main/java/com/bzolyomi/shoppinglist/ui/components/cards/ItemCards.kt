@@ -43,11 +43,11 @@ fun ItemCards(
             bottom = PADDING_XX_LARGE
         )
     ) {
-        val sortedByPosition = shoppingList.sortedBy {
+        val shoppingListByItemPosition = shoppingList.sortedBy {
             it.itemPositionInList
         }
 
-        items(sortedByPosition) { item ->
+        items(shoppingListByItemPosition) { item ->
 
             var isItemChecked by mutableStateOf(item.isItemChecked)
 
