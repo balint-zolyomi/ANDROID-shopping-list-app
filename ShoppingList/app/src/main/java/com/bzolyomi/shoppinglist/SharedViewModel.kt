@@ -1,12 +1,12 @@
 package com.bzolyomi.shoppinglist
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bzolyomi.shoppinglist.data.*
+import com.bzolyomi.shoppinglist.data.GroupWithList
+import com.bzolyomi.shoppinglist.data.Repository
+import com.bzolyomi.shoppinglist.data.ShoppingGroupEntity
+import com.bzolyomi.shoppinglist.data.ShoppingItemEntity
 import com.bzolyomi.shoppinglist.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
@@ -46,6 +46,13 @@ class SharedViewModel @Inject constructor(
         get() = _selectedShoppingList
 
     var selectedGroupWithList by mutableStateOf(
+        GroupWithList(
+            ShoppingGroupEntity(null, ""),
+            emptyList()
+        )
+    )
+
+    var tempSelectedGroupWithList by mutableStateOf(
         GroupWithList(
             ShoppingGroupEntity(null, ""),
             emptyList()
@@ -177,7 +184,7 @@ class SharedViewModel @Inject constructor(
         flushGroupGUI()
     }
 
-    private fun getNextStartingPosition(groupWithList: GroupWithList) : Int {
+    private fun getNextStartingPosition(groupWithList: GroupWithList): Int {
         var maxItemPosition = 0
         for (item in groupWithList.shoppingList) {
             if (item.itemPositionInList!! > maxItemPosition) {
@@ -217,11 +224,23 @@ class SharedViewModel @Inject constructor(
     }
 
     // UPDATE
-    fun updateItemChecked(shoppingListItem: ShoppingItemEntity) {
-        shoppingListItem.isItemChecked = !shoppingListItem.isItemChecked
+    fun updateItemChecked(itemId: Long?) {
+        var item = ShoppingItemEntity(
+            itemId = null,
+            itemParentId = null,
+            itemName = "",
+            itemQuantity = null,
+            itemUnit = "",
+            isItemChecked = false,
+            itemPositionInList = null
+        )
+        selectedGroupWithList.shoppingList.forEach {
+            if (it.itemId == itemId) item = it
+        }
+        item.isItemChecked = !item.isItemChecked
 
         viewModelScope.launch(Dispatchers.IO) {
-            repo.updateItem(item = shoppingListItem)
+            repo.updateItem(item = item)
         }
     }
 
@@ -251,6 +270,7 @@ class SharedViewModel @Inject constructor(
     fun deleteItem(itemId: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.deleteItem(itemId = itemId)
+            selectedGroupWithList = getSelectedGroupWithListCoroutine(selectedGroupWithList.group.groupId.toString())
         }
     }
 }

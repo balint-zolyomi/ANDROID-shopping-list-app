@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
@@ -22,6 +23,8 @@ import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_SMALL
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_XX_LARGE
 import com.bzolyomi.shoppinglist.SharedViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun AllGroupsScreen(
@@ -33,6 +36,7 @@ fun AllGroupsScreen(
     val shoppingGroupsWithLists by sharedVM.shoppingGroupsWithLists.collectAsState()
 
     val scaffoldState = rememberScaffoldState()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -81,6 +85,15 @@ fun AllGroupsScreen(
                             titleGroupName = shoppingGroupWithList.group.groupName,
                             shoppingList = shoppingGroupWithList.shoppingList,
                             onOpenGroupIconClicked = {
+                                coroutineScope.launch(Dispatchers.IO) {
+                                    sharedVM.selectedGroupWithList =
+                                        sharedVM.getSelectedGroupWithListCoroutine(
+                                            shoppingGroupWithList
+                                                .group
+                                                .groupId
+                                                .toString()
+                                        )
+                                }
                                 navigateToGroupScreen(shoppingGroupWithList.group.groupId)
                             },
                             modifier = Modifier

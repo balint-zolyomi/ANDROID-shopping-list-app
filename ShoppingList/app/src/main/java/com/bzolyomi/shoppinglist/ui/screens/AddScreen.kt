@@ -27,12 +27,13 @@ import com.bzolyomi.shoppinglist.util.Constants.ITEM_NAME_MAX_LENGTH
 import com.bzolyomi.shoppinglist.util.Constants.ITEM_QUANTITY_MAX_LENGTH
 import com.bzolyomi.shoppinglist.util.Constants.ITEM_UNIT_MAX_LENGTH
 import com.bzolyomi.shoppinglist.util.Constants.PADDING_MEDIUM
+import kotlinx.coroutines.*
 
 @Composable
 fun AddScreen(
     groupId: Long?,
     navigateToHomeScreen: () -> Unit,
-    navigateToGroupScreen: () -> Unit,
+    navigateToGroupScreen: (groupId: Long?) -> Unit,
     sharedViewModel: SharedViewModel,
     modifier: Modifier
 ) {
@@ -42,7 +43,7 @@ fun AddScreen(
             sharedViewModel.flushGroupGUI()
             sharedViewModel.clearItemsList()
         } else {
-            navigateToGroupScreen()
+            navigateToGroupScreen(groupId)
         }
         sharedViewModel.flushItemGUI()
     }
@@ -55,6 +56,7 @@ fun AddScreen(
 
     val context = LocalContext.current
     val itemAddedToastMessage = stringResource(R.string.toast_message_item_added)
+    val coroutineScope = rememberCoroutineScope()
 
     val groupName by sharedViewModel.groupName
     val itemName by sharedViewModel.itemName
@@ -87,8 +89,16 @@ fun AddScreen(
         validateAll()
         if (!isAnyError) {
             focusManager.clearFocus()
-            if (groupId == GROUP_UNSELECTED) navigateToHomeScreen() else navigateToGroupScreen()
             sharedViewModel.createWithCoroutines()
+            if (groupId == GROUP_UNSELECTED) {
+                navigateToHomeScreen()
+            } else {
+                coroutineScope.launch(Dispatchers.IO) {
+                    sharedViewModel.selectedGroupWithList =
+                        sharedViewModel.getSelectedGroupWithListCoroutine(groupId.toString())
+                }
+                navigateToGroupScreen(groupId)
+            }
             showShortToast(context = context, message = itemAddedToastMessage)
         }
     }

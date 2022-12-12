@@ -16,14 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.bzolyomi.shoppinglist.R
+import com.bzolyomi.shoppinglist.SharedViewModel
 import com.bzolyomi.shoppinglist.ui.components.AppBarOptionMore
 import com.bzolyomi.shoppinglist.ui.components.AppBarOptionToggleReorder
 import com.bzolyomi.shoppinglist.ui.components.cards.ItemCards
 import com.bzolyomi.shoppinglist.ui.components.cards.ItemCardsReorder
+import com.bzolyomi.shoppinglist.ui.components.showShortToast
 import com.bzolyomi.shoppinglist.ui.theme.FloatingActionButtonTint
 import com.bzolyomi.shoppinglist.util.Constants.ITEM_CARDS_REORDER_TOGGLE_CROSSFADE_ANIMATION_DURATION
-import com.bzolyomi.shoppinglist.SharedViewModel
-import com.bzolyomi.shoppinglist.ui.components.showShortToast
 
 @Composable
 fun GroupScreen(
@@ -36,6 +36,8 @@ fun GroupScreen(
     var isReordering by remember { mutableStateOf(false) }
     var isReorderConfirmed by remember { mutableStateOf(false) }
 
+//    val changeOfChecks: MutableList<Long?> = remember { mutableListOf() }
+
     val context = LocalContext.current
     val toastMessageReorderHint = stringResource(R.string.toast_message_reorder_hint)
     val toastMessageForGroupDelete = stringResource(R.string.toast_message_group_deleted)
@@ -46,14 +48,19 @@ fun GroupScreen(
             isReorderConfirmed = true
             isReordering = !isReordering
         } else {
-            navigateToHomeScreen()
-            sharedVM.flushItemGUI()
+//            sharedVM.tempSelectedGroupWithList = sharedVM.selectedGroupWithList
             sharedVM.flushGroupGUI()
+            sharedVM.flushItemGUI()
+            navigateToHomeScreen()
+//            changeOfChecks.forEach {
+//                sharedVM.updateItemChecked(it)
+//            }
         }
     }
 
-    val shoppingGroup by mutableStateOf(sharedVM.selectedGroupWithList.group)
-    val shoppingList by sharedVM.selectedShoppingList.collectAsState()
+    val shoppingGroupWithList = sharedVM.selectedGroupWithList
+    val shoppingGroup = shoppingGroupWithList.group
+    val shoppingList = shoppingGroupWithList.shoppingList
 
     val scaffoldState = rememberScaffoldState()
 
@@ -67,7 +74,11 @@ fun GroupScreen(
                         isReordering = isReordering,
                         onReorderButtonToggled = {
                             isReorderConfirmed = if (!isReordering) {
-                                Toast.makeText(context, toastMessageReorderHint, Toast.LENGTH_LONG)
+                                Toast.makeText(
+                                    context,
+                                    toastMessageReorderHint,
+                                    Toast.LENGTH_LONG
+                                )
                                     .show()
                                 false
                             } else {
@@ -111,12 +122,16 @@ fun GroupScreen(
                         ItemCards(
                             shoppingList = shoppingList,
                             onCheckboxClicked = {
-                                sharedVM.updateItemChecked(it)
+                                sharedVM.updateItemChecked(it.itemId)
+//                                changeOfChecks.add(it.itemId)
+//                                Log.d("balint-debug", "\nAdded: ${it.itemId}")
+//                                Log.d("balint-debug", "\tList: $changeOfChecks")
                             },
                             onDeleteItemClicked = { itemId ->
                                 sharedVM.deleteItem(
                                     itemId = itemId
                                 )
+//                                shoppingList.removeIf { it.itemId == itemId }
                             },
                             modifier = Modifier.fillMaxSize()
                         )
@@ -140,6 +155,9 @@ fun GroupScreen(
                 FloatingActionButton(
                     onClick = {
                         sharedVM.setGroupName(shoppingGroup.groupName)
+//                        changeOfChecks.forEach {
+//                            sharedVM.updateItemChecked(it)
+//                        }
                         navigateToAddItemScreen(shoppingGroup.groupId)
                     },
                     backgroundColor = MaterialTheme.colors.primary
